@@ -41,13 +41,31 @@ render(siteFilms, createMostCommFilmsListsBoardTemplate());
 render(siteFilmsLists, createLoadMoreButtonTemplate());
 
 const siteFilmsListsContainer = siteFilmsLists.querySelector(`.films-list__container`);
+const moreButton = siteFilmsLists.querySelector(`.films-list__show-more`);
 
 let showingCardsCount = CARDS_COUNT_ON_START;
 
 cards
-.slice(0, showingCardsCount)
-.forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
-console.log(cards)
+  .slice(0, showingCardsCount)
+  .forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
+
+const removeMoreBtn = () => {
+  if (showingCardsCount >= CARDS_COUNT) {
+    moreButton.remove();
+  }
+};
+
+removeMoreBtn();
+
+moreButton.addEventListener(`click`, () => {
+  const showedCardsCount = showingCardsCount;
+  showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
+  cards
+    .slice(showedCardsCount, showingCardsCount)
+    .forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
+  removeMoreBtn();
+});
+
 const siteFilmsListsExtras = siteMainElement.querySelectorAll(`.films-list--extra`);
 const siteTopFilmsListsContainer = siteFilmsListsExtras[0].querySelector(`.films-list__container`);
 const siteMostCommFilmsListsContainer = siteFilmsListsExtras[1].querySelector(`.films-list__container`);

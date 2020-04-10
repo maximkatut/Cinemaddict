@@ -107,7 +107,7 @@ const generateCard = () => {
     director: getRandomArrayItem(peopleNames),
     writers: getRandomArrayItems(peopleNames, 1, 2),
     actors: getRandomArrayItems(peopleNames, 1, 2),
-    releaseDate: new Date(`${getRandomNumber(1920, 100)} ${getRandomArrayItem(MONTH_NAMES)}`),
+    releaseDate: new Date(`${getRandomNumber(1920, 100)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomNumber(1, 30)}`),
     duration: getRandomDurationInMinutes(50, 150),
     country: getRandomArrayItem(countryNames),
     genre: getRandomArrayItems(genreNames, 1, 2),
