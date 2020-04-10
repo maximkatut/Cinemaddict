@@ -10,7 +10,7 @@ const createPopupInfoMarkup = (card) => {
 
   const genresMarkup = genre.map((it) => {
     return createPopupGenreMarkup(it);
-  }).join(``);
+  }).join(`\n`);
 
   return (`
   <div class="film-details__info-wrap">

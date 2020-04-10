@@ -83,4 +83,4 @@ const sitePopupTopContainer = siteBody.querySelector(`.form-details__top-contain
 
 render(sitePopupTopContainer, createPopupInfoTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupControlsTemplate(cards[0]));
-render(sitePopupTopContainer, createPopupCommentsTemplate(), `afterend`);
+render(sitePopupTopContainer, createPopupCommentsTemplate(cards[0].comments), `afterend`);
