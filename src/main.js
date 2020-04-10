@@ -12,6 +12,7 @@ import {createPopupBoardTemplate} from "./components/popup-board.js";
 import {createPopupInfoTemplate} from "./components/popup-info.js";
 import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createPopupCommentsTemplate} from "./components/popup-comments.js";
+import {createFilmsCountTemplate} from "./components/films-count.js";
 import {generateCards} from "./mock/card.js";
 
 const CARDS_COUNT = 20;
@@ -84,3 +85,6 @@ const sitePopupTopContainer = siteBody.querySelector(`.form-details__top-contain
 render(sitePopupTopContainer, createPopupInfoTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupControlsTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupCommentsTemplate(cards[0].comments), `afterend`);
+
+const siteCountStatisticsContainer = document.querySelector(`.footer__statistics`);
+render(siteCountStatisticsContainer, createFilmsCountTemplate(cards.length));
