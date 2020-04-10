@@ -12,13 +12,18 @@ import {createPopupBoardTemplate} from "./components/popup-board.js";
 import {createPopupInfoTemplate} from "./components/popup-info.js";
 import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createPopupCommentsTemplate} from "./components/popup-comments.js";
+import {generateCards} from "./mock/card.js";
 
-const CARD_COUNT = 5;
+const CARDS_COUNT = 20;
+const CARDS_COUNT_ON_START = 5;
+const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
 const EXTRA_CARD_COUNT = 2;
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const cards = generateCards(CARDS_COUNT);
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -37,10 +42,12 @@ render(siteFilmsLists, createLoadMoreButtonTemplate());
 
 const siteFilmsListsContainer = siteFilmsLists.querySelector(`.films-list__container`);
 
-for (let i = 0; i < CARD_COUNT; i++) {
-  render(siteFilmsListsContainer, createFilmCardTemplate());
-}
+let showingCardsCount = CARDS_COUNT_ON_START;
 
+cards
+.slice(0, showingCardsCount)
+.forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
+console.log(cards)
 const siteFilmsListsExtras = siteMainElement.querySelectorAll(`.films-list--extra`);
 const siteTopFilmsListsContainer = siteFilmsListsExtras[0].querySelector(`.films-list__container`);
 const siteMostCommFilmsListsContainer = siteFilmsListsExtras[1].querySelector(`.films-list__container`);
