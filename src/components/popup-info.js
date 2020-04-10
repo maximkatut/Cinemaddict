@@ -4,24 +4,13 @@ const createPopupInfoMarkup = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
   const formatReleaseDate = formatDate(releaseDate);
 
-  const createPopupGenresMarkup = (arr) => {
-    const genres = (arr.length > 1) ? `Genres` : `Genre`;
-
-    const createPopupGenreMarkup = (it) => {
-      return `<span class="film-details__genre">${it}</span>`;
-    };
-
-    const genresMarkup = arr.map((it) => {
-      return createPopupGenreMarkup(it);
-    }).join(``);
-
-    return `
-    <tr class="film-details__row">
-      <td class="film-details__term">${genres}</td>
-      <td class="film-details__cell">
-      ${genresMarkup}
-    </tr>`;
+  const createPopupGenreMarkup = (it) => {
+    return `<span class="film-details__genre">${it}</span>`;
   };
+
+  const genresMarkup = genre.map((it) => {
+    return createPopupGenreMarkup(it);
+  }).join(``);
 
   return (`
   <div class="film-details__info-wrap">
@@ -68,7 +57,11 @@ const createPopupInfoMarkup = (card) => {
           <td class="film-details__term">Country</td>
           <td class="film-details__cell">${country}</td>
         </tr>
-        ${createPopupGenresMarkup(genre)}
+        <tr class="film-details__row">
+          <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
+          <td class="film-details__cell">
+          ${genresMarkup}
+        </tr>
       </table>
 
       <p class="film-details__film-description">
