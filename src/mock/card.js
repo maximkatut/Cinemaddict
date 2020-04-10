@@ -78,7 +78,7 @@ const getRandomDescription = (arr) => {
 };
 
 const getRandomArrayItems = (arr, from, to) => {
-  return new Array(getRandomNumber(to, from)).fill(``).map(() => {
+  return new Array(getRandomNumber(from, to)).fill(``).map(() => {
     return arr[Math.floor(Math.random() * arr.length)];
   });
 };
@@ -103,14 +103,14 @@ const generateCard = () => {
     poster: `./images/posters/${getRandomArrayItem(posterNames)}`,
     name: getRandomArrayItem(cardNames),
     originalName: getRandomArrayItem(cardNames),
-    rating: (Math.random() * 10).toFixed(1),
+    rating: (Math.random() * 5 + 5).toFixed(1),
     director: getRandomArrayItem(peopleNames),
-    writers: getRandomArrayItems(peopleNames, 1, 2),
-    actors: getRandomArrayItems(peopleNames, 1, 2),
+    writers: getRandomArrayItems(peopleNames, 1, 3),
+    actors: getRandomArrayItems(peopleNames, 1, 3),
     releaseDate: new Date(`${getRandomNumber(1920, 100)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomNumber(1, 30)}`),
     duration: getRandomDurationInMinutes(50, 150),
     country: getRandomArrayItem(countryNames),
-    genre: getRandomArrayItems(genreNames, 1, 2),
+    genre: getRandomArrayItems(genreNames, 1, 3),
     description: getRandomDescription(descriptionSentences),
     ageRating: `${getRandomNumber(16, 2)}+`,
     comments: generateComments(getRandomNumber(0, 5)),
