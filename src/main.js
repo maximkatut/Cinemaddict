@@ -82,5 +82,5 @@ render(siteBody, createPopupBoardTemplate());
 const sitePopupTopContainer = siteBody.querySelector(`.form-details__top-container`);
 
 render(sitePopupTopContainer, createPopupInfoTemplate(cards[0]));
-render(sitePopupTopContainer, createPopupControlsTemplate());
+render(sitePopupTopContainer, createPopupControlsTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupCommentsTemplate(), `afterend`);
