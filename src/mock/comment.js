@@ -39,8 +39,10 @@ const generateComment = () => {
   };
 };
 
-export const generateComments = (count) => {
+const generateComments = (count) => {
   return new Array(count).fill(``).map(generateComment).sort((a, b) => {
     return a.date - b.date;
   });
 };
+
+export {generateComments};

@@ -120,6 +120,8 @@ const generateCard = () => {
   };
 };
 
-export const generateCards = (count) => {
+const generateCards = (count) => {
   return new Array(count).fill(``).map(generateCard);
 };
+
+export {generateCards};

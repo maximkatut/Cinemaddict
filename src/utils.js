@@ -14,7 +14,7 @@ export const formatTime = (date) => {
 export const formatDate = (date) => {
   const day = date.getDate();
   const month = MONTH_NAMES[date.getMonth()];
-  const year = date.getYear() + 1900;
+  const year = Number(date.getYear()) + 1900;
 
   return `${day} ${month} ${year}`;
 };
@@ -22,7 +22,7 @@ export const formatDate = (date) => {
 export const formatSlashDate = (date) => {
   const day = date.getDate();
   const month = date.getMonth();
-  const year = date.getYear() + 1900;
+  const year = Number(date.getYear()) + 1900;
 
   return `${year}/${month}/${day}`;
 };

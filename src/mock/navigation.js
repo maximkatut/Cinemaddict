@@ -34,7 +34,7 @@ const getFavoritesCount = () => {
   return counter;
 };
 
-export const generateFilters = () => {
+const generateFilters = () => {
   return filterNames.map((it, i) => {
     const filterCounts = [
       getWatchlistCount(),
@@ -47,3 +47,5 @@ export const generateFilters = () => {
     };
   });
 };
+
+export {generateFilters};
