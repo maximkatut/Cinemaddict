@@ -5,32 +5,31 @@ import {createFilmsListsBoardTemplate} from "./components/films-board.js";
 import {createFilmCardTemplate} from "./components/card.js";
 import {createLoadMoreButtonTemplate} from "./components/more-button.js";
 import {createTopFilmsListsBoardTemplate} from "./components/top-films-board.js";
-import {createTopFilmCardTemplate} from "./components/top-film-card.js";
 import {createMostCommFilmsListsBoardTemplate} from "./components/most-comm-films-board.js";
-import {createMostCommFilmCardTemplate} from "./components/most-comm-film-card.js";
 import {createPopupBoardTemplate} from "./components/popup-board.js";
 import {createPopupInfoTemplate} from "./components/popup-info.js";
 import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createPopupCommentsTemplate} from "./components/popup-comments.js";
 import {createFilmsCountTemplate} from "./components/films-count.js";
 import {generateCards} from "./mock/card.js";
+import {generateFilters} from "./mock/navigation.js";
 
-const CARDS_COUNT = 20;
+const CARDS_COUNT = 25;
 const CARDS_COUNT_ON_START = 5;
 const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
-const EXTRA_CARD_COUNT = 2;
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const cards = generateCards(CARDS_COUNT);
+export const cards = generateCards(CARDS_COUNT);
+export const naviFilters = generateFilters();
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
 render(siteHeaderElement, createProfileTemplate());
-render(siteMainElement, createNavigationTemplate());
+render(siteMainElement, createNavigationTemplate(naviFilters));
 render(siteMainElement, createSortTemplate());
 render(siteMainElement, createFilmsListsBoardTemplate());
 
@@ -71,10 +70,21 @@ const siteFilmsListsExtras = siteMainElement.querySelectorAll(`.films-list--extr
 const siteTopFilmsListsContainer = siteFilmsListsExtras[0].querySelector(`.films-list__container`);
 const siteMostCommFilmsListsContainer = siteFilmsListsExtras[1].querySelector(`.films-list__container`);
 
-for (let i = 0; i < EXTRA_CARD_COUNT; i++) {
-  render(siteTopFilmsListsContainer, createTopFilmCardTemplate());
-  render(siteMostCommFilmsListsContainer, createMostCommFilmCardTemplate());
-}
+const topCards = cards.slice().sort((a, b)=>{
+  return b.rating - a.rating;
+}).slice(0, 2);
+
+const mostCommCards = cards.slice().sort((a, b)=>{
+  return b.comments.length - a.comments.length;
+}).slice(0, 2);
+
+topCards.forEach((it) => {
+  render(siteTopFilmsListsContainer, createFilmCardTemplate(it));
+});
+
+mostCommCards.forEach((it) => {
+  render(siteMostCommFilmsListsContainer, createFilmCardTemplate(it));
+});
 
 const siteBody = document.querySelector(`body`);
 

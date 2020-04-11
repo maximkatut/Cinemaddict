@@ -12,3 +12,7 @@ export const MONTH_NAMES = [
   `November`,
   `December`,
 ];
+
+export const RANK_NAMES = [
+  `Novice`, `Fan`, `Movie Buff`
+];
