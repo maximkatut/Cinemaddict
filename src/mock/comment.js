@@ -1,3 +1,5 @@
+import {getRandomArrayItem} from "../utils/format.js";
+
 const emojiNames = [
   `angry`,
   `puke`,
@@ -24,10 +26,6 @@ const getRandomDate = () => {
   const diffValue = -1 * Math.floor(Math.random() * 10);
   targetDate.setDate(targetDate.getDate() + diffValue);
   return targetDate;
-};
-
-const getRandomArrayItem = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
 };
 
 const generateComment = () => {

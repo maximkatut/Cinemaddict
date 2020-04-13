@@ -1,5 +1,6 @@
 import {generateComments} from "./comment.js";
 import {MONTH_NAMES} from "../const.js";
+import {getRandomIntegerNumber, getRandomBoolean, getRandomArrayItem, getRandomFloatNumber} from "../utils/format.js";
 
 const cardNames = [
   `Побег из Шоушенка`,
@@ -67,35 +68,17 @@ const peopleNames = [
   `Alina Baravy`,
 ];
 
-const getRandomNumber = (min, max) => {
-  return Math.floor(Math.random() * max + min);
-};
-
-const getRandomDescription = (arr) => {
-  return new Array(getRandomNumber(1, 5)).fill(``).map(() => {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }).join(` `);
-};
-
 const getRandomArrayItems = (arr, from, to) => {
-  return new Array(getRandomNumber(from, to)).fill(``).map(() => {
-    return arr[Math.floor(Math.random() * arr.length)];
+  return new Array(getRandomIntegerNumber(from, to)).fill(``).map(() => {
+    return arr[getRandomIntegerNumber(0, arr.length)];
   });
 };
 
-const getRandomArrayItem = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
 const getRandomDurationInMinutes = (from, to) => {
-  const minutes = getRandomNumber(from, to);
+  const minutes = getRandomIntegerNumber(from, to);
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   return `${h}h ${m}m`;
-};
-
-const getRandomBoolean = () => {
-  return Math.random() > 0.5;
 };
 
 const generateCard = () => {
@@ -103,17 +86,17 @@ const generateCard = () => {
     poster: `./images/posters/${getRandomArrayItem(posterNames)}`,
     name: getRandomArrayItem(cardNames),
     originalName: getRandomArrayItem(cardNames),
-    rating: (Math.random() * 5 + 5).toFixed(1),
+    rating: getRandomFloatNumber(5, 5, 1),
     director: getRandomArrayItem(peopleNames),
     writers: getRandomArrayItems(peopleNames, 1, 3),
     actors: getRandomArrayItems(peopleNames, 1, 3),
-    releaseDate: new Date(`${getRandomNumber(1920, 100)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomNumber(1, 30)}`),
+    releaseDate: new Date(`${getRandomIntegerNumber(1920, 100)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomIntegerNumber(1, 30)}`),
     duration: getRandomDurationInMinutes(50, 150),
     country: getRandomArrayItem(countryNames),
     genre: getRandomArrayItems(genreNames, 1, 3),
-    description: getRandomDescription(descriptionSentences),
-    ageRating: `${getRandomNumber(16, 2)}+`,
-    comments: generateComments(getRandomNumber(0, 5)),
+    description: getRandomArrayItems(descriptionSentences, 1, 5).join(` `),
+    ageRating: `${getRandomIntegerNumber(16, 2)}+`,
+    comments: generateComments(getRandomIntegerNumber(0, 5)),
     isInWatchlist: getRandomBoolean(),
     isWatched: getRandomBoolean(),
     isFavorite: getRandomBoolean(),

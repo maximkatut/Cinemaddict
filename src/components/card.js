@@ -1,7 +1,7 @@
-const createFilmCardMarkup = (card) => {
+export const createFilmCardTemplate = (card) => {
   const {name, rating, releaseDate, duration, genre, poster, description, comments, isInWatchlist, isWatched, isFavorite} = card;
-  const releaseYear = releaseDate.getYear() + 1900;
-  const shortDescription = description.length > 140 ? `${description.slice(0, 138)}…` : description;
+  const releaseYear = releaseDate.getFullYear();
+  const shortDescription = description.length > 140 ? `${description.slice(0, 139)}…` : description;
   const checkIsActive = (statement) => {
     return statement ? `film-card__controls-item--active` : ``;
   };
@@ -23,8 +23,4 @@ const createFilmCardMarkup = (card) => {
         <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>
       </form>
     </article>`);
-};
-
-export const createFilmCardTemplate = (card) => {
-  return createFilmCardMarkup(card);
 };

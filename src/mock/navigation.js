@@ -1,49 +1,31 @@
-import {cards} from "../main.js";
+import {getRandomBoolean} from "../utils/format.js";
 
 const filterNames = [
-  `Watchlist`, `History`, `Favorites`
+  `All movies`, `Watchlist`, `History`, `Favorites`
 ];
 
-const getWatchlistCount = () => {
+const countFilter = (prop, cards) => {
   let counter = 0;
   cards.forEach((it) => {
-    if (it.isInWatchlist) {
+    if (it[prop]) {
       counter++;
     }
   });
   return counter;
 };
 
-const getHistoryCount = () => {
-  let counter = 0;
-  cards.forEach((it) => {
-    if (it.isWatched) {
-      counter++;
-    }
-  });
-  return counter;
-};
-
-const getFavoritesCount = () => {
-  let counter = 0;
-  cards.forEach((it) => {
-    if (it.isFavorite) {
-      counter++;
-    }
-  });
-  return counter;
-};
-
-const generateFilters = () => {
+const generateFilters = (cards) => {
+  const filterCounts = [
+    countFilter(``, cards),
+    countFilter(`isInWatchlist`, cards),
+    countFilter(`isWatched`, cards),
+    countFilter(`isFavorite`, cards),
+  ];
   return filterNames.map((it, i) => {
-    const filterCounts = [
-      getWatchlistCount(),
-      getHistoryCount(),
-      getFavoritesCount(),
-    ];
     return {
       name: it,
       count: filterCounts[i],
+      isActive: getRandomBoolean(),
     };
   });
 };

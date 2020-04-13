@@ -1,4 +1,4 @@
-import {MONTH_NAMES} from "./const.js";
+import {MONTH_NAMES} from "../const.js";
 
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
@@ -14,7 +14,7 @@ export const formatTime = (date) => {
 export const formatDate = (date) => {
   const day = date.getDate();
   const month = MONTH_NAMES[date.getMonth()];
-  const year = Number(date.getYear()) + 1900;
+  const year = Number(date.getFullYear());
 
   return `${day} ${month} ${year}`;
 };
@@ -22,7 +22,23 @@ export const formatDate = (date) => {
 export const formatSlashDate = (date) => {
   const day = date.getDate();
   const month = date.getMonth();
-  const year = Number(date.getYear()) + 1900;
+  const year = Number(date.getFullYear());
 
   return `${year}/${month}/${day}`;
+};
+
+export const getRandomIntegerNumber = (min, max) => {
+  return Math.floor(Math.random() * max + min);
+};
+
+export const getRandomFloatNumber = (min, max, fractionalLength) => {
+  return (Math.random() * max + min).toFixed(fractionalLength);
+};
+
+export const getRandomArrayItem = (arr) => {
+  return arr[Math.floor(Math.random() * arr.length)];
+};
+
+export const getRandomBoolean = () => {
+  return Math.random() > 0.5;
 };

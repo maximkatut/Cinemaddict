@@ -1,19 +1,17 @@
-import {cards} from "../main.js";
-
-const sortCards = (prop, propTwo) => {
-  const sortedCards = cards.slice().sort((a, b) => {
+const sortCards = (cards, prop, propTwo) => {
+  const sortedCards = cards.slice().sort((leftCard, rightCard) => {
     if (propTwo === ``) {
-      return b[prop] - a[prop];
+      return rightCard[prop] - leftCard[prop];
     } else {
-      return b[prop][propTwo] - a[prop][propTwo];
+      return rightCard[prop][propTwo] - leftCard[prop][propTwo];
     }
   });
 
-  const filteredCards = sortedCards.filter((it, _, arr) => {
+  const filteredCards = sortedCards.filter((card, _, arr) => {
     if (propTwo === ``) {
-      return it[prop] === arr[0][prop];
+      return card[prop] === arr[0][prop];
     } else {
-      return it[prop][propTwo] === arr[0][prop][propTwo];
+      return card[prop][propTwo] === arr[0][prop][propTwo];
     }
   });
 

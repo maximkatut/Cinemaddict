@@ -1,9 +1,8 @@
-import {naviFilters} from "../main.js";
 import {RANK_NAMES} from "../const.js";
 
-const createProfileMarkup = () => {
+const createProfileMarkup = (navigationFilters) => {
   let rank = ``;
-  const count = naviFilters[1].count;
+  const count = navigationFilters[1].count;
   if (count > 20) {
     rank = RANK_NAMES[2];
   } else
@@ -19,10 +18,10 @@ const createProfileMarkup = () => {
   return `<p class="profile__rating">${rank}</p>`;
 };
 
-export const createProfileTemplate = () => {
+export const createProfileTemplate = (navigationFilters) => {
   return (`
     <section class="header__profile profile">
-    ${createProfileMarkup()}
+    ${createProfileMarkup(navigationFilters)}
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>`);
 };

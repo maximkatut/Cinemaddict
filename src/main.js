@@ -13,17 +13,17 @@ import {createPopupCommentsTemplate} from "./components/popup-comments.js";
 import {createFilmsCountTemplate} from "./components/films-count.js";
 import {generateCards} from "./mock/card.js";
 import {generateFilters} from "./mock/navigation.js";
-import {sortCards} from "./components/extra-cards.js";
+import {sortCards} from "./utils/cardsSelector.js";
 
-const CARDS_COUNT = 5;
+const CARDS_COUNT = 25;
 const CARDS_COUNT_ON_START = 5;
 const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
 
 const cards = generateCards(CARDS_COUNT);
-const naviFilters = generateFilters();
-const topCards = sortCards(`rating`, ``);
-const mostCommCards = sortCards(`comments`, `length`);
-const siteBody = document.querySelector(`body`);
+const navigationFilters = generateFilters(cards);
+const topRatedCards = sortCards(cards, `rating`, ``);
+const mostCommentedCards = sortCards(cards, `comments`, `length`);
+const siteBodyElement = document.querySelector(`body`);
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
@@ -31,8 +31,8 @@ const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-render(siteHeaderElement, createProfileTemplate());
-render(siteMainElement, createNavigationTemplate(naviFilters));
+render(siteHeaderElement, createProfileTemplate(navigationFilters));
+render(siteMainElement, createNavigationTemplate(navigationFilters));
 render(siteMainElement, createSortTemplate());
 render(siteMainElement, createFilmsListsBoardTemplate());
 
@@ -43,44 +43,44 @@ render(siteFilms, createTopFilmsListsBoardTemplate());
 render(siteFilms, createMostCommFilmsListsBoardTemplate());
 render(siteFilmsLists, createLoadMoreButtonTemplate());
 
-const siteFilmsListsContainer = siteFilmsLists.querySelector(`.films-list__container`);
-const moreButton = siteFilmsLists.querySelector(`.films-list__show-more`);
+const siteFilmsListsContainerElement = siteFilmsLists.querySelector(`.films-list__container`);
+const moreButtonElement = siteFilmsLists.querySelector(`.films-list__show-more`);
 
 let showingCardsCount = CARDS_COUNT_ON_START;
 cards
   .slice(0, showingCardsCount)
-  .forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
+  .forEach((it) => render(siteFilmsListsContainerElement, createFilmCardTemplate(it)));
 
 const removeMoreButton = () => {
   if (showingCardsCount >= CARDS_COUNT) {
-    moreButton.remove();
+    moreButtonElement.remove();
   }
 };
 
 removeMoreButton();
 
-moreButton.addEventListener(`click`, () => {
+moreButtonElement.addEventListener(`click`, () => {
   const showedCardsCount = showingCardsCount;
   showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
   cards
     .slice(showedCardsCount, showingCardsCount)
-    .forEach((it) => render(siteFilmsListsContainer, createFilmCardTemplate(it)));
+    .forEach((it) => render(siteFilmsListsContainerElement, createFilmCardTemplate(it)));
   removeMoreButton();
 });
 
 const siteFilmsListsExtras = siteMainElement.querySelectorAll(`.films-list--extra`);
 const siteTopFilmsListsContainer = siteFilmsListsExtras[0].querySelector(`.films-list__container`);
 const siteMostCommFilmsListsContainer = siteFilmsListsExtras[1].querySelector(`.films-list__container`);
-topCards.forEach((it) => {
+topRatedCards.forEach((it) => {
   render(siteTopFilmsListsContainer, createFilmCardTemplate(it));
 });
-mostCommCards.forEach((it) => {
+mostCommentedCards.forEach((it) => {
   render(siteMostCommFilmsListsContainer, createFilmCardTemplate(it));
 });
 
-render(siteBody, createPopupBoardTemplate());
+render(siteBodyElement, createPopupBoardTemplate());
 
-const sitePopupTopContainer = siteBody.querySelector(`.form-details__top-container`);
+const sitePopupTopContainer = siteBodyElement.querySelector(`.form-details__top-container`);
 render(sitePopupTopContainer, createPopupInfoTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupControlsTemplate(cards[0]));
 render(sitePopupTopContainer, createPopupCommentsTemplate(cards[0].comments), `afterend`);
@@ -88,4 +88,4 @@ render(sitePopupTopContainer, createPopupCommentsTemplate(cards[0].comments), `a
 const siteCountStatisticsContainer = document.querySelector(`.footer__statistics`);
 render(siteCountStatisticsContainer, createFilmsCountTemplate(cards.length));
 
-export {cards, naviFilters};
+export {cards, navigationFilters};

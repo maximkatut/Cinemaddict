@@ -1,4 +1,4 @@
-import {formatTime, formatSlashDate} from "../utils.js";
+import {formatTime, formatSlashDate} from "../utils/format.js";
 
 const createCommentsMarkup = (comment) => {
   const {content, author, date, emoji} = comment;

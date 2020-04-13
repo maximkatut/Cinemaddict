@@ -1,6 +1,6 @@
-import {formatDate} from "../utils.js";
+import {formatDate} from "../utils/format.js";
 
-const createPopupInfoMarkup = (card) => {
+export const createPopupInfoTemplate = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
   const formatReleaseDate = formatDate(releaseDate);
 
@@ -69,8 +69,4 @@ const createPopupInfoMarkup = (card) => {
       </p>
     </div>
   </div>`);
-};
-
-export const createPopupInfoTemplate = (card) => {
-  return createPopupInfoMarkup(card);
 };
