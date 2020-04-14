@@ -1,4 +1,4 @@
-import {getRandomArrayItem} from "../utils/format.js";
+import {getRandomArrayItem} from "../utils/random.js";
 
 const emojiNames = [
   `angry`,
@@ -38,8 +38,8 @@ const generateComment = () => {
 };
 
 const generateComments = (count) => {
-  return new Array(count).fill(``).map(generateComment).sort((a, b) => {
-    return a.date - b.date;
+  return new Array(count).fill(``).map(generateComment).sort((leftComment, rightComment) => {
+    return leftComment.date - rightComment.date;
   });
 };
 

@@ -1,31 +1,41 @@
-const sortCards = (cards, prop, propTwo) => {
-  const sortedCards = cards.slice().sort((leftCard, rightCard) => {
-    if (propTwo === ``) {
-      return rightCard[prop] - leftCard[prop];
-    } else {
-      return rightCard[prop][propTwo] - leftCard[prop][propTwo];
-    }
-  });
+import {getTwoRandomItems} from "../utils/random.js";
 
-  const filteredCards = sortedCards.filter((card, _, arr) => {
-    if (propTwo === ``) {
-      return card[prop] === arr[0][prop];
-    } else {
-      return card[prop][propTwo] === arr[0][prop][propTwo];
-    }
-  });
-
-  if (filteredCards.length === 1) {
-    filteredCards.push(sortedCards[1]);
+export const selectMostCommentedCards = (cards) => {
+  if (cards.every((card) => card.comments.length === 0) || cards.length === 0) {
+    return [];
   }
 
-  if (filteredCards.length > 2) {
-    const length = filteredCards.length;
-    for (let i = 0; i < length - 2; i++) {
-      filteredCards.splice([Math.floor(Math.random() * filteredCards.length)], 1);
-    }
+  if (cards.length === 1) {
+    return [cards[0]];
   }
-  return filteredCards;
+
+  if (cards.every((card) => card.comments.length === cards[0].comments.length)) {
+    return getTwoRandomItems(cards);
+  }
+
+  return cards
+    .sort((leftCard, rightCard) => rightCard.comments.length - leftCard.comments.length)
+    .slice(0, 2)
+    .filter((card) => card.comments.length > 0);
 };
 
-export {sortCards};
+export const selectTopCards = (cards) => {
+  if (cards.every((card) => card.rating === 0) || cards.length === 0) {
+    return [];
+  }
+
+  if (cards.length === 1) {
+    return [cards[0]];
+  }
+
+  if (cards.every((card) => card.rating === cards[0].rating)) {
+    return getTwoRandomItems(cards);
+  }
+
+  return cards
+    .sort((leftCard, rightCard) => {
+      return rightCard.rating - leftCard.rating;
+    })
+    .slice(0, 2)
+    .filter((card) => card.rating > 0);
+};

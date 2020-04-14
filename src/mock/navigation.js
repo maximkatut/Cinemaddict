@@ -1,4 +1,4 @@
-import {getRandomBoolean} from "../utils/format.js";
+import {getRandomBoolean} from "../utils/random.js";
 
 const filterNames = [
   `All movies`, `Watchlist`, `History`, `Favorites`

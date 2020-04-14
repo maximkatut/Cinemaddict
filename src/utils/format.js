@@ -26,19 +26,3 @@ export const formatSlashDate = (date) => {
 
   return `${year}/${month}/${day}`;
 };
-
-export const getRandomIntegerNumber = (min, max) => {
-  return Math.floor(Math.random() * max + min);
-};
-
-export const getRandomFloatNumber = (min, max, fractionalLength) => {
-  return (Math.random() * max + min).toFixed(fractionalLength);
-};
-
-export const getRandomArrayItem = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-export const getRandomBoolean = () => {
-  return Math.random() > 0.5;
-};

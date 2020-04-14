@@ -1,8 +1,7 @@
 import {RANK_NAMES} from "../const.js";
 
-const createProfileMarkup = (navigationFilters) => {
+const createProfileMarkup = (count) => {
   let rank = ``;
-  const count = navigationFilters[1].count;
   if (count > 20) {
     rank = RANK_NAMES[2];
   } else
@@ -12,7 +11,7 @@ const createProfileMarkup = (navigationFilters) => {
   if (count <= 10) {
     rank = RANK_NAMES[0];
   } else
-  if (count <= 10) {
+  if (count === 0) {
     rank = ``;
   }
   return `<p class="profile__rating">${rank}</p>`;
