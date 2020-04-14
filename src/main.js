@@ -5,57 +5,103 @@ import {createFilmsListsBoardTemplate} from "./components/films-board.js";
 import {createFilmCardTemplate} from "./components/card.js";
 import {createLoadMoreButtonTemplate} from "./components/more-button.js";
 import {createTopFilmsListsBoardTemplate} from "./components/top-films-board.js";
-import {createTopFilmCardTemplate} from "./components/top-film-card.js";
-import {createMostCommFilmsListsBoardTemplate} from "./components/most-comm-films-board.js";
-import {createMostCommFilmCardTemplate} from "./components/most-comm-film-card.js";
+import {createMostCommentedFilmsListsBoardTemplate} from "./components/most-commented-films-board.js";
 import {createPopupBoardTemplate} from "./components/popup-board.js";
 import {createPopupInfoTemplate} from "./components/popup-info.js";
 import {createPopupControlsTemplate} from "./components/popup-controls.js";
 import {createPopupCommentsTemplate} from "./components/popup-comments.js";
+import {createFilmsCountTemplate} from "./components/films-count.js";
+import {generateCards} from "./mock/card.js";
+import {generateFilters} from "./mock/navigation.js";
+import {selectMostCommentedCards, selectTopCards} from "./utils/cardsSelector.js";
 
-const CARD_COUNT = 5;
-const EXTRA_CARD_COUNT = 2;
+// CONSTANTS
+const CARDS_COUNT = 25;
+const CARDS_COUNT_ON_START = 5;
+const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
 
+// Variables
+const cards = generateCards(CARDS_COUNT);
+const navigationFilters = generateFilters(cards);
+const topRatedCards = selectTopCards(cards);
+const mostCommentedCards = selectMostCommentedCards(cards);
+const siteBodyElement = document.querySelector(`body`);
+const siteHeaderElement = document.querySelector(`.header`);
+const siteMainElement = document.querySelector(`.main`);
+
+// render function
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteHeaderElement = document.querySelector(`.header`);
-const siteMainElement = document.querySelector(`.main`);
+// Rendering profile, navigation(filters) and sorting menu
 
-render(siteHeaderElement, createProfileTemplate());
-render(siteMainElement, createNavigationTemplate());
+const watchedFilmsCount = navigationFilters[2].count;
+
+render(siteHeaderElement, createProfileTemplate(watchedFilmsCount));
+render(siteMainElement, createNavigationTemplate(navigationFilters));
 render(siteMainElement, createSortTemplate());
 render(siteMainElement, createFilmsListsBoardTemplate());
 
+// rendering `Show more` button
 const siteFilms = siteMainElement.querySelector(`.films`);
 const siteFilmsLists = siteMainElement.querySelector(`.films-list`);
-
-render(siteFilms, createTopFilmsListsBoardTemplate());
-render(siteFilms, createMostCommFilmsListsBoardTemplate());
 render(siteFilmsLists, createLoadMoreButtonTemplate());
 
-const siteFilmsListsContainer = siteFilmsLists.querySelector(`.films-list__container`);
+const siteFilmsListsContainerElement = siteFilmsLists.querySelector(`.films-list__container`);
+const moreButtonElement = siteFilmsLists.querySelector(`.films-list__show-more`);
 
-for (let i = 0; i < CARD_COUNT; i++) {
-  render(siteFilmsListsContainer, createFilmCardTemplate());
+// Rendering cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
+let showingCardsCount = CARDS_COUNT_ON_START;
+cards
+  .slice(0, showingCardsCount)
+  .forEach((it) => render(siteFilmsListsContainerElement, createFilmCardTemplate(it)));
+
+const removeMoreButton = () => {
+  if (showingCardsCount >= CARDS_COUNT) {
+    moreButtonElement.remove();
+  }
+};
+
+removeMoreButton();
+
+moreButtonElement.addEventListener(`click`, () => {
+  const showedCardsCount = showingCardsCount;
+  showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
+  cards
+    .slice(showedCardsCount, showingCardsCount)
+    .forEach((it) => render(siteFilmsListsContainerElement, createFilmCardTemplate(it)));
+  removeMoreButton();
+});
+
+// Rendering TOP RATED and MOST COMMENTED movies containers and cards
+// if topRatedCards or mostCommentedCards === 0 => do not render them
+if (topRatedCards.length > 0) {
+  render(siteFilms, createTopFilmsListsBoardTemplate());
+  const siteFilmsListsTopRated = siteMainElement.querySelector(`.films-list--top-rated`);
+  const siteTopFilmsListsContainer = siteFilmsListsTopRated.querySelector(`.films-list__container`);
+  topRatedCards.forEach((card) => {
+    render(siteTopFilmsListsContainer, createFilmCardTemplate(card));
+  });
 }
 
-const siteFilmsListsExtras = siteMainElement.querySelectorAll(`.films-list--extra`);
-const siteTopFilmsListsContainer = siteFilmsListsExtras[0].querySelector(`.films-list__container`);
-const siteMostCommFilmsListsContainer = siteFilmsListsExtras[1].querySelector(`.films-list__container`);
-
-for (let i = 0; i < EXTRA_CARD_COUNT; i++) {
-  render(siteTopFilmsListsContainer, createTopFilmCardTemplate());
-  render(siteMostCommFilmsListsContainer, createMostCommFilmCardTemplate());
+if (mostCommentedCards.length > 0) {
+  render(siteFilms, createMostCommentedFilmsListsBoardTemplate());
+  const siteFilmsListsMostCommented = siteMainElement.querySelector(`.films-list--most-commented`);
+  const siteMostCommFilmsListsContainer = siteFilmsListsMostCommented.querySelector(`.films-list__container`);
+  mostCommentedCards.forEach((card) => {
+    render(siteMostCommFilmsListsContainer, createFilmCardTemplate(card));
+  });
 }
 
-const siteBody = document.querySelector(`body`);
+// Rendering popup of active filmcard
+render(siteBodyElement, createPopupBoardTemplate());
 
-render(siteBody, createPopupBoardTemplate());
+const sitePopupTopContainer = siteBodyElement.querySelector(`.form-details__top-container`);
+render(sitePopupTopContainer, createPopupInfoTemplate(cards[0]));
+render(sitePopupTopContainer, createPopupControlsTemplate(cards[0]));
+render(sitePopupTopContainer, createPopupCommentsTemplate(cards[0].comments), `afterend`);
 
-const sitePopupTopContainer = siteBody.querySelector(`.form-details__top-container`);
-
-render(sitePopupTopContainer, createPopupInfoTemplate());
-render(sitePopupTopContainer, createPopupControlsTemplate());
-render(sitePopupTopContainer, createPopupCommentsTemplate(), `afterend`);
+// Rendering count of all movies
+const siteCountStatisticsContainer = document.querySelector(`.footer__statistics`);
+render(siteCountStatisticsContainer, createFilmsCountTemplate(cards.length));
