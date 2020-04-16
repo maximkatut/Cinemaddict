@@ -14,6 +14,7 @@ import {createFilmsCountTemplate} from "./components/films-count.js";
 import {generateCards} from "./mock/card.js";
 import {generateFilters} from "./mock/navigation.js";
 import {selectMostCommentedCards, selectTopCards} from "./utils/cardsSelector.js";
+import {RenderPosition, render} from "./utils/render.js";
 
 // CONSTANTS
 const CARDS_COUNT = 25;
