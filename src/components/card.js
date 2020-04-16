@@ -1,3 +1,5 @@
+import {createElement} from "../utils/render.js";
+
 export const createFilmCardTemplate = (card) => {
   const {name, rating, releaseDate, duration, genre, poster, description, comments, isInWatchlist, isWatched, isFavorite} = card;
   const releaseYear = releaseDate.getFullYear();
@@ -24,3 +26,25 @@ export const createFilmCardTemplate = (card) => {
       </form>
     </article>`);
 };
+
+export default class Card {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,4 @@
+import {createElement} from "../utils/render.js";
 import {RANK_NAMES} from "../const.js";
 
 const createProfileMarkup = (count) => {
@@ -17,10 +18,32 @@ const createProfileMarkup = (count) => {
   return `<p class="profile__rating">${rank}</p>`;
 };
 
-export const createProfileTemplate = (navigationFilters) => {
+const createProfileTemplate = (count) => {
   return (`
     <section class="header__profile profile">
-    ${createProfileMarkup(navigationFilters)}
+    ${createProfileMarkup(count)}
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>`);
 };
+
+export default class Profile {
+  constructor(count) {
+    this._count = count;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileTemplate(this._count);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

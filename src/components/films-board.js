@@ -1,4 +1,5 @@
-export const createFilmsListsBoardTemplate = () => {
+import {createElement} from "../utils/render.js";
+const createFilmsListsBoardTemplate = () => {
   return (`
     <section class="films">
       <section class="films-list">
@@ -8,3 +9,24 @@ export const createFilmsListsBoardTemplate = () => {
       </section>
     </section>`);
 };
+
+export default class FilmsBoard {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmsListsBoardTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
