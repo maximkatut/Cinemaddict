@@ -1,10 +1,11 @@
-export const createPopupControlsTemplate = (card) => {
+import {createElement} from "../utils/render.js";
+
+const createPopupControlsTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
   const checkIsActive = (statement) => {
     return statement ? `checked` : ``;
   };
-  return (`
-    <section class="film-details__controls">
+  return (`<section class="film-details__controls">
     <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${checkIsActive(isInWatchlist)}>
     <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
@@ -15,3 +16,24 @@ export const createPopupControlsTemplate = (card) => {
     <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
   </section>`);
 };
+export default class PopupControls {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupControlsTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

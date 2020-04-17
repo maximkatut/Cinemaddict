@@ -1,6 +1,7 @@
 import {formatDate} from "../utils/format.js";
+import {createElement} from "../utils/render.js";
 
-export const createPopupInfoTemplate = (card) => {
+const createPopupInfoTemplate = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
   const formatReleaseDate = formatDate(releaseDate);
 
@@ -12,8 +13,7 @@ export const createPopupInfoTemplate = (card) => {
     return createPopupGenreMarkup(it);
   }).join(`\n`);
 
-  return (`
-  <div class="film-details__info-wrap">
+  return (`<div class="film-details__info-wrap">
     <div class="film-details__poster">
       <img class="film-details__poster-img" src="${poster}" alt="">
 
@@ -70,3 +70,24 @@ export const createPopupInfoTemplate = (card) => {
     </div>
   </div>`);
 };
+export default class PopupInfo {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupInfoTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

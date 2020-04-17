@@ -1,11 +1,11 @@
+import {createElement} from "../utils/render.js";
 import {formatTime, formatSlashDate} from "../utils/format.js";
 
 const createCommentsMarkup = (comment) => {
   const {content, author, date, emoji} = comment;
 
   const formatedDate = `${formatSlashDate(date)} ${formatTime(date)}`;
-  return `
-  <li class="film-details__comment">
+  return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="${emoji}" width="55" height="55" alt="emoji-smile">
     </span>
@@ -20,10 +20,9 @@ const createCommentsMarkup = (comment) => {
   </li>`;
 };
 
-export const createPopupCommentsTemplate = (comments) => {
+const createPopupCommentsTemplate = (comments) => {
   const commentsMarkup = comments.map((it) => createCommentsMarkup(it)).join(`\n`);
-  return (`
-    <div class="form-details__bottom-container">
+  return (`<div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
@@ -63,3 +62,25 @@ export const createPopupCommentsTemplate = (comments) => {
       </section>
     </div>`);
 };
+
+export default class PopupComments {
+  constructor(comments) {
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupCommentsTemplate(this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

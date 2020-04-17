@@ -14,6 +14,7 @@ export const selectMostCommentedCards = (cards) => {
   }
 
   return cards
+    .slice()
     .sort((leftCard, rightCard) => rightCard.comments.length - leftCard.comments.length)
     .slice(0, 2)
     .filter((card) => card.comments.length > 0);
@@ -33,6 +34,7 @@ export const selectTopCards = (cards) => {
   }
 
   return cards
+    .slice()
     .sort((leftCard, rightCard) => {
       return rightCard.rating - leftCard.rating;
     })
