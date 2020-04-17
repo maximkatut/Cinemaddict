@@ -24,33 +24,8 @@ const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
 const renderCard = (cardListElement, card) => {
 // Handler for each filmCard to open popup
   const onOpenPopupClick = () => {
-    // Handler to close popup with ESC
-    const onEscKeydown = (evt) => {
-      const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
-      if (isEscapeKey) {
-        popupBoardElement.remove();
-      }
-      document.removeEventListener(`keydown`, onEscKeydown);
-    };
-    // Handler to close popup with click on cross button
-    const onCloseButtonClick = () => {
-      popupBoardElement.remove();
-    };
     // Render popup of active filmcard
-    const popupBoardComponent = new PopupBoardComponent();
-    const popupBoardElement = popupBoardComponent.getElement();
-    const sitePopupContainer = popupBoardElement.querySelector(`.form-details__top-container`);
-    const sitePopupCommentsContainer = popupBoardElement.querySelector(`.film-details__inner`);
-    const closeButton = sitePopupContainer.querySelector(`.film-details__close`);
-
-    render(siteBodyElement, popupBoardElement, RenderPosition.BEFOREEND);
-    render(sitePopupContainer, new PopupInfoComponent(card).getElement(), RenderPosition.BEFOREEND);
-    render(sitePopupContainer, new PopupControlsComponent(card).getElement(), RenderPosition.BEFOREEND);
-    render(sitePopupCommentsContainer, new PopupCommentsComponent(card.comments).getElement(), RenderPosition.BEFOREEND);
-
-    closeButton.addEventListener(`click`, onCloseButtonClick);
-    document.addEventListener(`keydown`, onEscKeydown);
-
+    renderPopup(card);
   };
   // Rendering the actual card
   const cardComponent = new CardComponent(card);
@@ -63,11 +38,38 @@ const renderCard = (cardListElement, card) => {
   cardTitleElement.addEventListener(`click`, onOpenPopupClick);
   cardCommentsElement.addEventListener(`click`, onOpenPopupClick);
 };
+// Rendering popup function
+const renderPopup = (card) => {
+  // Handler to close popup with ESC
+  const onKeyDown = (evt) => {
+    const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
+    if (isEscapeKey) {
+      popupBoardElement.remove();
+    }
+    document.removeEventListener(`keydown`, onKeyDown);
+  };
+  // Handler to close popup with click on cross button
+  const onCloseButtonClick = () => {
+    popupBoardElement.remove();
+  };
+  const popupBoardComponent = new PopupBoardComponent();
+  const popupBoardElement = popupBoardComponent.getElement();
+  const sitePopupContainer = popupBoardElement.querySelector(`.form-details__top-container`);
+  const sitePopupCommentsContainer = popupBoardElement.querySelector(`.film-details__inner`);
+  const closeButton = sitePopupContainer.querySelector(`.film-details__close`);
+
+  render(siteBodyElement, popupBoardElement, RenderPosition.BEFOREEND);
+  render(sitePopupContainer, new PopupInfoComponent(card).getElement(), RenderPosition.BEFOREEND);
+  render(sitePopupContainer, new PopupControlsComponent(card).getElement(), RenderPosition.BEFOREEND);
+  render(sitePopupCommentsContainer, new PopupCommentsComponent(card.comments).getElement(), RenderPosition.BEFOREEND);
+
+  closeButton.addEventListener(`click`, onCloseButtonClick);
+  document.addEventListener(`keydown`, onKeyDown);
+};
 // Rendering board function
-const renderFilmsBoard = (filmsBoardComponent, cards) => {
-  render(siteMainElement, filmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
-  const siteFilmsListContainerElement = filmsBoardComponent.getElement().querySelector(`.films-list__container`);
-  const siteFilmsListElement = filmsBoardComponent.getElement().querySelector(`.films-list`);
+const renderFilmsBoard = (filmsBoardElement, cards) => {
+  const siteFilmsListContainerElement = filmsBoardElement.querySelector(`.films-list__container`);
+  const siteFilmsListElement = filmsBoardElement.querySelector(`.films-list`);
   // Render LoadMoreButton
   render(siteFilmsListElement, new MoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
   const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
@@ -95,17 +97,15 @@ const renderFilmsBoard = (filmsBoardComponent, cards) => {
   });
 };
 // Rendering topFilms and board function
-const renderTopFilmsBoard = (topFilmsBoardComponent, topRatedCards) => {
-  render(siteFilmsElement, topFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
-  const siteTopFilmsListContainer = topFilmsBoardComponent.getElement().querySelector(`.films-list__container`);
+const renderTopFilmsBoard = (topFilmsBoardElement, topRatedCards) => {
+  const siteTopFilmsListContainer = topFilmsBoardElement.querySelector(`.films-list__container`);
   topRatedCards.forEach((card) => {
     renderCard(siteTopFilmsListContainer, card);
   });
 };
 // Rendering mostCommentedFilms and board function
-const renderMostCommentedFilmsBoard = (mostCommentedFilmsBoardComponent, mostCommentedCards) => {
-  render(siteFilmsElement, mostCommentedFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
-  const siteMostCommentedFilmsListContainer = mostCommentedFilmsBoardComponent.getElement().querySelector(`.films-list__container`);
+const renderMostCommentedFilmsBoard = (mostCommentedFilmsBoardElement, mostCommentedCards) => {
+  const siteMostCommentedFilmsListContainer = mostCommentedFilmsBoardElement.querySelector(`.films-list__container`);
   mostCommentedCards.forEach((card) => {
     renderCard(siteMostCommentedFilmsListContainer, card);
   });
@@ -125,18 +125,25 @@ const siteMainElement = document.querySelector(`.main`);
 render(siteHeaderElement, new ProfileComponent(watchedFilmsCount).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new NavigationComponent(navigationFilters).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-// Render main filmsList
-renderFilmsBoard(new FilmsBoardComponent(), cards);
+
+const filmsBoardComponent = new FilmsBoardComponent();
+render(siteMainElement, filmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
+// Render main filmsList with cards
+renderFilmsBoard(filmsBoardComponent.getElement(), cards);
 
 const siteFilmsElement = siteMainElement.querySelector(`.films`);
 
 // if topRatedCards or mostCommentedCards === 0 => do not render them
+const topFilmsBoardComponent = new TopFilmsBoardComponent();
+render(siteFilmsElement, topFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
 if (topRatedCards.length > 0) {
-  renderTopFilmsBoard(new TopFilmsBoardComponent(), topRatedCards);
+  renderTopFilmsBoard(topFilmsBoardComponent.getElement(), topRatedCards);
 }
 
+const mostCommentedFilmsBoardComponent = new MostCommentedFilmsBoardComponent();
+render(siteFilmsElement, mostCommentedFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
 if (mostCommentedCards.length > 0) {
-  renderMostCommentedFilmsBoard(new MostCommentedFilmsBoardComponent(), mostCommentedCards);
+  renderMostCommentedFilmsBoard(mostCommentedFilmsBoardComponent.getElement(), mostCommentedCards);
 }
 // Render count of all movies
 const siteCountStatisticsContainer = document.querySelector(`.footer__statistics`);
