@@ -13,8 +13,7 @@ const createPopupInfoTemplate = (card) => {
     return createPopupGenreMarkup(it);
   }).join(`\n`);
 
-  return (`
-  <div class="film-details__info-wrap">
+  return (`<div class="film-details__info-wrap">
     <div class="film-details__poster">
       <img class="film-details__poster-img" src="${poster}" alt="">
 

@@ -1,16 +1,17 @@
 import {createElement} from "../utils/render.js";
+
 const createFilmsCountTemplate = (length) => {
-  return `
-    <p>${length} movies inside</p>`;
+  return `<p>${length} movies inside</p>`;
 };
 
 export default class FilmsCount {
-  constructor() {
+  constructor(length) {
+    this._length = length;
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsCountTemplate();
+    return createFilmsCountTemplate(this._length);
   }
 
   getElement() {

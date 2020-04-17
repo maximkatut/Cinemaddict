@@ -5,8 +5,7 @@ const createPopupControlsTemplate = (card) => {
   const checkIsActive = (statement) => {
     return statement ? `checked` : ``;
   };
-  return (`
-    <section class="film-details__controls">
+  return (`<section class="film-details__controls">
     <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${checkIsActive(isInWatchlist)}>
     <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 

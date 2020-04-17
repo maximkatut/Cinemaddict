@@ -1,4 +1,5 @@
 import {createElement} from "../utils/render.js";
+
 const createNavigationMarkup = (filter) => {
   const {name, count, isActive} = filter;
   const hiddenClass = (count === 0) ? `visually-hidden` : ``;
@@ -10,8 +11,7 @@ const createNavigationTemplate = (filters) => {
   const navigationMarkup = filters.map((filter) => {
     return createNavigationMarkup(filter);
   }).join(`\n`);
-  return `
-    <nav class="main-navigation">
+  return `<nav class="main-navigation">
       <div class="main-navigation__items">
         ${navigationMarkup}
       </div>
