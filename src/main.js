@@ -80,7 +80,8 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
     return;
   }
   // Render LoadMoreButton
-  render(siteFilmsListElement, new MoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
+  const moreButtonComponent = new MoreButtonComponent();
+  render(siteFilmsListElement, moreButtonComponent.getElement(), RenderPosition.BEFOREEND);
   const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
 
   let showingCardsCount = CARDS_COUNT_ON_START;
@@ -91,6 +92,7 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
   const removeMoreButton = () => {
     if (showingCardsCount >= CARDS_COUNT) {
       moreButtonElement.remove();
+      moreButtonComponent.removeElement();
     }
   };
     // Remove moreButton if at the start has less than 5 cards
