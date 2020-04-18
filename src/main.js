@@ -75,33 +75,33 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
   // Check if cards.length === 0 do not render them and change the title
   if (cards.length === 0) {
     siteFilmsListElement.replaceChild(new NoCardsComponent().getElement(), siteFilmsListTitleElement);
-  } else {
+    return;
+  }
   // Render LoadMoreButton
-    render(siteFilmsListElement, new MoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
-    const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
+  render(siteFilmsListElement, new MoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
+  const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
 
-    let showingCardsCount = CARDS_COUNT_ON_START;
-    cards
+  let showingCardsCount = CARDS_COUNT_ON_START;
+  cards
   .slice(0, showingCardsCount)
   .forEach((card) => renderCard(siteFilmsListContainerElement, card));
 
-    const removeMoreButton = () => {
-      if (showingCardsCount >= CARDS_COUNT) {
-        moreButtonElement.remove();
-      }
-    };
+  const removeMoreButton = () => {
+    if (showingCardsCount >= CARDS_COUNT) {
+      moreButtonElement.remove();
+    }
+  };
     // Remove moreButton if at the start has less than 5 cards
-    removeMoreButton();
-    // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
-    moreButtonElement.addEventListener(`click`, () => {
-      const showedCardsCount = showingCardsCount;
-      showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
-      cards
+  removeMoreButton();
+  // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
+  moreButtonElement.addEventListener(`click`, () => {
+    const showedCardsCount = showingCardsCount;
+    showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
+    cards
     .slice(showedCardsCount, showingCardsCount)
     .forEach((card) => renderCard(siteFilmsListContainerElement, card));
-      removeMoreButton();
-    });
-  }
+    removeMoreButton();
+  });
 };
 // Rendering topFilms and board function
 const renderTopFilmsBoard = (topFilmsBoardElement, topRatedCards) => {
