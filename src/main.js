@@ -46,12 +46,14 @@ const renderPopup = (card) => {
     const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
     if (isEscapeKey) {
       popupBoardElement.remove();
+      popupBoardComponent.removeElement();
     }
     document.removeEventListener(`keydown`, onKeyDown);
   };
   // Handler to close popup with click on cross button
   const onCloseButtonClick = () => {
     popupBoardElement.remove();
+    popupBoardComponent.removeElement();
   };
   const popupBoardComponent = new PopupBoardComponent();
   const popupBoardElement = popupBoardComponent.getElement();
