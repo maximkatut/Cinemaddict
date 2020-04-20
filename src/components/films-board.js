@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 
 const createFilmsListsBoardTemplate = () => {
   return (`<section class="films">
@@ -10,23 +10,8 @@ const createFilmsListsBoardTemplate = () => {
     </section>`);
 };
 
-export default class FilmsBoard {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsBoard extends AbstactComponent {
   getTemplate() {
     return createFilmsListsBoardTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

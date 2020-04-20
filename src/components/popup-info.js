@@ -1,5 +1,5 @@
 import {formatDate} from "../utils/format.js";
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 
 const createPopupInfoTemplate = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
@@ -70,24 +70,13 @@ const createPopupInfoTemplate = (card) => {
     </div>
   </div>`);
 };
-export default class PopupInfo {
+export default class PopupInfo extends AbstactComponent {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupInfoTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

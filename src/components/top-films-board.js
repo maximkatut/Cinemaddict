@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 
 const createTopFilmsListsBoardTemplate = () => {
   return `<section class="films-list--extra films-list--top-rated">
@@ -8,23 +8,8 @@ const createTopFilmsListsBoardTemplate = () => {
     </section>`;
 };
 
-export default class TopFilmsBoard {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TopFilmsBoard extends AbstactComponent {
   getTemplate() {
     return createTopFilmsListsBoardTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 
 const createPopupControlsTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
@@ -16,24 +16,13 @@ const createPopupControlsTemplate = (card) => {
     <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
   </section>`);
 };
-export default class PopupControls {
+export default class PopupControls extends AbstactComponent {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupControlsTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

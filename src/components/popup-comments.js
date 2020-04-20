@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 import {formatTime, formatSlashDate} from "../utils/format.js";
 
 const createCommentsMarkup = (comment) => {
@@ -63,24 +63,13 @@ const createPopupCommentsTemplate = (comments) => {
     </div>`);
 };
 
-export default class PopupComments {
+export default class PopupComments extends AbstactComponent {
   constructor(comments) {
+    super();
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupCommentsTemplate(this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 
 const createMostCommentedFilmsListsBoardTemplate = () => {
   return (`<section class="films-list--extra films-list--most-commented">
@@ -8,23 +8,8 @@ const createMostCommentedFilmsListsBoardTemplate = () => {
     </section>`);
 };
 
-export default class MostCommentedFilmsBoard {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MostCommentedFilmsBoard extends AbstactComponent {
   getTemplate() {
     return createMostCommentedFilmsListsBoardTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
