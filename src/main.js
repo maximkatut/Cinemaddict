@@ -15,7 +15,7 @@ import NoCardsComponent from "./components/no-cards.js";
 import {generateCards} from "./mock/card.js";
 import {generateFilters} from "./mock/navigation.js";
 import {selectMostCommentedCards, selectTopCards} from "./utils/cardsSelector.js";
-import {RenderPosition, render} from "./utils/render.js";
+import {RenderPosition, render, remove} from "./utils/render.js";
 
 // CONSTANTS
 const CARDS_COUNT = 25;
@@ -30,7 +30,7 @@ const renderCard = (cardListElement, card) => {
   };
   // Rendering the actual card
   const cardComponent = new CardComponent(card);
-  render(cardListElement, cardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(cardListElement, cardComponent, RenderPosition.BEFOREEND);
   // Add listeners for poster, name and comments to open popup
   const cardPosterElement = cardComponent.getElement().querySelector(`.film-card__poster`);
   const cardTitleElement = cardComponent.getElement().querySelector(`.film-card__title`);
@@ -45,15 +45,13 @@ const renderPopup = (card) => {
   const onKeyDown = (evt) => {
     const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
     if (isEscapeKey) {
-      popupBoardElement.remove();
-      popupBoardComponent.removeElement();
+      remove(popupBoardComponent);
     }
     document.removeEventListener(`keydown`, onKeyDown);
   };
   // Handler to close popup with click on cross button
   const onCloseButtonClick = () => {
-    popupBoardElement.remove();
-    popupBoardComponent.removeElement();
+    remove(popupBoardComponent);
   };
   const popupBoardComponent = new PopupBoardComponent();
   const popupBoardElement = popupBoardComponent.getElement();
@@ -61,10 +59,10 @@ const renderPopup = (card) => {
   const sitePopupCommentsContainer = popupBoardElement.querySelector(`.film-details__inner`);
   const closeButton = sitePopupContainer.querySelector(`.film-details__close`);
 
-  render(siteBodyElement, popupBoardElement, RenderPosition.BEFOREEND);
-  render(sitePopupContainer, new PopupInfoComponent(card).getElement(), RenderPosition.BEFOREEND);
-  render(sitePopupContainer, new PopupControlsComponent(card).getElement(), RenderPosition.BEFOREEND);
-  render(sitePopupCommentsContainer, new PopupCommentsComponent(card.comments).getElement(), RenderPosition.BEFOREEND);
+  render(siteBodyElement, popupBoardComponent, RenderPosition.BEFOREEND);
+  render(sitePopupContainer, new PopupInfoComponent(card), RenderPosition.BEFOREEND);
+  render(sitePopupContainer, new PopupControlsComponent(card), RenderPosition.BEFOREEND);
+  render(sitePopupCommentsContainer, new PopupCommentsComponent(card.comments), RenderPosition.BEFOREEND);
 
   closeButton.addEventListener(`click`, onCloseButtonClick);
   document.addEventListener(`keydown`, onKeyDown);
@@ -81,7 +79,7 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
   }
   // Render LoadMoreButton
   const moreButtonComponent = new MoreButtonComponent();
-  render(siteFilmsListElement, moreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteFilmsListElement, moreButtonComponent, RenderPosition.BEFOREEND);
   const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
 
   let showingCardsCount = CARDS_COUNT_ON_START;
@@ -91,8 +89,7 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
 
   const removeMoreButton = () => {
     if (showingCardsCount >= CARDS_COUNT) {
-      moreButtonElement.remove();
-      moreButtonComponent.removeElement();
+      remove(moreButtonComponent);
     }
   };
     // Remove moreButton if at the start has less than 5 cards
@@ -133,12 +130,12 @@ const siteBodyElement = document.querySelector(`body`);
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 // Render profile, navigation(filters) and sorting menu
-render(siteHeaderElement, new ProfileComponent(watchedFilmsCount).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new NavigationComponent(navigationFilters).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new ProfileComponent(watchedFilmsCount), RenderPosition.BEFOREEND);
+render(siteMainElement, new NavigationComponent(navigationFilters), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortComponent(), RenderPosition.BEFOREEND);
 
 const filmsBoardComponent = new FilmsBoardComponent();
-render(siteMainElement, filmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, filmsBoardComponent, RenderPosition.BEFOREEND);
 // Render main filmsList with cards
 renderFilmsBoard(filmsBoardComponent.getElement(), cards);
 
@@ -147,15 +144,15 @@ const siteFilmsElement = siteMainElement.querySelector(`.films`);
 // if topRatedCards or mostCommentedCards === 0 => do not render them
 if (topRatedCards.length > 0) {
   const topFilmsBoardComponent = new TopFilmsBoardComponent();
-  render(siteFilmsElement, topFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteFilmsElement, topFilmsBoardComponent, RenderPosition.BEFOREEND);
   renderTopFilmsBoard(topFilmsBoardComponent.getElement(), topRatedCards);
 }
 
 if (mostCommentedCards.length > 0) {
   const mostCommentedFilmsBoardComponent = new MostCommentedFilmsBoardComponent();
-  render(siteFilmsElement, mostCommentedFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteFilmsElement, mostCommentedFilmsBoardComponent, RenderPosition.BEFOREEND);
   renderMostCommentedFilmsBoard(mostCommentedFilmsBoardComponent.getElement(), mostCommentedCards);
 }
 // Render count of all movies
 const siteCountStatisticsContainer = document.querySelector(`.footer__statistics`);
-render(siteCountStatisticsContainer, new FilmsCountComponent(cards.length).getElement(), RenderPosition.BEFOREEND);
+render(siteCountStatisticsContainer, new FilmsCountComponent(cards.length), RenderPosition.BEFOREEND);
