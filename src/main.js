@@ -41,6 +41,11 @@ const renderCard = (cardListElement, card) => {
 };
 // Rendering popup function
 const renderPopup = (card) => {
+  // Check if popup allready open
+  let popupBoardComponent = document.querySelector(`.film-details`);
+  if (popupBoardComponent) {
+    popupBoardComponent.remove();
+  }
   // Handler to close popup with ESC
   const onKeyDown = (evt) => {
     const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
@@ -53,7 +58,7 @@ const renderPopup = (card) => {
   const onCloseButtonClick = () => {
     remove(popupBoardComponent);
   };
-  const popupBoardComponent = new PopupBoardComponent();
+  popupBoardComponent = new PopupBoardComponent();
   const popupBoardElement = popupBoardComponent.getElement();
   const sitePopupContainer = popupBoardElement.querySelector(`.form-details__top-container`);
   const sitePopupCommentsContainer = popupBoardElement.querySelector(`.film-details__inner`);
