@@ -37,9 +37,7 @@ export default class PageController {
       const cardComponent = new CardComponent(card);
       render(cardListElement, cardComponent, RenderPosition.BEFOREEND);
       // Add listeners for poster, name and comments to open popup
-      cardComponent.setOpenPopupOnPosterClickHandler(onOpenPopupClick);
-      cardComponent.setOpenPopupOnNameClickHandler(onOpenPopupClick);
-      cardComponent.setOpenPopupOnCommentsClickHandler(onOpenPopupClick);
+      cardComponent.setOpenPopupHandler(onOpenPopupClick);
     };
       // Rendering popup function
     const renderPopup = (card) => {
