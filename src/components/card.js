@@ -35,4 +35,16 @@ export default class Card extends AbstactComponent {
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
+
+  setOpenPopupOnPosterClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
+  }
+
+  setOpenPopupOnNameClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, handler);
+  }
+
+  setOpenPopupOnCommentsClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
+  }
 }

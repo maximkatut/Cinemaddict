@@ -16,4 +16,8 @@ export default class PopupBoard extends AbstactComponent {
   getTemplate() {
     return createPopupBoardTemplate();
   }
+
+  setClosePopupClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close`).addEventListener(`click`, handler);
+  }
 }
