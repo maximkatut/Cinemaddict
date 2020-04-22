@@ -11,6 +11,7 @@ import PopupInfoComponent from "./components/popup-info.js";
 import PopupControlsComponent from "./components/popup-controls.js";
 import PopupCommentsComponent from "./components/popup-comments.js";
 import FilmsCountComponent from "./components/films-count.js";
+import NoCardsComponent from "./components/no-cards.js";
 import {generateCards} from "./mock/card.js";
 import {generateFilters} from "./mock/navigation.js";
 import {selectMostCommentedCards, selectTopCards} from "./utils/cardsSelector.js";
@@ -45,12 +46,14 @@ const renderPopup = (card) => {
     const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
     if (isEscapeKey) {
       popupBoardElement.remove();
+      popupBoardComponent.removeElement();
     }
     document.removeEventListener(`keydown`, onKeyDown);
   };
   // Handler to close popup with click on cross button
   const onCloseButtonClick = () => {
     popupBoardElement.remove();
+    popupBoardComponent.removeElement();
   };
   const popupBoardComponent = new PopupBoardComponent();
   const popupBoardElement = popupBoardComponent.getElement();
@@ -70,9 +73,15 @@ const renderPopup = (card) => {
 const renderFilmsBoard = (filmsBoardElement, cards) => {
   const siteFilmsListContainerElement = filmsBoardElement.querySelector(`.films-list__container`);
   const siteFilmsListElement = filmsBoardElement.querySelector(`.films-list`);
+  const siteFilmsListTitleElement = siteFilmsListElement.querySelector(`.films-list__title`);
+  // Check if cards.length === 0 do not render them and change the title
+  if (cards.length === 0) {
+    siteFilmsListElement.replaceChild(new NoCardsComponent().getElement(), siteFilmsListTitleElement);
+    return;
+  }
   // Render LoadMoreButton
-  render(siteFilmsListElement, new MoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
-  const moreButtonElement = siteFilmsListElement.querySelector(`.films-list__show-more`);
+  const moreButtonComponent = new MoreButtonComponent();
+  render(siteFilmsListElement, moreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
   let showingCardsCount = CARDS_COUNT_ON_START;
   cards
@@ -81,13 +90,14 @@ const renderFilmsBoard = (filmsBoardElement, cards) => {
 
   const removeMoreButton = () => {
     if (showingCardsCount >= CARDS_COUNT) {
-      moreButtonElement.remove();
+      moreButtonComponent.getElement().remove();
+      moreButtonComponent.removeElement();
     }
   };
-  // Remove moreButton if at the start has less than 5 cards
+    // Remove moreButton if at the start has less than 5 cards
   removeMoreButton();
   // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
-  moreButtonElement.addEventListener(`click`, () => {
+  moreButtonComponent.getElement().addEventListener(`click`, () => {
     const showedCardsCount = showingCardsCount;
     showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
     cards
@@ -134,15 +144,15 @@ renderFilmsBoard(filmsBoardComponent.getElement(), cards);
 const siteFilmsElement = siteMainElement.querySelector(`.films`);
 
 // if topRatedCards or mostCommentedCards === 0 => do not render them
-const topFilmsBoardComponent = new TopFilmsBoardComponent();
-render(siteFilmsElement, topFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
 if (topRatedCards.length > 0) {
+  const topFilmsBoardComponent = new TopFilmsBoardComponent();
+  render(siteFilmsElement, topFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
   renderTopFilmsBoard(topFilmsBoardComponent.getElement(), topRatedCards);
 }
 
-const mostCommentedFilmsBoardComponent = new MostCommentedFilmsBoardComponent();
-render(siteFilmsElement, mostCommentedFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
 if (mostCommentedCards.length > 0) {
+  const mostCommentedFilmsBoardComponent = new MostCommentedFilmsBoardComponent();
+  render(siteFilmsElement, mostCommentedFilmsBoardComponent.getElement(), RenderPosition.BEFOREEND);
   renderMostCommentedFilmsBoard(mostCommentedFilmsBoardComponent.getElement(), mostCommentedCards);
 }
 // Render count of all movies
