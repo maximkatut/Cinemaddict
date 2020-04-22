@@ -1,17 +1,11 @@
 import AbstactComponent from "./abstract-component.js";
 
-const createFilmsListsBoardTemplate = () => {
-  return (`<section class="films">
-      <section class="films-list">
-        <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-        <div class="films-list__container">
-        </div>
-      </section>
-    </section>`);
+const createFilmsBoardTemplate = () => {
+  return `<section class="films"></section>`;
 };
 
 export default class FilmsBoard extends AbstactComponent {
   getTemplate() {
-    return createFilmsListsBoardTemplate();
+    return createFilmsBoardTemplate();
   }
 }
