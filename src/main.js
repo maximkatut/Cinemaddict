@@ -9,7 +9,7 @@ import {generateFilters} from "./mock/navigation.js";
 import {RenderPosition, render} from "./utils/render.js";
 
 // CONSTANTS
-const CARDS_COUNT = 12025;
+const CARDS_COUNT = 25;
 // Variables
 const cards = generateCards(CARDS_COUNT);
 const navigationFilters = generateFilters(cards);
