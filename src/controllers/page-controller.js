@@ -130,7 +130,7 @@ export default class PageController {
         removeMoreButton();
       });
     }
-
+    // set listener for changing sorting type
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
       this._mainFilmsListComponent.getListInnerElement().innerHTML = ``;
       const sortedCards = getSortedCards(cards, sortType, 0, this._showingCardsCount);
