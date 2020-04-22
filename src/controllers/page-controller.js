@@ -3,7 +3,6 @@ import FilmsListComponent from "../components/films-list.js";
 import MoreButtonComponent from "../components/more-button.js";
 import PopupBoardComponent from "../components/popup-board.js";
 import PopupInfoComponent from "../components/popup-info.js";
-import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsComponent from "../components/popup-comments.js";
 import {selectMostCommentedCards, selectTopCards} from "../utils/cardsSelector.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
@@ -12,6 +11,7 @@ export default class PageController {
   constructor(container) {
     this._container = container;
 
+    this._isPopupOpen = false;
     this._mainFilmsListComponent = new FilmsListComponent(`All movies. Upcoming`, false, false);
     this._mainNoFilmsListComponent = new FilmsListComponent(`There are no movies in our database`, true, false);
     this._topFilmsListComponent = new FilmsListComponent(`Top rated`, true, true);
@@ -24,8 +24,6 @@ export default class PageController {
   render(cards) {
     const CARDS_COUNT_ON_START = 5;
     const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
-
-    const container = this._container.getElement();
 
     // Rendering card function
     const renderCard = (cardsListElement, card) => {
@@ -43,10 +41,11 @@ export default class PageController {
       // Rendering popup function
     const renderPopup = (card) => {
       // Check if popup allready open than remove it
-      let popupBoardElement = document.querySelector(`.film-details`);
-      if (popupBoardElement) {
+      if (this._isPopupOpen) {
         remove(this._popupBoardComponent);
       }
+      // Change the flag when popup gonna be open
+      this._isPopupOpen = true;
       // Handler to close popup with ESC
       const onKeyDown = (evt) => {
         const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
@@ -59,18 +58,15 @@ export default class PageController {
       const onCloseButtonClick = () => {
         remove(this._popupBoardComponent);
       };
-
-      popupBoardElement = this._popupBoardComponent.getElement();
-      const sitePopupContainer = popupBoardElement.querySelector(`.form-details__top-container`);
-      const sitePopupCommentsContainer = popupBoardElement.querySelector(`.film-details__inner`);
+      // Find body element for rendering popup card
       const siteBodyElement = document.querySelector(`body`);
+      const popupInfoComponent = new PopupInfoComponent(card);
 
       render(siteBodyElement, this._popupBoardComponent, RenderPosition.BEFOREEND);
-      render(sitePopupContainer, new PopupInfoComponent(card), RenderPosition.BEFOREEND);
-      render(sitePopupContainer, new PopupControlsComponent(card), RenderPosition.BEFOREEND);
-      render(sitePopupCommentsContainer, new PopupCommentsComponent(card.comments), RenderPosition.BEFOREEND);
-
-      this._popupBoardComponent.setClosePopupClickHandler(onCloseButtonClick);
+      render(this._popupBoardComponent.getBoardInnerElement(), popupInfoComponent, RenderPosition.BEFOREEND);
+      render(this._popupBoardComponent.getBoardInnerElement(), new PopupCommentsComponent(card.comments), RenderPosition.BEFOREEND);
+      // set click event for popup close button and Esc key
+      popupInfoComponent.setClosePopupClickHandler(onCloseButtonClick);
       document.addEventListener(`keydown`, onKeyDown);
     };
     // Rendering board function
@@ -125,6 +121,8 @@ export default class PageController {
         });
       }
     };
+
+    const container = this._container.getElement();
 
     const topRatedCards = selectTopCards(cards);
     const mostCommentedCards = selectMostCommentedCards(cards);
