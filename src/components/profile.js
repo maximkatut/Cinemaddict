@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import AbstactComponent from "./abstract-component.js";
 import {RANK_NAMES} from "../const.js";
 
 const createProfileMarkup = (count) => {
@@ -25,24 +25,13 @@ const createProfileTemplate = (count) => {
     </section>`);
 };
 
-export default class Profile {
+export default class Profile extends AbstactComponent {
   constructor(count) {
+    super();
     this._count = count;
-    this._element = null;
   }
 
   getTemplate() {
     return createProfileTemplate(this._count);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
