@@ -99,6 +99,6 @@ export default class PopupInfo extends AbstactComponent {
   }
 
   setClosePopupClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__close`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
 }
