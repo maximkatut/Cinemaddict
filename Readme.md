@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 - Студент: [Maksim Baravy](https://up.htmlacademy.ru/ecmascript/11/user/388127).
-- Наставник: [Андрей Слесаренко](https://htmlacademy.ru/profile/swen).
+- Наставник: [Илья Столбов](https://htmlacademy.ru/profile/id1441009).
 
 ---
 
