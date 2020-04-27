@@ -57,12 +57,6 @@ export default class CardController {
   }
 
   _renderPopup() {
-    // Check if popup allready open than remove it
-    if (this._isPopupOpen) { // Doesn't work!!!!!!!
-      remove(this._popupBoardComponent);
-    }
-    // Change the flag when popup gonna be open
-    this._isPopupOpen = true;
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     this._popupBoardComponent = new PopupBoardComponent();
