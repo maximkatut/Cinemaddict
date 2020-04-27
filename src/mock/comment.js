@@ -33,7 +33,7 @@ const generateComment = () => {
     content: getRandomArrayItem(commentContents),
     author: getRandomArrayItem(commentAuthors),
     date: getRandomDate(),
-    emoji: `./images/emoji/${getRandomArrayItem(emojiNames)}.png`,
+    emoji: getRandomArrayItem(emojiNames),
   };
 };
 
