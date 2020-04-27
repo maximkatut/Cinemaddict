@@ -1,3 +1,4 @@
+import SortComponent, {SortType} from "../components/sort.js";
 import CardComponent from "../components/card.js";
 import FilmsListComponent from "../components/films-list.js";
 import MoreButtonComponent from "../components/more-button.js";
@@ -7,23 +8,45 @@ import PopupCommentsComponent from "../components/popup-comments.js";
 import {selectMostCommentedCards, selectTopCards} from "../utils/cardsSelector.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
+const CARDS_COUNT_ON_START = 5;
+const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
+
+const getSortedCards = (cards, sortType, from, to) => {
+  let sortedCards = [];
+  const showingCards = cards.slice();
+
+  switch (sortType) {
+    case SortType.DATE:
+      sortedCards = showingCards.sort((leftCard, rightCard) => rightCard.releaseDate - leftCard.releaseDate);
+      break;
+    case SortType.RATING:
+      sortedCards = showingCards.sort((leftCard, rightCard) => rightCard.rating - leftCard.rating);
+      break;
+    case SortType.DEFAULT:
+      sortedCards = showingCards;
+      break;
+  }
+
+  return sortedCards.slice(from, to);
+};
+
 export default class PageController {
   constructor(container) {
     this._container = container;
 
     this._isPopupOpen = false;
+    this._sortComponent = new SortComponent();
     this._mainFilmsListComponent = new FilmsListComponent(`All movies. Upcoming`, false, false);
     this._topFilmsListComponent = new FilmsListComponent(`Top rated`, true, true);
     this._mostCommentedFilmsListComponent = new FilmsListComponent(`Most commented`, true, true);
 
     this._popupBoardComponent = new PopupBoardComponent();
     this._moreButtonComponent = new MoreButtonComponent();
+
+    this._showingCardsCount = CARDS_COUNT_ON_START;
   }
 
   render(cards) {
-    const CARDS_COUNT_ON_START = 5;
-    const CARDS_COUNT_LOAD_MORE_BUTTON = 5;
-
     // Rendering card function
     const renderCard = (cardsListElement, card) => {
       // Handler for each filmCard to open popup
@@ -88,11 +111,10 @@ export default class PageController {
       // Render LoadMoreButtonComponent
       render(this._mainFilmsListComponent.getElement(), this._moreButtonComponent, RenderPosition.BEFOREEND);
       // render cards
-      let showingCardsCount = CARDS_COUNT_ON_START;
-      renderCards(this._mainFilmsListComponent.getListInnerElement(), cards.slice(0, showingCardsCount));
+      renderCards(this._mainFilmsListComponent.getListInnerElement(), cards.slice(0, this._showingCardsCount));
       // removeMoreButton function if no more cards hidden
       const removeMoreButton = () => {
-        if (showingCardsCount >= cards.length) {
+        if (this._showingCardsCount >= cards.length) {
           remove(this._moreButtonComponent);
         }
       };
@@ -101,13 +123,19 @@ export default class PageController {
 
       // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
       this._moreButtonComponent.setClickHandler(() => {
-        const showedCardsCount = showingCardsCount;
-        showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
-        renderCards(this._mainFilmsListComponent.getListInnerElement(), cards.slice(showedCardsCount, showingCardsCount));
+        const showedCardsCount = this._showingCardsCount;
+        this._showingCardsCount += CARDS_COUNT_LOAD_MORE_BUTTON;
+        renderCards(this._mainFilmsListComponent.getListInnerElement(), cards.slice(showedCardsCount, this._showingCardsCount));
+
         removeMoreButton();
       });
     }
-
+    // set listener for changing sorting type
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      this._mainFilmsListComponent.getListInnerElement().innerHTML = ``;
+      const sortedCards = getSortedCards(cards, sortType, 0, this._showingCardsCount);
+      renderCards(this._mainFilmsListComponent.getListInnerElement(), sortedCards.slice(0, this._showingCardsCount));
+    });
     // if topRatedCards or mostCommentedCards === 0 => do not render them
     // Render top rated films
     const topRatedCards = selectTopCards(cards);
@@ -121,5 +149,7 @@ export default class PageController {
       render(container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
       renderCards(this._mostCommentedFilmsListComponent.getListInnerElement(), mostCommentedCards);
     }
+    // Render sort menu
+    render(container.parentNode, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 }
