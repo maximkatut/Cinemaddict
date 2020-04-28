@@ -37,8 +37,8 @@ const createCommentsEmojiMarkup = (emoji) => {
 const createPopupCommentsTemplate = (comments) => {
   const commentsMarkup = comments.map((it) => createCommentsMarkup(it)).join(`\n`);
   const emojisMarkup = EmojiNames.map((it) => createCommentsEmojiMarkup(it)).join(`\n`);
-  return (`<div class="form-details__bottom-container">
-      <section class="film-details__comments-wrap">
+  return (
+    `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
@@ -57,8 +57,7 @@ const createPopupCommentsTemplate = (comments) => {
           ${emojisMarkup}
           </div>
         </div>
-      </section>
-    </div>`);
+      </section>`);
 };
 
 export default class PopupComments extends AbstactSmartComponent {

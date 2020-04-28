@@ -1,6 +1,5 @@
-import PopupInfoComponent from "../components/popup-info.js";
 import PopupCommentsComponent from "../components/popup-comments.js";
-import PopupBoardComponent from "../components/popup-board.js";
+import PopupComponent from "../components/popup.js";
 import CardComponent from "../components/card.js";
 
 import {RenderPosition, render, remove} from "../utils/render.js";
@@ -26,16 +25,14 @@ export default class CardController {
   render(card) {
     this._card = card;
     this._onViewChange();
-    // Handler for each filmCard to open popup
-    const onOpenPopupClick = () => {
-      // Render popup of active filmcard
-      this._renderPopup();
-    };
-      // Rendering the actual card
+    // Rendering the actual card
     this._cardComponent = new CardComponent(this._card);
     render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
     // Add listeners for poster, name and comments to open popup
-    this._cardComponent.setOpenPopupClickHandler(onOpenPopupClick);
+    this._cardComponent.setOpenPopupClickHandler(() => {
+      // Render popup of active filmcard
+      this._renderPopup();
+    });
     this._cardComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
@@ -59,26 +56,24 @@ export default class CardController {
   _renderPopup() {
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
-    this._popupBoardComponent = new PopupBoardComponent();
-    this._popupInfoComponent = new PopupInfoComponent(this._card);
+    this._popupComponent = new PopupComponent(this._card);
     this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
 
-    render(siteBodyElement, this._popupBoardComponent, RenderPosition.BEFOREEND);
-    render(this._popupBoardComponent.getBoardInnerElement(), this._popupInfoComponent, RenderPosition.BEFOREEND);
-    render(this._popupBoardComponent.getBoardInnerElement(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
+    render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
+    render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
     // set click event for popup close button and Esc key
-    this._popupInfoComponent.setClosePopupClickHandler(this._onCloseButtonClick);
-    this._popupInfoComponent.setWatchlistClickHandler(() => {
+    this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
+    this._popupComponent.setWatchlistClickHandler(() => {
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
         isInWatchlist: !this._card.isInWatchlist
       }));
     });
-    this._popupInfoComponent.setWatchedClickHandler(() => {
+    this._popupComponent.setWatchedClickHandler(() => {
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
         isWatched: !this._card.isWatched
       }));
     });
-    this._popupInfoComponent.setFavoriteClickHandler(() => {
+    this._popupComponent.setFavoriteClickHandler(() => {
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
         isFavorite: !this._card.isFavorite
       }));
@@ -96,8 +91,8 @@ export default class CardController {
   }
 
   setDefaultView() {
-    if (this._popupBoardComponent) {
-      remove(this._popupBoardComponent);
+    if (this._popupComponent) {
+      remove(this._popupComponent);
     }
   }
 
@@ -105,13 +100,13 @@ export default class CardController {
   _onKeyDown(evt) {
     const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
     if (isEscapeKey) {
-      remove(this._popupBoardComponent);
+      remove(this._popupComponent);
     }
     document.removeEventListener(`keydown`, this._onKeyDown);
   }
 
   // Handler to close popup with click on cross button
   _onCloseButtonClick() {
-    remove(this._popupBoardComponent);
+    remove(this._popupComponent);
   }
 }
