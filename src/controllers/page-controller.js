@@ -126,18 +126,17 @@ export default class PageController {
     this._renderLoadMoreButton();
   }
 
-  _onDataChange(cardController, oldCard, newCard) {
-    const index = this._cards.findIndex((it) => it === oldCard);
-    if (index === -1) {
+  _onDataChange(oldCard, newCard) {
+    const cardIndex = this._cards.findIndex((it) => it === oldCard);
+    const cardControllerIndex = this._showedCardControllers.findIndex((controller) => controller._card === oldCard);
+    if (cardIndex === -1) {
       return;
     }
-    this._cards = [].concat(this._cards.slice(0, index), newCard, this._cards.slice(index + 1));
-    // ??????????
-    cardController.render(this._cards[index]);
+    this._cards = [].concat(this._cards.slice(0, cardIndex), newCard, this._cards.slice(cardIndex + 1));
+    this._showedCardControllers[cardControllerIndex].render(this._cards[cardIndex]);
   }
 
   _onViewChange() {
-    new CardController().setDefaultView();
-    // как обратиться ко всем кард-контроллерам
+    this._showedCardControllers.forEach((it) => it.setDefaultView());
   }
 }
