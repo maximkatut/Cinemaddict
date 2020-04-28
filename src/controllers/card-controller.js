@@ -2,7 +2,7 @@ import PopupCommentsComponent from "../components/popup-comments.js";
 import PopupComponent from "../components/popup.js";
 import CardComponent from "../components/card.js";
 
-import {RenderPosition, render, remove} from "../utils/render.js";
+import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
 export default class CardController {
   constructor(container, onDataChange, onViewChange) {
@@ -24,15 +24,20 @@ export default class CardController {
 
   render(card) {
     this._card = card;
-    this._onViewChange();
-    // Rendering the actual card
+    // Rendering the actual card, if card allready exists than replace it
+    const oldCardComponent = this._cardComponent;
     this._cardComponent = new CardComponent(this._card);
-    render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+    if (oldCardComponent) {
+      replace(this._cardComponent, oldCardComponent);
+    } else {
+      render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+    }
     // Add listeners for poster, name and comments to open popup
     this._cardComponent.setOpenPopupClickHandler(() => {
       // Render popup of active filmcard
       this._renderPopup();
     });
+
     this._cardComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
@@ -54,6 +59,7 @@ export default class CardController {
   }
 
   _renderPopup() {
+    this._onViewChange();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     this._popupComponent = new PopupComponent(this._card);
@@ -63,6 +69,7 @@ export default class CardController {
     render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
+
     this._popupComponent.setWatchlistClickHandler(() => {
       this._onDataChange(this, this._card, Object.assign({}, this._card, {
         isInWatchlist: !this._card.isInWatchlist
