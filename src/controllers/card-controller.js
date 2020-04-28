@@ -19,7 +19,7 @@ export default class CardController {
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
 
-    this._emoji = ``;
+    this._selectedEmoji = ``;
   }
 
   render(card) {
@@ -89,8 +89,8 @@ export default class CardController {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
-      this._emoji = evt.target.value;
-      this._popupCommentsComponent.setNewCommentEmojiImg(this._emoji);
+      this._selectedEmoji = evt.target.value;
+      this._popupCommentsComponent.setNewCommentEmojiImg(this._selectedEmoji);
       this._popupCommentsComponent.rerender();
     });
 
