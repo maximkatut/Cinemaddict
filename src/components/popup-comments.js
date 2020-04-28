@@ -64,6 +64,7 @@ export default class PopupComments extends AbstactSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;
+    this._changeEmojiHandler = null;
 
     this.recoveryListeners();
   }
@@ -78,6 +79,7 @@ export default class PopupComments extends AbstactSmartComponent {
 
   setChangeEmojiClickHandler(handler) {
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, handler);
+    this._changeEmojiHandler = handler;
   }
 
   setNewCommentEmojiImg(emoji) {
@@ -88,6 +90,6 @@ export default class PopupComments extends AbstactSmartComponent {
   }
 
   recoveryListeners() {
-
+    this.setChangeEmojiClickHandler(this._changeEmojiHandler);
   }
 }
