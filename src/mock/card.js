@@ -68,13 +68,6 @@ const peopleNames = [
   `Alina Baravy`,
 ];
 
-const getRandomDurationInMinutes = (from, to) => {
-  const minutes = getRandomIntegerNumber(from, to);
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${h}h ${m}m`;
-};
-
 const generateCard = () => {
   return {
     poster: `./images/posters/${getRandomArrayItem(posterNames)}`,
@@ -85,7 +78,7 @@ const generateCard = () => {
     writers: getRandomArrayItems(peopleNames, 1, 3),
     actors: getRandomArrayItems(peopleNames, 1, 3),
     releaseDate: new Date(`${getRandomIntegerNumber(1920, 2020)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomIntegerNumber(1, 30)}`),
-    duration: getRandomDurationInMinutes(50, 150),
+    duration: getRandomIntegerNumber(50, 150),
     country: getRandomArrayItem(countryNames),
     genre: getRandomArrayItems(genreNames, 1, 3),
     description: getRandomArrayItems(descriptionSentences, 1, 5).join(` `),
