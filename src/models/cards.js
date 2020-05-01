@@ -18,12 +18,13 @@ export default class Cards {
     const index = this._cards.findIndex((it) => it.id === id);
 
     if (index === -1) {
-      return;
+      return false;
     }
 
     this._cards = [].concat(this._cards.slice(0, index), card, this._cards.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
+    return true;
   }
 
   _callHandlers(handlers) {

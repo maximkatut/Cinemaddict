@@ -101,6 +101,7 @@ export default class PageController {
     if (this._showingCardsCount >= cards.length) {
       return;
     }
+    remove(this._moreButtonComponent);
     // Render LoadMoreButtonComponent
     render(this._mainFilmsListComponent.getElement(), this._moreButtonComponent, RenderPosition.BEFOREEND);
     // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button
@@ -124,20 +125,14 @@ export default class PageController {
     const sortedCards = getSortedCards(cards, sortType, 0, this._showingCardsCount);
     const newCards = renderCards(this._mainFilmsListComponent.getListInnerElement(), sortedCards.slice(0, this._showingCardsCount), this._onDataChange, this._onViewChange);
     this._showedCardControllers = this._showedCardControllers.concat(newCards);
-    remove(this._moreButtonComponent);
     this._renderLoadMoreButton();
   }
 
-  _onDataChange(oldCard, newCard) {
-    const cards = this._cardsModel.getCards();
-    const cardIndex = cards.findIndex((it) => it === oldCard);
-    const cardControllerIndex = this._showedCardControllers.findIndex((controller) => controller._card === oldCard);
-    if (cardIndex === -1) {
-      return;
+  _onDataChange(cardController, oldCard, newCard) {
+    const isSucces = this._cardsModel.updateCard(oldCard.id, newCard);
+    if (isSucces) {
+      cardController.render(newCard);
     }
-    const newCards = [].concat(cards.slice(0, cardIndex), newCard, cards.slice(cardIndex + 1));
-    this._cardsModel.setCards(newCards);
-    this._showedCardControllers[cardControllerIndex].render(newCards[cardIndex]);
   }
 
   _onViewChange() {
