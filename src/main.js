@@ -3,6 +3,7 @@ import NavigationComponent from "./components/navigation.js";
 import FilmsBoardComponent from "./components/films-board.js";
 import PageController from "./controllers/page-controller.js";
 import FilmsCountComponent from "./components/films-count.js";
+import CardsModel from './models/cards.js';
 import {generateCards} from "./mock/card.js";
 import {generateFilters} from "./mock/navigation.js";
 import {RenderPosition, render} from "./utils/render.js";
@@ -26,9 +27,11 @@ render(siteHeaderElement, new ProfileComponent(watchedFilmsCount), RenderPositio
 const filmsBoardComponent = new FilmsBoardComponent();
 render(siteMainElement, filmsBoardComponent, RenderPosition.BEFOREEND);
 
+const cardsModel = new CardsModel();
+cardsModel.setCards(cards);
 // Render all films lists
-const pageController = new PageController(filmsBoardComponent);
-pageController.render(cards);
+const pageController = new PageController(filmsBoardComponent, cardsModel);
+pageController.render();
 
 // Render navigation menu
 render(siteMainElement, new NavigationComponent(navigationFilters), RenderPosition.AFTERBEGIN);
