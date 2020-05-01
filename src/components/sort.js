@@ -28,6 +28,10 @@ export default class Sort extends AbstactComponent {
     return this._currentSortType;
   }
 
+  removeActiveClass() {
+    this.getElement().querySelector(`[data-sort-type = '${this._currentSortType}']`).classList.remove(`sort__button--active`);
+  }
+
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -41,6 +45,9 @@ export default class Sort extends AbstactComponent {
       if (this._currentSortType === sortType) {
         return;
       }
+
+      this.removeActiveClass();
+      evt.target.classList.add(`sort__button--active`);
 
       this._currentSortType = sortType;
 
