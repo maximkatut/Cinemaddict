@@ -1,4 +1,4 @@
-import AbstactSmartComponent from "./abstract-smart-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {formatTime, formatSlashDate} from "../utils/format.js";
 
 const EmojiNames = [
@@ -68,7 +68,7 @@ const createPopupCommentsTemplate = (comments, options = {}) => {
       </section>`);
 };
 
-export default class PopupComments extends AbstactSmartComponent {
+export default class PopupComments extends AbstractSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;
@@ -76,10 +76,6 @@ export default class PopupComments extends AbstactSmartComponent {
     this._selectedEmoji = `smile`;
 
     this.recoveryListeners();
-  }
-
-  rerender() {
-    super.rerender();
   }
 
   getTemplate() {
