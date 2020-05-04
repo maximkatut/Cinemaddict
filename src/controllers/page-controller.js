@@ -128,10 +128,14 @@ export default class PageController {
     this._renderLoadMoreButton();
   }
 
-  _onDataChange(cardController, oldCard, newCard) {
-    const isSucces = this._cardsModel.updateCard(oldCard.id, newCard);
-    if (isSucces) {
-      cardController.render(newCard);
+  _onDataChange(oldCard, newCard) {
+    const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
+    if (isSuccess) {
+      this._showedCardControllers.forEach((it) => {
+        if (it._card === oldCard) {
+          it.render(newCard);
+        }
+      });
     }
   }
 

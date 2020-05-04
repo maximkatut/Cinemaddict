@@ -40,19 +40,19 @@ export default class CardController {
 
     this._cardComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isInWatchlist: !this._card.isInWatchlist
       }));
     });
     this._cardComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isWatched: !this._card.isWatched
       }));
     });
     this._cardComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isFavorite: !this._card.isFavorite
       }));
     });
@@ -71,17 +71,17 @@ export default class CardController {
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
 
     this._popupComponent.setWatchlistClickHandler(() => {
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isInWatchlist: !this._card.isInWatchlist
       }));
     });
     this._popupComponent.setWatchedClickHandler(() => {
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isWatched: !this._card.isWatched
       }));
     });
     this._popupComponent.setFavoriteClickHandler(() => {
-      this._onDataChange(this, this._card, Object.assign({}, this._card, {
+      this._onDataChange(this._card, Object.assign({}, this._card, {
         isFavorite: !this._card.isFavorite
       }));
     });
