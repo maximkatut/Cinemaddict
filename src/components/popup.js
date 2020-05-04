@@ -1,9 +1,10 @@
-import {formatDate} from "../utils/format.js";
+import {formatDate, formatTime} from '../utils/format.js';
 import AbstactComponent from "./abstract-component.js";
 
 const createPopupTemplate = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description, isInWatchlist, isWatched, isFavorite} = card;
-  const formatReleaseDate = formatDate(releaseDate);
+  const formatedReleaseDate = formatDate(releaseDate);
+  const formatedDuration = formatTime(duration);
   const checkIsActive = (boolean) => {
     return boolean ? `checked` : ``;
   };
@@ -55,11 +56,11 @@ const createPopupTemplate = (card) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${formatReleaseDate}</td>
+                  <td class="film-details__cell">${formatedReleaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${formatedDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

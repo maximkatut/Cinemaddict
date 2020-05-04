@@ -1,8 +1,10 @@
 import AbstactComponent from "./abstract-component.js";
+import {formatTime} from '../utils/format.js';
 
 const createFilmCardTemplate = (card) => {
   const {name, rating, releaseDate, duration, genre, poster, description, comments, isInWatchlist, isWatched, isFavorite} = card;
   const releaseYear = releaseDate.getFullYear();
+  const formatedDuration = formatTime(duration);
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}…` : description;
   const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
   return (`<article class="film-card">
@@ -10,7 +12,7 @@ const createFilmCardTemplate = (card) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${formatedDuration}</span>
         <span class="film-card__genre">${genre[0]}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">

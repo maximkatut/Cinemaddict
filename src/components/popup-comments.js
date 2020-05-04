@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {formatTime, formatSlashDate} from "../utils/format.js";
+import {formatRelativeDate} from '../utils/format.js';
 
 const EmojiNames = [
   `smile`,
@@ -10,8 +10,7 @@ const EmojiNames = [
 
 const createCommentsMarkup = (comment) => {
   const {content, author, date, emoji} = comment;
-
-  const formatedDate = `${formatSlashDate(date)} ${formatTime(date)}`;
+  const formatedDate = formatRelativeDate(date);
   return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-smile">

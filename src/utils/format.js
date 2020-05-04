@@ -1,28 +1,18 @@
-import {MONTH_NAMES} from "../const.js";
+import moment from 'moment';
 
-const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
-};
-
-export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours() % 12);
-  const minutes = castTimeFormat(date.getMinutes());
-
-  return `${hours}:${minutes}`;
+export const formatTime = (minutes) => {
+  const duration = moment.duration(minutes, `m`).as(`milliseconds`);
+  if (duration < 36e5) {
+    return moment.utc(duration).format(`m[m]`);
+  } else {
+    return moment.utc(duration).format(`h[h] mm[m]`);
+  }
 };
 
 export const formatDate = (date) => {
-  const day = date.getDate();
-  const month = MONTH_NAMES[date.getMonth()];
-  const year = Number(date.getFullYear());
-
-  return `${day} ${month} ${year}`;
+  return moment(date).format(`D MMMM YYYY`);
 };
 
-export const formatSlashDate = (date) => {
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = Number(date.getFullYear());
-
-  return `${year}/${month}/${day}`;
+export const formatRelativeDate = (date) => {
+  return moment(date).fromNow();
 };
