@@ -4,9 +4,7 @@ const createFilmCardTemplate = (card) => {
   const {name, rating, releaseDate, duration, genre, poster, description, comments, isInWatchlist, isWatched, isFavorite} = card;
   const releaseYear = releaseDate.getFullYear();
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}…` : description;
-  const checkIsActive = (statement) => {
-    return statement ? `film-card__controls-item--active` : ``;
-  };
+  const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
   return (`<article class="film-card">
       <h3 class="film-card__title">${name}</h3>
       <p class="film-card__rating">${rating}</p>
@@ -36,9 +34,24 @@ export default class Card extends AbstactComponent {
     return createFilmCardTemplate(this._card);
   }
 
-  setOpenPopupHandler(handler) {
+  setOpenPopupClickHandler(handler) {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
+  }
+
+  setWatchlistClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+    .addEventListener(`click`, handler);
+  }
+
+  setWatchedClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+    .addEventListener(`click`, handler);
+  }
+
+  setFavoriteClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+    .addEventListener(`click`, handler);
   }
 }

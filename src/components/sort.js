@@ -17,7 +17,7 @@ const createSortTemplate = () => {
 export default class Sort extends AbstactComponent {
   constructor() {
     super();
-    this._currenSortType = SortType.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
   }
 
   getTemplate() {
@@ -25,7 +25,7 @@ export default class Sort extends AbstactComponent {
   }
 
   getSortType() {
-    return this._currenSortType;
+    return this._currentSortType;
   }
 
   setSortTypeChangeHandler(handler) {
@@ -38,13 +38,13 @@ export default class Sort extends AbstactComponent {
 
       const sortType = evt.target.dataset.sortType;
 
-      if (this._currenSortType === sortType) {
+      if (this._currentSortType === sortType) {
         return;
       }
 
-      this._currenSortType = sortType;
+      this._currentSortType = sortType;
 
-      handler(this._currenSortType);
+      handler(this._currentSortType);
     });
   }
 }
