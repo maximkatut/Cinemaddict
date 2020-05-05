@@ -30,4 +30,10 @@ export default class Cards {
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
   }
+
+  setDataChangeHandler() {
+
+  }
+
+  
 }

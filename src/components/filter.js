@@ -1,9 +1,10 @@
 import AbstactComponent from "./abstract-component.js";
 
 const createNavigationMarkup = (filter) => {
-  const {name, count, isActive} = filter;
+  const {name, count, checked} = filter;
+
   const hiddenClass = (count === 0) ? `visually-hidden` : ``;
-  const activeClass = (isActive) ? `main-navigation__item--active` : ``;
+  const activeClass = (checked) ? `main-navigation__item--active` : ``;
   return `<a href="#${name.toLowerCase()}" class="main-navigation__item ${activeClass}">${name} <span class="main-navigation__item-count ${hiddenClass}">${count}</span></a>`;
 };
 

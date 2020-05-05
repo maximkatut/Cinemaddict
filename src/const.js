@@ -16,3 +16,10 @@ export const MONTH_NAMES = [
 export const RANK_NAMES = [
   `Novice`, `Fan`, `Movie Buff`
 ];
+
+export const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+};
