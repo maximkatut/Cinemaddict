@@ -54,8 +54,10 @@ export default class PageController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._cardsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -93,6 +95,18 @@ export default class PageController {
       const newCards = renderCards(this._mostCommentedFilmsListComponent.getListInnerElement(), mostCommentedCards, this._onDataChange, this._onViewChange);
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
     }
+  }
+
+  _removeCards() {
+    this._showedCardControllers.forEach((cardController) => cardController.destroy());
+    this._showedCardControllers = [];
+  }
+
+  _updateCards() {
+    this._removeCards();
+    this._showingCardsCount = CARDS_COUNT_ON_START;
+    this._sortComponent.setSortTypeToDefault();
+    this.render();
   }
 
   _renderLoadMoreButton() {
@@ -141,5 +155,9 @@ export default class PageController {
 
   _onViewChange() {
     this._showedCardControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _onFilterChange() {
+    this._updateCards();
   }
 }
