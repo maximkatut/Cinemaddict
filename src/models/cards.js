@@ -1,11 +1,20 @@
+import {getCardsByFilter} from "../utils/filter.js";
+import {FilterType} from "../const.js";
+
 export default class Cards {
   constructor() {
     this._cards = [];
+    this._filterType = FilterType.ALL;
 
     this._dataChangeHandlers = [];
+    this._filterChangeHandlers = [];
   }
 
   getCards() {
+    return getCardsByFilter(this._filterType, this._cards);
+  }
+
+  getCardsAll() {
     return this._cards;
   }
 
@@ -31,9 +40,16 @@ export default class Cards {
     handlers.forEach((handler) => handler());
   }
 
-  setDataChangeHandler() {
-
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 
-  
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setFilter(filterType) {
+    this._filterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
+  }
 }
