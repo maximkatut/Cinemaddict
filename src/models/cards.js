@@ -1,10 +1,9 @@
 import {getCardsByFilter} from "../utils/filter.js";
-import {FilterType} from "../const.js";
 
 export default class Cards {
   constructor() {
     this._cards = [];
-    this._filterType = FilterType.ALL;
+    this._filterType = ``;
 
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
