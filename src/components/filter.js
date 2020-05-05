@@ -1,7 +1,7 @@
 import AbstactComponent from "./abstract-component.js";
 
-const createNavigationMarkup = (filter) => {
-  const {name, count, checked} = filter;
+const createNavigationMarkup = (filter, checked) => {
+  const {name, count} = filter;
 
   const hiddenClass = (count === 0) ? `visually-hidden` : ``;
   const activeClass = (checked) ? `main-navigation__item--active` : ``;
@@ -10,7 +10,7 @@ const createNavigationMarkup = (filter) => {
 
 const createNavigationTemplate = (filters) => {
   const navigationMarkup = filters.map((filter) => {
-    return createNavigationMarkup(filter);
+    return createNavigationMarkup(filter, filter.checked);
   }).join(`\n`);
   return `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -24,9 +24,25 @@ export default class Filter extends AbstactComponent {
   constructor(filters) {
     super();
     this._filters = filters;
+    this._currentFilterType = ``;
   }
 
   getTemplate() {
     return createNavigationTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+      const filterType = evt.target.innerText.split(/\s\d/)[0];
+      if (this._currentFilterType === filterType) {
+        return;
+      }
+      this._currentFilterType = filterType;
+      handler(this._currentFilterType);
+    });
   }
 }
