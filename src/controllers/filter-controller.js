@@ -12,12 +12,15 @@ export default class FilterController {
     this._filterComponent = null;
     this._watchedMoviesCount = 0;
 
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
     this._cardsModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
     const container = this._container;
-    const allCards = this._cardsModel.getCards();
+    const allCards = this._cardsModel.getCardsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
@@ -30,6 +33,7 @@ export default class FilterController {
 
     const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
@@ -40,5 +44,15 @@ export default class FilterController {
 
   getWatchedMoviesCount() {
     return this._watchedMoviesCount;
+  }
+
+  _onFilterChange(filterType) {
+    this._cardsModel.setFilter(filterType);
+    this._activeFilterType = filterType;
+    this.render();
+  }
+
+  _onDataChange() {
+    this.render();
   }
 }
