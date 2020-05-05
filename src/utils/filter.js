@@ -17,4 +17,5 @@ export const getCardsByFilter = (filterType, cards) => {
         return card.isFavorite;
       });
   }
+  return cards;
 };
