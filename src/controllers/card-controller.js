@@ -97,6 +97,12 @@ export default class CardController {
     document.addEventListener(`keydown`, this._onKeyDown);
   }
 
+  destroy() {
+    remove(this._cardComponent);
+    this.setDefaultView();
+    document.removeEventListener(`keydown`, this._onKeyDown);
+  }
+
   setDefaultView() {
     if (this._popupComponent) {
       remove(this._popupComponent);
