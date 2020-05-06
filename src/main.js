@@ -4,7 +4,6 @@ import PageController from "./controllers/page-controller.js";
 import FilmsCountComponent from "./components/films-count.js";
 import CardsModel from './models/cards.js';
 import {generateCards} from "./mock/card.js";
-// import {generateFilters} from "./mock/filter.js";
 import {RenderPosition, render} from "./utils/render.js";
 import FilterController from "./controllers/filter-controller.js";
 

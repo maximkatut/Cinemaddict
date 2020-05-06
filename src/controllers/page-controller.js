@@ -154,7 +154,7 @@ export default class PageController {
   }
 
   _onViewChange() {
-    this._showedCardControllers.forEach((it) => it.setDefaultView());
+    // this._showedCardControllers.forEach((it) => it.setDefaultView());
   }
 
   _onFilterChange() {
