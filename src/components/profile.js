@@ -1,4 +1,4 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 import {RANK_NAMES} from "../const.js";
 
 const createProfileMarkup = (count) => {
@@ -19,13 +19,15 @@ const createProfileMarkup = (count) => {
 };
 
 const createProfileTemplate = (count) => {
-  return (`<section class="header__profile profile">
-    ${createProfileMarkup(count)}
+  return (
+    `<section class="header__profile profile">
+      ${createProfileMarkup(count)}
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-    </section>`);
+    </section>`
+  );
 };
 
-export default class Profile extends AbstactComponent {
+export default class Profile extends AbstractComponent {
   constructor(count) {
     super();
     this._count = count;

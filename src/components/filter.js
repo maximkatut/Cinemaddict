@@ -1,4 +1,4 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createNavigationMarkup = (filter, checked) => {
   const {name, count} = filter;
@@ -12,15 +12,17 @@ const createNavigationTemplate = (filters) => {
   const navigationMarkup = filters.map((filter) => {
     return createNavigationMarkup(filter, filter.checked);
   }).join(`\n`);
-  return `<nav class="main-navigation">
+  return (
+    `<nav class="main-navigation">
       <div class="main-navigation__items">
         ${navigationMarkup}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`;
+    </nav>`
+  );
 };
 
-export default class Filter extends AbstactComponent {
+export default class Filter extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;

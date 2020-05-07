@@ -1,4 +1,4 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 import {formatTime} from '../utils/format.js';
 
 const createFilmCardTemplate = (card) => {
@@ -7,7 +7,8 @@ const createFilmCardTemplate = (card) => {
   const formatedDuration = formatTime(duration);
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}…` : description;
   const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
-  return (`<article class="film-card">
+  return (
+    `<article class="film-card">
       <h3 class="film-card__title">${name}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
@@ -23,10 +24,11 @@ const createFilmCardTemplate = (card) => {
         <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${checkIsActive(isWatched)}">Mark as watched</button>
         <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>
       </form>
-    </article>`);
+    </article>`
+  );
 };
 
-export default class Card extends AbstactComponent {
+export default class Card extends AbstractComponent {
   constructor(card) {
     super();
     this._card = card;
