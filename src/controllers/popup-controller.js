@@ -23,7 +23,6 @@ export default class PopupController {
 
   render(card) {
     this._card = card;
-    this._onViewChange();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     const oldPopupControlsComponent = this._popupControlsComponent;
@@ -33,6 +32,7 @@ export default class PopupController {
     if (oldPopupControlsComponent) {
       replace(this._popupControlsComponent, oldPopupControlsComponent);
     } else {
+      this._onViewChange();
       this._popupComponent = new PopupComponent(this._card);
       this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
       render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
