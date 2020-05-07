@@ -1,13 +1,10 @@
 import {formatDate, formatTime} from '../utils/format.js';
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createPopupTemplate = (card) => {
-  const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description, isInWatchlist, isWatched, isFavorite} = card;
+  const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
   const formatedReleaseDate = formatDate(releaseDate);
   const formatedDuration = formatTime(duration);
-  const checkIsActive = (boolean) => {
-    return boolean ? `checked` : ``;
-  };
   const createPopupGenreMarkup = (it) => {
     return `<span class="film-details__genre">${it}</span>`;
   };
@@ -16,7 +13,8 @@ const createPopupTemplate = (card) => {
     return createPopupGenreMarkup(it);
   }).join(`\n`);
 
-  return (`<section class="film-details">
+  return (
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -78,24 +76,15 @@ const createPopupTemplate = (card) => {
               </p>
             </div>
           </div>
-          <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${checkIsActive(isInWatchlist)}>
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
-
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${checkIsActive(isWatched)}>
-            <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
-
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${checkIsActive(isFavorite)}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
-          </section>
         </div>
         <div class="form-details__bottom-container">
         </div>
       </form>
-    </section>`);
+    </section>`
+  );
 };
 
-export default class Popup extends AbstactComponent {
+export default class Popup extends AbstractComponent {
   constructor(card) {
     super();
     this._card = card;
@@ -108,22 +97,11 @@ export default class Popup extends AbstactComponent {
     return this.getElement().querySelector(`.form-details__bottom-container`);
   }
 
+  getPopupControlsContainer() {
+    return this.getElement().querySelector(`.form-details__top-container`);
+  }
+
   setClosePopupClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
-  }
-
-  setWatchlistClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`)
-    .addEventListener(`click`, handler);
-  }
-
-  setWatchedClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watched`)
-    .addEventListener(`click`, handler);
-  }
-
-  setFavoriteClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--favorite`)
-    .addEventListener(`click`, handler);
   }
 }
