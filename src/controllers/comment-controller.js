@@ -1,5 +1,4 @@
 import CommentComponent from "../components/comment.js";
-
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 export default class CommentController {
@@ -20,7 +19,7 @@ export default class CommentController {
 
     this._commentComponent.setDeleteButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onCommentsDataChange(this._commentId);
+      this._onCommentsDataChange(this._commentId, null);
       this.destroy();
     });
   }

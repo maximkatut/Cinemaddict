@@ -6,18 +6,19 @@ import CommentController from "../controllers/comment-controller.js";
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
 const renderComments = (container, comments, onCommentsDataChange) => {
-  return comments.map((comment) => {
+  return comments.forEach((comment) => {
     const commentController = new CommentController(container, onCommentsDataChange);
     commentController.render(comment);
-    return commentController;
   });
 };
 
 export default class PopupController {
-  constructor(onDataChange, onViewChange) {
+  constructor(commentsModel, onDataChange, onViewChange) {
     this._card = {};
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+
+    this._commentsModel = commentsModel;
 
     this._popupComponent = null;
     this._popupControlsComponent = null;
@@ -28,6 +29,7 @@ export default class PopupController {
     this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
 
     this._selectedEmoji = ``;
+    this._newCommentText = ``;
   }
 
   render(card) {
@@ -75,6 +77,18 @@ export default class PopupController {
       }));
     });
 
+    this._popupCommentsComponent.setNewCommentInputChangeHandler((evt) => {
+      if (evt.target.tagName !== `TEXTAREA`) {
+        return;
+      }
+      this._newCommentText = evt.target.value;
+      this._popupCommentsComponent.setNewCommentText(this._newCommentText);
+      const isKey = (evt.key === `Enter` && evt.ctrlKey);
+      if (isKey) {
+        console.log(this._newCommentText);
+      }
+    });
+
     this._popupCommentsComponent.setChangeEmojiClickHandler((evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
@@ -88,10 +102,20 @@ export default class PopupController {
     document.addEventListener(`keydown`, this._onKeyDown);
   }
 
-  _onCommentsDataChange(id) {
-    this._onDataChange(this._card, Object.assign({}, this._card, {
-      comments: this._card.comments.filter((comment) => comment.id !== id)
-    }));
+  _onCommentsDataChange(id, newData) {
+    if (newData === null) {
+      const isSuccess = this._commentsModel.deleteComment(id);
+      if (isSuccess) {
+        this._onDataChange(this._card, Object.assign({}, this._card, {
+          comments: this._commentsModel.getComments()
+        }));
+      }
+    } else {
+      this._commentsModel.addComment(newData);
+      this._onDataChange(this._card, Object.assign({}, this._card, {
+        comments: this._commentsModel.getComments()
+      }));
+    }
   }
 
   // Handler to close popup with click on cross button

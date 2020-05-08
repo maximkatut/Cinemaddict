@@ -1,6 +1,8 @@
 import CardComponent from "../components/card.js";
 import PopupController from "../controllers/popup-controller.js";
 
+import CommentsModel from "../models/comments.js";
+
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
 export default class CardController {
@@ -31,9 +33,10 @@ export default class CardController {
     // Add listeners for poster, name and comments to open popup
     this._cardComponent.setOpenPopupClickHandler(() => {
       // Render popup of active filmcard
-      this._popupController = new PopupController(this._onDataChange, this._onViewChange);
+      this._commentsModel = new CommentsModel();
+      this._commentsModel.setComments(this._card.comments);
+      this._popupController = new PopupController(this._commentsModel, this._onDataChange, this._onViewChange);
       this._popupController.render(this._card);
-      // this._renderPopup();
     });
 
     this._cardComponent.setWatchlistClickHandler((evt) => {

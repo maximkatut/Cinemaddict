@@ -18,7 +18,7 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 };
 
 const createPopupCommentsTemplate = (comments, options = {}) => {
-  const {selectedEmoji} = options;
+  const {selectedEmoji, newCommentText} = options;
   const emojisMarkup = EmojiNames.map((it) => {
     let isChecked = false;
     if (it === selectedEmoji) {
@@ -38,7 +38,7 @@ const createPopupCommentsTemplate = (comments, options = {}) => {
           <img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">
         </div>
         <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newCommentText}</textarea>
         </label>
 
         <div class="film-details__emoji-list">
@@ -54,7 +54,10 @@ export default class PopupComments extends AbstractSmartComponent {
     super();
     this._comments = comments;
     this._changeEmojiHandler = null;
+    this._changeNewCommentHandler = null;
     this._selectedEmoji = `smile`;
+
+    this._newCommentText = ``;
 
     this.recoveryListeners();
   }
@@ -62,6 +65,7 @@ export default class PopupComments extends AbstractSmartComponent {
   getTemplate() {
     return createPopupCommentsTemplate(this._comments, {
       selectedEmoji: this._selectedEmoji,
+      newCommentText: this._newCommentText,
     });
   }
 
@@ -74,11 +78,21 @@ export default class PopupComments extends AbstractSmartComponent {
     this._changeEmojiHandler = handler;
   }
 
+  setNewCommentInputChangeHandler(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keyup`, handler);
+    this._changeNewCommentHandler = handler;
+  }
+
+  setNewCommentText(text) {
+    this._newCommentText = text;
+  }
+
   setNewCommentEmojiImg(emoji) {
     this._selectedEmoji = emoji;
   }
 
   recoveryListeners() {
     this.setChangeEmojiClickHandler(this._changeEmojiHandler);
+    this.setNewCommentInputChangeHandler(this._changeNewCommentHandler);
   }
 }
