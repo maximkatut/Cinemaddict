@@ -1,9 +1,17 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsComponent from "../components/popup-comments.js";
+import CommentController from "../controllers/comment-controller.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
+const renderComments = (container, comments, onCommentsDataChange) => {
+  return comments.map((comment) => {
+    const commentController = new CommentController(container, onCommentsDataChange);
+    commentController.render(comment);
+    return commentController;
+  });
+};
 
 export default class PopupController {
   constructor(onDataChange, onViewChange) {
@@ -17,6 +25,7 @@ export default class PopupController {
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
+    this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
 
     this._selectedEmoji = ``;
   }
@@ -25,20 +34,25 @@ export default class PopupController {
     this._card = card;
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
+    const oldPopupComponent = this._popupComponent;
     const oldPopupControlsComponent = this._popupControlsComponent;
+    const oldPopupCommentsComponent = this._popupCommentsComponent;
 
     this._popupControlsComponent = new PopupControlsComponent(this._card);
+    this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
 
-    if (oldPopupControlsComponent) {
+    if (oldPopupComponent) {
       replace(this._popupControlsComponent, oldPopupControlsComponent);
+      replace(this._popupCommentsComponent, oldPopupCommentsComponent);
     } else {
       this._onViewChange();
       this._popupComponent = new PopupComponent(this._card);
-      this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
       render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
       render(this._popupComponent.getPopupControlsContainer(), this._popupControlsComponent, RenderPosition.BEFOREEND);
       render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
     }
+
+    renderComments(this._popupCommentsComponent.getCommentsList(), this._card.comments, this._onCommentsDataChange);
 
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
@@ -68,9 +82,16 @@ export default class PopupController {
       this._selectedEmoji = evt.target.value;
       this._popupCommentsComponent.setNewCommentEmojiImg(this._selectedEmoji);
       this._popupCommentsComponent.rerender();
+      renderComments(this._popupCommentsComponent.getCommentsList(), this._card.comments, this._onCommentsDataChange);
     });
 
     document.addEventListener(`keydown`, this._onKeyDown);
+  }
+
+  _onCommentsDataChange(id) {
+    this._onDataChange(this._card, Object.assign({}, this._card, {
+      comments: this._card.comments.filter((comment) => comment.id !== id)
+    }));
   }
 
   // Handler to close popup with click on cross button

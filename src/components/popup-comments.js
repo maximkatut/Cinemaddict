@@ -1,5 +1,4 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import {formatRelativeDate} from '../utils/format.js';
 
 const EmojiNames = [
   `smile`,
@@ -7,26 +6,6 @@ const EmojiNames = [
   `puke`,
   `angry`,
 ];
-
-const createCommentsMarkup = (comment) => {
-  const {content, author, date, emoji} = comment;
-  const formatedDate = formatRelativeDate(date);
-  return (
-    `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-smile">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${content}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${formatedDate}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
-  );
-};
 
 const createCommentsEmojiMarkup = (emoji, isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -40,7 +19,6 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 
 const createPopupCommentsTemplate = (comments, options = {}) => {
   const {selectedEmoji} = options;
-  const commentsMarkup = comments.map((it) => createCommentsMarkup(it)).join(`\n`);
   const emojisMarkup = EmojiNames.map((it) => {
     let isChecked = false;
     if (it === selectedEmoji) {
@@ -53,7 +31,6 @@ const createPopupCommentsTemplate = (comments, options = {}) => {
       <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
       <ul class="film-details__comments-list">
-        ${commentsMarkup}
       </ul>
 
       <div class="film-details__new-comment">
@@ -86,6 +63,10 @@ export default class PopupComments extends AbstractSmartComponent {
     return createPopupCommentsTemplate(this._comments, {
       selectedEmoji: this._selectedEmoji,
     });
+  }
+
+  getCommentsList() {
+    return this.getElement().querySelector(`.film-details__comments-list`);
   }
 
   setChangeEmojiClickHandler(handler) {
