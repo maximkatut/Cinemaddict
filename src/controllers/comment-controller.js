@@ -1,6 +1,14 @@
 import CommentComponent from "../components/comment.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
+export const EmptyComment = {
+  id: String(new Date() + Math.random()),
+  content: ``,
+  author: ``,
+  date: new Date(),
+  emoji: `smile`,
+};
+
 export default class CommentController {
   constructor(container, onCommentsDataChange) {
     this._container = container;
@@ -20,11 +28,7 @@ export default class CommentController {
     this._commentComponent.setDeleteButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onCommentsDataChange(this._commentId, null);
-      this.destroy();
+      remove(this._commentComponent);
     });
-  }
-
-  destroy() {
-    remove(this._commentComponent);
   }
 }

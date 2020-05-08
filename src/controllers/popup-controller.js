@@ -1,7 +1,7 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
-import PopupCommentsComponent from "../components/popup-comments.js";
-import CommentController from "../controllers/comment-controller.js";
+import PopupCommentsComponent, {EmojiNames} from "../components/popup-comments.js";
+import CommentController, {EmptyComment} from "../controllers/comment-controller.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
@@ -28,7 +28,7 @@ export default class PopupController {
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
 
-    this._selectedEmoji = ``;
+    this._selectedEmoji = EmojiNames.SMILE;
     this._newCommentText = ``;
   }
 
@@ -83,9 +83,19 @@ export default class PopupController {
       }
       this._newCommentText = evt.target.value;
       this._popupCommentsComponent.setNewCommentText(this._newCommentText);
-      const isKey = (evt.key === `Enter` && evt.ctrlKey);
-      if (isKey) {
-        console.log(this._newCommentText);
+    });
+
+    this._popupCommentsComponent.setSubmitHandler((evt) => {
+      if (evt.target.value !== ``) {
+        const isKey = (evt.key === `Enter` && evt.ctrlKey);
+        if (isKey) {
+          this._onCommentsDataChange(null, Object.assign({}, EmptyComment, {
+            id: String(new Date() + Math.random()),
+            content: evt.target.value,
+            author: `kto-to`,
+            emoji: this._selectedEmoji,
+          }));
+        }
       }
     });
 
@@ -100,10 +110,11 @@ export default class PopupController {
     });
 
     document.addEventListener(`keydown`, this._onKeyDown);
+    this._selectedEmoji = EmojiNames.SMILE;
   }
 
-  _onCommentsDataChange(id, newData) {
-    if (newData === null) {
+  _onCommentsDataChange(id, newComment) {
+    if (newComment === null) {
       const isSuccess = this._commentsModel.deleteComment(id);
       if (isSuccess) {
         this._onDataChange(this._card, Object.assign({}, this._card, {
@@ -111,7 +122,7 @@ export default class PopupController {
         }));
       }
     } else {
-      this._commentsModel.addComment(newData);
+      this._commentsModel.addComment(newComment);
       this._onDataChange(this._card, Object.assign({}, this._card, {
         comments: this._commentsModel.getComments()
       }));
@@ -132,7 +143,7 @@ export default class PopupController {
     }
   }
 
-  destroy() {
+  remove() {
     if (this._popupComponent) {
       remove(this._popupComponent);
       document.removeEventListener(`keydown`, this._onKeyDown);

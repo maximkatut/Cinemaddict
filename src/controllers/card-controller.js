@@ -14,6 +14,7 @@ export default class CardController {
     this._card = {};
     this._cardComponent = null;
 
+    this._commentsModel = null;
     this._popupController = null;
   }
 
@@ -66,7 +67,7 @@ export default class CardController {
 
   setDefaultView() {
     if (this._popupController) {
-      this._popupController.destroy();
+      this._popupController.remove();
     }
   }
 }

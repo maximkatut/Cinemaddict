@@ -1,11 +1,11 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
-const EmojiNames = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`,
-];
+export const EmojiNames = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`,
+};
 
 const createCommentsEmojiMarkup = (emoji, isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -19,7 +19,7 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 
 const createPopupCommentsTemplate = (comments, options = {}) => {
   const {selectedEmoji, newCommentText} = options;
-  const emojisMarkup = EmojiNames.map((it) => {
+  const emojisMarkup = Object.values(EmojiNames).map((it) => {
     let isChecked = false;
     if (it === selectedEmoji) {
       isChecked = true;
@@ -53,10 +53,12 @@ export default class PopupComments extends AbstractSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;
+
     this._changeEmojiHandler = null;
     this._changeNewCommentHandler = null;
-    this._selectedEmoji = `smile`;
+    this._submitHandler = null;
 
+    this._selectedEmoji = EmojiNames.SMILE;
     this._newCommentText = ``;
 
     this.recoveryListeners();
@@ -83,6 +85,11 @@ export default class PopupComments extends AbstractSmartComponent {
     this._changeNewCommentHandler = handler;
   }
 
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keyup`, handler);
+    this._submitHandler = handler;
+  }
+
   setNewCommentText(text) {
     this._newCommentText = text;
   }
@@ -94,5 +101,6 @@ export default class PopupComments extends AbstractSmartComponent {
   recoveryListeners() {
     this.setChangeEmojiClickHandler(this._changeEmojiHandler);
     this.setNewCommentInputChangeHandler(this._changeNewCommentHandler);
+    this.setSubmitHandler(this._submitHandler);
   }
 }
