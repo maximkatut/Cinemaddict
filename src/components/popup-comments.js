@@ -1,4 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import {encode} from "he";
 
 export const EmojiNames = {
   SMILE: `smile`,
@@ -19,6 +20,7 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 
 const createPopupCommentsTemplate = (comments, options = {}) => {
   const {selectedEmoji, newCommentText} = options;
+  const encodedCommentText = encode(newCommentText);
   const emojisMarkup = Object.values(EmojiNames).map((it) => {
     let isChecked = false;
     if (it === selectedEmoji) {
@@ -38,7 +40,7 @@ const createPopupCommentsTemplate = (comments, options = {}) => {
           <img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">
         </div>
         <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newCommentText}</textarea>
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${encodedCommentText}</textarea>
         </label>
 
         <div class="film-details__emoji-list">
