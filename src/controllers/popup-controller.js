@@ -93,6 +93,7 @@ export default class PopupController {
             id: String(new Date() + Math.random()),
             content: evt.target.value,
             author: `kto-to`,
+            date: new Date(),
             emoji: this._selectedEmoji,
           }));
         }
@@ -121,7 +122,7 @@ export default class PopupController {
           comments: this._commentsModel.getComments()
         }));
       }
-    } else {
+    } else if (id === null) {
       this._commentsModel.addComment(newComment);
       this._onDataChange(this._card, Object.assign({}, this._card, {
         comments: this._commentsModel.getComments()

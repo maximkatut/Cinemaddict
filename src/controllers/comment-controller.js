@@ -5,7 +5,7 @@ export const EmptyComment = {
   id: String(new Date() + Math.random()),
   content: ``,
   author: ``,
-  date: new Date(),
+  date: ``,
   emoji: `smile`,
 };
 

@@ -30,6 +30,7 @@ export default class CardController {
     // Add listeners for poster, name and comments to open popup
     this._cardComponent.setOpenPopupClickHandler(() => {
       // Render popup of active filmcard
+      this._onViewChange();
       this._commentsModel = new CommentsModel();
       this._commentsModel.setComments(this._card.comments);
       this._popupController = new PopupController(this._commentsModel, this._onDataChange, this._onViewChange);
