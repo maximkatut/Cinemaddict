@@ -87,7 +87,7 @@ export default class PopupController {
 
     this._popupCommentsComponent.setSubmitHandler((evt) => {
       if (evt.target.value !== ``) {
-        const isKey = (evt.key === `Enter` && evt.ctrlKey);
+        const isKey = (evt.key === `Enter` && (evt.ctrlKey || evt.metaKey));
         if (isKey) {
           this._onCommentsDataChange(null, Object.assign({}, EmptyComment, {
             id: String(new Date() + Math.random()),

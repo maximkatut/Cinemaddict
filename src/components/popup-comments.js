@@ -88,7 +88,7 @@ export default class PopupComments extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keyup`, handler);
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, handler);
     this._submitHandler = handler;
   }
 
