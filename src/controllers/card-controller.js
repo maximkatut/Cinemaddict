@@ -18,8 +18,7 @@ export default class CardController {
     this._popupController = null;
   }
 
-  render(card) {
-    this._card = card;
+  _initCardComponent() {
     // Rendering the actual card, if card allready exists than replace it
     const oldCardComponent = this._cardComponent;
     this._cardComponent = new CardComponent(this._card);
@@ -27,9 +26,6 @@ export default class CardController {
       replace(this._cardComponent, oldCardComponent);
     } else {
       render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
-    }
-    if (this._popupController) {
-      this._popupController.render(this._card);
     }
     // Add listeners for poster, name and comments to open popup
     this._cardComponent.setOpenPopupClickHandler(() => {
@@ -59,6 +55,19 @@ export default class CardController {
       }));
     });
   }
+
+  render(card) {
+    this._card = card;
+    if (this._cardComponent) {
+      this._cardComponent.update(this._card);
+      if (this._popupController) {
+        this._popupController.render(this._card);
+      }
+    } else {
+      this._initCardComponent();
+    }
+  }
+
 
   destroy() {
     remove(this._cardComponent);
