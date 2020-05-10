@@ -97,6 +97,10 @@ export default class Card extends AbstractComponent {
     const newElement = this.getControlsElement(card);
     parent.append(newElement);
 
+    if (card.comments !== this._card.comments) {
+      this.getElement().querySelector(`.film-card__comments`).innerHTML = `${card.comments.length} comments`;
+    }
+
     this.recoveryListeners();
   }
 }
