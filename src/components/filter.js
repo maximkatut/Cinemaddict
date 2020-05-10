@@ -1,8 +1,10 @@
 import AbstractComponent from "./abstract-component.js";
 
 const createNavigationMarkup = (filter, checked) => {
-  const {name, count} = filter;
-
+  let {name, count} = filter;
+  if (name === `All movies`) {
+    count = 0;
+  }
   const hiddenClass = (count === 0) ? `visually-hidden` : ``;
   const activeClass = (checked) ? `main-navigation__item--active` : ``;
   return `<a href="#${name.toLowerCase()}" class="main-navigation__item ${activeClass}">${name} <span class="main-navigation__item-count ${hiddenClass}">${count}</span></a>`;
