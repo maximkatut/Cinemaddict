@@ -1,7 +1,7 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsComponent, {EmojiNames} from "../components/popup-comments.js";
-import CommentController, {EmptyComment} from "../controllers/comment-controller.js";
+import CommentController from "../controllers/comment-controller.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
@@ -89,7 +89,7 @@ export default class PopupController {
       if (evt.target.value !== ``) {
         const isKey = (evt.key === `Enter` && (evt.ctrlKey || evt.metaKey));
         if (isKey) {
-          this._onCommentsDataChange(null, Object.assign({}, EmptyComment, {
+          this._onCommentsDataChange(null, Object.assign({}, {
             id: String(new Date() + Math.random()),
             content: evt.target.value,
             author: `kto-to`,
