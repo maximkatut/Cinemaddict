@@ -1,13 +1,5 @@
-import CommentComponent from "../components/comment.js";
+import PopupCommentComponent from "../components/popup-comment.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
-
-export const EmptyComment = {
-  id: String(new Date() + Math.random()),
-  content: ``,
-  author: ``,
-  date: ``,
-  emoji: `smile`,
-};
 
 export default class CommentController {
   constructor(container, onCommentsDataChange) {
@@ -22,7 +14,7 @@ export default class CommentController {
   render(comment) {
     this._comment = comment;
     this._commentId = this._comment.id;
-    this._commentComponent = new CommentComponent(this._comment);
+    this._commentComponent = new PopupCommentComponent(this._comment);
     render(this._container, this._commentComponent, RenderPosition.BEFOREEND);
 
     this._commentComponent.setDeleteButtonClickHandler((evt) => {

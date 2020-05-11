@@ -1,7 +1,8 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
-import PopupCommentsComponent, {EmojiNames} from "../components/popup-comments.js";
-import CommentController, {EmptyComment} from "../controllers/comment-controller.js";
+import PopupCommentsListComponent from "../components/popup-comments-list.js";
+import PopupNewCommentComponent from "../components/popup-new-comment.js";
+import CommentController from "../controllers/comment-controller.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
@@ -13,48 +14,55 @@ const renderComments = (container, comments, onCommentsDataChange) => {
 };
 
 export default class PopupController {
-  constructor(commentsModel, onDataChange, onViewChange) {
+  constructor(onDataChange, onViewChange) {
     this._card = {};
+    this._comments = [];
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
-    this._commentsModel = commentsModel;
+    this._commentsModel = null;
 
     this._popupComponent = null;
     this._popupControlsComponent = null;
-    this._popupCommentsComponent = null;
+    this._popupCommentsListComponent = null;
+    this._popupNewCommentComponent = null;
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
 
-    this._selectedEmoji = EmojiNames.SMILE;
+    this._selectedEmoji = ``;
     this._newCommentText = ``;
   }
 
   render(card) {
     this._card = card;
+    this._commentsModel = this._card.comments;
+    this._comments = this._commentsModel.getComments();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     const oldPopupComponent = this._popupComponent;
     const oldPopupControlsComponent = this._popupControlsComponent;
-    const oldPopupCommentsComponent = this._popupCommentsComponent;
+    const oldPopupCommentsComponent = this._popupCommentsListComponent;
 
     this._popupControlsComponent = new PopupControlsComponent(this._card);
-    this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
+    this._popupCommentsListComponent = new PopupCommentsListComponent(this._card.comments);
+    this._popupNewCommentComponent = new PopupNewCommentComponent();
 
     if (oldPopupComponent) {
       replace(this._popupControlsComponent, oldPopupControlsComponent);
-      replace(this._popupCommentsComponent, oldPopupCommentsComponent);
+      replace(this._popupCommentsListComponent, oldPopupCommentsComponent);
+      render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
     } else {
       this._onViewChange();
       this._popupComponent = new PopupComponent(this._card);
       render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
       render(this._popupComponent.getPopupControlsContainer(), this._popupControlsComponent, RenderPosition.BEFOREEND);
-      render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
+      render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsListComponent, RenderPosition.BEFOREEND);
+      render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
     }
 
-    renderComments(this._popupCommentsComponent.getCommentsList(), this._card.comments, this._onCommentsDataChange);
+    renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
 
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
@@ -77,41 +85,26 @@ export default class PopupController {
       }));
     });
 
-    this._popupCommentsComponent.setNewCommentInputChangeHandler((evt) => {
+    this._popupNewCommentComponent.setNewCommentInputChangeHandler((evt) => {
       if (evt.target.tagName !== `TEXTAREA`) {
         return;
       }
       this._newCommentText = evt.target.value;
-      this._popupCommentsComponent.setNewCommentText(this._newCommentText);
+      this._popupNewCommentComponent.setNewCommentText(this._newCommentText);
     });
 
-    this._popupCommentsComponent.setSubmitHandler((evt) => {
-      if (evt.target.value !== ``) {
-        const isKey = (evt.key === `Enter` && (evt.ctrlKey || evt.metaKey));
-        if (isKey) {
-          this._onCommentsDataChange(null, Object.assign({}, EmptyComment, {
-            id: String(new Date() + Math.random()),
-            content: evt.target.value,
-            author: `kto-to`,
-            date: new Date(),
-            emoji: this._selectedEmoji,
-          }));
-        }
-      }
-    });
+    this._popupNewCommentComponent.setSubmitHandler(this._onCommentsDataChange);
 
-    this._popupCommentsComponent.setChangeEmojiClickHandler((evt) => {
+    this._popupNewCommentComponent.setChangeEmojiClickHandler((evt) => {
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
       this._selectedEmoji = evt.target.value;
-      this._popupCommentsComponent.setNewCommentEmojiImg(this._selectedEmoji);
-      this._popupCommentsComponent.rerender();
-      renderComments(this._popupCommentsComponent.getCommentsList(), this._card.comments, this._onCommentsDataChange);
+      this._popupNewCommentComponent.setNewCommentEmojiImg(this._selectedEmoji);
+      this._popupNewCommentComponent.rerender();
     });
 
     document.addEventListener(`keydown`, this._onKeyDown);
-    this._selectedEmoji = EmojiNames.SMILE;
   }
 
   _onCommentsDataChange(id, newComment) {
@@ -119,13 +112,13 @@ export default class PopupController {
       const isSuccess = this._commentsModel.deleteComment(id);
       if (isSuccess) {
         this._onDataChange(this._card, Object.assign({}, this._card, {
-          comments: this._commentsModel.getComments()
+          comments: this._commentsModel
         }));
       }
     } else if (id === null) {
       this._commentsModel.addComment(newComment);
       this._onDataChange(this._card, Object.assign({}, this._card, {
-        comments: this._commentsModel.getComments()
+        comments: this._commentsModel
       }));
     }
   }

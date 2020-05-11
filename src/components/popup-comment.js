@@ -21,7 +21,7 @@ const createCommentTemplate = (comment) => {
   );
 };
 
-export default class Comment extends AbstractComponent {
+export default class PopupComment extends AbstractComponent {
   constructor(comment) {
     super();
     this._comment = comment;
