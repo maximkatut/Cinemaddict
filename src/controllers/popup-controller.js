@@ -1,7 +1,7 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsListComponent from "../components/popup-comments-list.js";
-import PopupNewCommentComponent, {EmojiNames} from "../components/popup-new-comment.js";
+import PopupNewCommentComponent from "../components/popup-new-comment.js";
 import CommentController from "../controllers/comment-controller.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
@@ -14,12 +14,13 @@ const renderComments = (container, comments, onCommentsDataChange) => {
 };
 
 export default class PopupController {
-  constructor(commentsModel, onDataChange, onViewChange) {
+  constructor(onDataChange, onViewChange) {
     this._card = {};
+    this._comments = [];
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
-    this._commentsModel = commentsModel;
+    this._commentsModel = null;
 
     this._popupComponent = null;
     this._popupControlsComponent = null;
@@ -36,6 +37,8 @@ export default class PopupController {
 
   render(card) {
     this._card = card;
+    this._commentsModel = this._card.comments;
+    this._comments = this._commentsModel.getComments();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     const oldPopupComponent = this._popupComponent;
@@ -59,7 +62,7 @@ export default class PopupController {
       render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
     }
 
-    renderComments(this._popupCommentsListComponent.getCommentsList(), this._card.comments, this._onCommentsDataChange);
+    renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
 
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
@@ -102,7 +105,6 @@ export default class PopupController {
     });
 
     document.addEventListener(`keydown`, this._onKeyDown);
-    this._selectedEmoji = EmojiNames.SMILE;
   }
 
   _onCommentsDataChange(id, newComment) {
@@ -110,13 +112,13 @@ export default class PopupController {
       const isSuccess = this._commentsModel.deleteComment(id);
       if (isSuccess) {
         this._onDataChange(this._card, Object.assign({}, this._card, {
-          comments: this._commentsModel.getComments()
+          comments: this._commentsModel
         }));
       }
     } else if (id === null) {
       this._commentsModel.addComment(newComment);
       this._onDataChange(this._card, Object.assign({}, this._card, {
-        comments: this._commentsModel.getComments()
+        comments: this._commentsModel
       }));
     }
   }

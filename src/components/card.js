@@ -27,7 +27,7 @@ const createFilmCardTemplate = (card) => {
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
-      <a class="film-card__comments">${comments.length} comments</a>
+      <a class="film-card__comments">${comments.getComments().length} comments</a>
       <form class="film-card__controls">
         ${createFilmCardControlButtonsTemplate(card)}
       </form>
@@ -39,6 +39,7 @@ export default class Card extends AbstractComponent {
   constructor(card) {
     super();
     this._card = card;
+    this._comments = card.comments.getComments();
     // this.recoveryListeners();
     this._watchlistClickHandler = null;
     this._watchedClickHandler = null;
@@ -90,9 +91,9 @@ export default class Card extends AbstractComponent {
       const filmCardControlsElement = this.getElement().querySelector(`.film-card__controls`);
       filmCardControlsElement.innerHTML = this.getControlButtonsTemplate(card);
     }
-
-    if (card.comments !== this._card.comments) {
-      this.getElement().querySelector(`.film-card__comments`).innerHTML = `${card.comments.length} comments`;
+    const comments = card.comments.getComments();
+    if (comments !== this._comments) {
+      this.getElement().querySelector(`.film-card__comments`).innerHTML = `${comments.length} comments`;
     }
 
     this.recoveryListeners();
