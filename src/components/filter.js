@@ -49,4 +49,8 @@ export default class Filter extends AbstractComponent {
       handler(this._currentFilterType);
     });
   }
+
+  setStatClickHandler(handler) {
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
+  }
 }
