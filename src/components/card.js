@@ -1,16 +1,13 @@
 import AbstractComponent from "./abstract-component.js";
 import {formatTime} from '../utils/format.js';
-import {createElement} from "../utils/render.js";
 
-const createFilmCardControlsTemplate = (card) => {
+const createFilmCardControlButtonsTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
   const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
   return (
-    `<form class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${checkIsActive(isInWatchlist)}">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${checkIsActive(isWatched)}">Mark as watched</button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>
-    </form>`
+    `<button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${checkIsActive(isInWatchlist)}">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${checkIsActive(isWatched)}">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>`
   );
 };
 
@@ -31,7 +28,9 @@ const createFilmCardTemplate = (card) => {
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
       <a class="film-card__comments">${comments.length} comments</a>
-      ${createFilmCardControlsTemplate(card)}
+      <form class="film-card__controls">
+        ${createFilmCardControlButtonsTemplate(card)}
+      </form>
     </article>`
   );
 };
@@ -50,12 +49,8 @@ export default class Card extends AbstractComponent {
     return createFilmCardTemplate(this._card);
   }
 
-  getControlsTemplate(card) {
-    return createFilmCardControlsTemplate(card);
-  }
-
-  getControlsElement(card) {
-    return createElement(this.getControlsTemplate(card));
+  getControlButtonsTemplate(card) {
+    return createFilmCardControlButtonsTemplate(card);
   }
 
   setOpenPopupClickHandler(handler) {
@@ -91,11 +86,10 @@ export default class Card extends AbstractComponent {
   }
 
   update(card) {
-    const oldElement = this.getElement().querySelector(`.film-card__controls`);
-    const parent = oldElement.parentElement;
-    oldElement.remove();
-    const newElement = this.getControlsElement(card);
-    parent.append(newElement);
+    if (card.isFavorite !== this._card.isFavorite || card.isInWatchlist !== this._card.isInWatchlist || card.isWatched !== this._card.isWatched) {
+      const filmCardControlsElement = this.getElement().querySelector(`.film-card__controls`);
+      filmCardControlsElement.innerHTML = this.getControlButtonsTemplate(card);
+    }
 
     if (card.comments !== this._card.comments) {
       this.getElement().querySelector(`.film-card__comments`).innerHTML = `${card.comments.length} comments`;
