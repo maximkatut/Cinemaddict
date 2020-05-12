@@ -30,6 +30,7 @@ const getRandomDate = () => {
 
 const generateComment = () => {
   return {
+    id: String(new Date() + Math.random()),
     content: getRandomArrayItem(commentContents),
     author: getRandomArrayItem(commentAuthors),
     date: getRandomDate(),

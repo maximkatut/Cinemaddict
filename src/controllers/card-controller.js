@@ -1,8 +1,8 @@
-import PopupCommentsComponent from "../components/popup-comments.js";
-import PopupComponent from "../components/popup.js";
 import CardComponent from "../components/card.js";
+import CardControlsComponent from "../components/card-controls.js";
+import PopupController from "../controllers/popup-controller.js";
 
-import {RenderPosition, render, remove, replace} from "../utils/render.js";
+import {RenderPosition, render, remove} from "../utils/render.js";
 
 export default class CardController {
   constructor(container, onDataChange, onViewChange) {
@@ -12,45 +12,69 @@ export default class CardController {
 
     this._card = {};
     this._cardComponent = null;
-    this._popupInfoComponent = null;
-    this._popupCommentsComponent = null;
-    this._popupBoardComponent = null;
+    this._cardControlsComponent = null;
 
-    this._onKeyDown = this._onKeyDown.bind(this);
-    this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
+    this._commentsModel = null;
+    this._popupController = null;
 
-    this._selectedEmoji = ``;
+    this._showPopup = this._showPopup.bind(this);
   }
 
   render(card) {
+    const oldCard = this._card;
     this._card = card;
-    // Rendering the actual card, if card allready exists than replace it
-    const oldCardComponent = this._cardComponent;
-    this._cardComponent = new CardComponent(this._card);
-    if (oldCardComponent) {
-      replace(this._cardComponent, oldCardComponent);
-    } else {
-      render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
-    }
-    // Add listeners for poster, name and comments to open popup
-    this._cardComponent.setOpenPopupClickHandler(() => {
-      // Render popup of active filmcard
-      this._renderPopup();
-    });
+    if (this._cardComponent) {
+      if (this._popupController) {
+        this._popupController.render(this._card);
+      }
+      let isCardControlsChanged = false;
+      let isOtherFieldsChanged = false;
+      const controlsKeys = [`isFavorite`, `isInWatchlist`, `isWatched`];
+      Object.keys(card).forEach((key) => {
+        if (oldCard[key] !== this._card[key]) {
+          if (controlsKeys.includes(key)) {
+            isCardControlsChanged = true;
+          } else {
+            isOtherFieldsChanged = true;
+          }
+        }
+      });
+      const isOnlyCardControlsChanged = isCardControlsChanged && !isOtherFieldsChanged;
+      if (isOnlyCardControlsChanged) {
+        this._cardControlsComponent.rerender(this._card);
+        return;
+      }
 
-    this._cardComponent.setWatchlistClickHandler((evt) => {
+      this._cardComponent.rerender(this._card);
+      this._cardControlsComponent = new CardControlsComponent(this._card);
+      render(this._cardComponent.getElement(), this._cardControlsComponent, RenderPosition.BEFOREEND);
+      this._addEventListenersToCardControls();
+      return;
+    }
+
+    this._cardComponent = new CardComponent(this._card);
+    this._cardControlsComponent = new CardControlsComponent(this._card);
+    render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+    render(this._cardComponent.getElement(), this._cardControlsComponent, RenderPosition.BEFOREEND);
+
+    this._cardComponent.setOpenPopupClickHandler(this._showPopup);
+    this._addEventListenersToCardControls();
+  }
+
+  _addEventListenersToCardControls() {
+    this._cardControlsComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this._card, Object.assign({}, this._card, {
         isInWatchlist: !this._card.isInWatchlist
       }));
     });
-    this._cardComponent.setWatchedClickHandler((evt) => {
+    this._cardControlsComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this._card, Object.assign({}, this._card, {
         isWatched: !this._card.isWatched
       }));
     });
-    this._cardComponent.setFavoriteClickHandler((evt) => {
+    this._cardControlsComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this._card, Object.assign({}, this._card, {
         isFavorite: !this._card.isFavorite
@@ -58,62 +82,20 @@ export default class CardController {
     });
   }
 
-  _renderPopup() {
+  _showPopup() {
     this._onViewChange();
-    // Find body element for rendering popup card
-    const siteBodyElement = document.querySelector(`body`);
-    this._popupComponent = new PopupComponent(this._card);
-    this._popupCommentsComponent = new PopupCommentsComponent(this._card.comments);
+    this._popupController = new PopupController(this._onDataChange, this._onViewChange);
+    this._popupController.render(this._card);
+  }
 
-    render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
-    render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsComponent, RenderPosition.BEFOREEND);
-    // set click event for popup close button and Esc key
-    this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
-
-    this._popupComponent.setWatchlistClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isInWatchlist: !this._card.isInWatchlist
-      }));
-    });
-    this._popupComponent.setWatchedClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isWatched: !this._card.isWatched
-      }));
-    });
-    this._popupComponent.setFavoriteClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isFavorite: !this._card.isFavorite
-      }));
-    });
-    this._popupCommentsComponent.setChangeEmojiClickHandler((evt) => {
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
-      this._selectedEmoji = evt.target.value;
-      this._popupCommentsComponent.setNewCommentEmojiImg(this._selectedEmoji);
-      this._popupCommentsComponent.rerender();
-    });
-
-    document.addEventListener(`keydown`, this._onKeyDown);
+  destroy() {
+    remove(this._cardComponent);
+    this.setDefaultView();
   }
 
   setDefaultView() {
-    if (this._popupComponent) {
-      remove(this._popupComponent);
+    if (this._popupController) {
+      this._popupController.remove();
     }
-  }
-
-  // Handler to close popup with ESC
-  _onKeyDown(evt) {
-    const isEscapeKey = evt.key === `Esc` || evt.key === `Escape`;
-    if (isEscapeKey) {
-      remove(this._popupComponent);
-    }
-    document.removeEventListener(`keydown`, this._onKeyDown);
-  }
-
-  // Handler to close popup with click on cross button
-  _onCloseButtonClick() {
-    remove(this._popupComponent);
   }
 }

@@ -1,4 +1,4 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createFilmsListTemplate = (title, visibleClass, filmsListClass) => {
   return (
@@ -6,10 +6,11 @@ const createFilmsListTemplate = (title, visibleClass, filmsListClass) => {
       <h2 class="films-list__title ${visibleClass}">${title}</h2>
       <div class="films-list__container">
       </div>
-    </section>`);
+    </section>`
+  );
 };
 
-export default class FilmsList extends AbstactComponent {
+export default class FilmsList extends AbstractComponent {
   constructor(title, isTitleVisible, isExtra) {
     super();
     this._title = title;

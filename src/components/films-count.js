@@ -1,10 +1,10 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createFilmsCountTemplate = (length) => {
   return `<p>${length} movies inside</p>`;
 };
 
-export default class FilmsCount extends AbstactComponent {
+export default class FilmsCount extends AbstractComponent {
   constructor(length) {
     super();
     this._length = length;

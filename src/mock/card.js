@@ -70,6 +70,7 @@ const peopleNames = [
 
 const generateCard = () => {
   return {
+    id: String(new Date() + Math.random()),
     poster: `./images/posters/${getRandomArrayItem(posterNames)}`,
     name: getRandomArrayItem(cardNames),
     originalName: getRandomArrayItem(cardNames),

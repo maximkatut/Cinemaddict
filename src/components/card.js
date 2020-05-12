@@ -1,13 +1,13 @@
-import AbstactComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {formatTime} from '../utils/format.js';
 
 const createFilmCardTemplate = (card) => {
-  const {name, rating, releaseDate, duration, genre, poster, description, comments, isInWatchlist, isWatched, isFavorite} = card;
+  const {name, rating, releaseDate, duration, genre, poster, description, comments} = card;
   const releaseYear = releaseDate.getFullYear();
   const formatedDuration = formatTime(duration);
   const shortDescription = description.length > 140 ? `${description.slice(0, 139)}…` : description;
-  const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
-  return (`<article class="film-card">
+  return (
+    `<article class="film-card">
       <h3 class="film-card__title">${name}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
@@ -17,19 +17,17 @@ const createFilmCardTemplate = (card) => {
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
-      <a class="film-card__comments">${comments.length} comments</a>
-      <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${checkIsActive(isInWatchlist)}">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${checkIsActive(isWatched)}">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>
-      </form>
-    </article>`);
+      <a class="film-card__comments">${comments.getComments().length} comments</a>
+    </article>`
+  );
 };
 
-export default class Card extends AbstactComponent {
+export default class Card extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
+    this._comments = card.comments.getComments();
+    this._openPopupHandler = null;
   }
 
   getTemplate() {
@@ -40,20 +38,15 @@ export default class Card extends AbstactComponent {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
+    this._openPopupHandler = handler;
   }
 
-  setWatchlistClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
-    .addEventListener(`click`, handler);
+  recoveryListeners() {
+    this.setOpenPopupClickHandler(this._openPopupHandler);
   }
 
-  setWatchedClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
-    .addEventListener(`click`, handler);
-  }
-
-  setFavoriteClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--favorite`)
-    .addEventListener(`click`, handler);
+  rerender(card) {
+    this._card = card;
+    super.rerender();
   }
 }
