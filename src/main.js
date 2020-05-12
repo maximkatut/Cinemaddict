@@ -2,6 +2,7 @@ import ProfileComponent from "./components/profile.js";
 import FilmsBoardComponent from "./components/films-board.js";
 import PageController from "./controllers/page-controller.js";
 import FilmsCountComponent from "./components/films-count.js";
+import StatisticsComponent from "./components/statistics.js";
 import CardsModel from './models/cards.js';
 import {generateCards} from "./mock/card.js";
 import {RenderPosition, render} from "./utils/render.js";
@@ -36,6 +37,10 @@ render(siteMainElement, filmsBoardComponent, RenderPosition.BEFOREEND);
 // Render all films lists
 const pageController = new PageController(filmsBoardComponent, cardsModel);
 pageController.render();
+
+// Render statistics
+const statisticsComponent = new StatisticsComponent();
+render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 
 // Render count of all movies
 const siteCountStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);

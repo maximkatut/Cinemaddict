@@ -3,7 +3,7 @@ import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from "moment";
 
-const createStatisticTemplate = () => {
+const createStatisticsTemplate = () => {
   return (
     `<section class="statistic">
       <p class="statistic__rank">
@@ -54,13 +54,13 @@ const createStatisticTemplate = () => {
   );
 };
 
-export default class Statistic extends AbstractSmartComponent {
+export default class Statistics extends AbstractSmartComponent {
   constructor() {
     super();
 
   }
 
   getTemplate() {
-    return createStatisticTemplate();
+    return createStatisticsTemplate();
   }
 }
