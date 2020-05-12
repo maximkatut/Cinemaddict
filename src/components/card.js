@@ -1,15 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 import {formatTime} from '../utils/format.js';
-
-const createFilmCardControlButtonsTemplate = (card) => {
-  const {isInWatchlist, isWatched, isFavorite} = card;
-  const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
-  return (
-    `<button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${checkIsActive(isInWatchlist)}">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${checkIsActive(isWatched)}">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite ${checkIsActive(isFavorite)}">Mark as favorite</button>`
-  );
-};
 
 const createFilmCardTemplate = (card) => {
   const {name, rating, releaseDate, duration, genre, poster, description, comments} = card;
@@ -28,74 +18,35 @@ const createFilmCardTemplate = (card) => {
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
       <a class="film-card__comments">${comments.getComments().length} comments</a>
-      <form class="film-card__controls">
-        ${createFilmCardControlButtonsTemplate(card)}
-      </form>
     </article>`
   );
 };
 
-export default class Card extends AbstractComponent {
+export default class Card extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
     this._comments = card.comments.getComments();
-    // this.recoveryListeners();
-    this._watchlistClickHandler = null;
-    this._watchedClickHandler = null;
-    this._favoriteClickHandler = null;
+    this._openPopupHandler = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
 
-  getControlButtonsTemplate(card) {
-    return createFilmCardControlButtonsTemplate(card);
-  }
-
   setOpenPopupClickHandler(handler) {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, handler);
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, handler);
-  }
-
-  setWatchlistClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
-    .addEventListener(`click`, handler);
-    this._watchlistClickHandler = handler;
-
-  }
-
-  setWatchedClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
-    .addEventListener(`click`, handler);
-    this._watchedClickHandler = handler;
-
-  }
-
-  setFavoriteClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--favorite`)
-    .addEventListener(`click`, handler);
-    this._favoriteClickHandler = handler;
+    this._openPopupHandler = handler;
   }
 
   recoveryListeners() {
-    this.setWatchlistClickHandler(this._watchlistClickHandler);
-    this.setWatchedClickHandler(this._watchedClickHandler);
-    this.setFavoriteClickHandler(this._favoriteClickHandler);
+    this.setOpenPopupClickHandler(this._openPopupHandler);
   }
 
-  update(card) {
-    if (card.isFavorite !== this._card.isFavorite || card.isInWatchlist !== this._card.isInWatchlist || card.isWatched !== this._card.isWatched) {
-      const filmCardControlsElement = this.getElement().querySelector(`.film-card__controls`);
-      filmCardControlsElement.innerHTML = this.getControlButtonsTemplate(card);
-    }
-    const comments = card.comments.getComments();
-    if (comments !== this._comments) {
-      this.getElement().querySelector(`.film-card__comments`).innerHTML = `${comments.length} comments`;
-    }
-
-    this.recoveryListeners();
+  rerender(card) {
+    this._card = card;
+    super.rerender();
   }
 }

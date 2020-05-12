@@ -71,16 +71,18 @@ export default class PageController {
   render() {
     const container = this._container.getElement();
     const cards = this._cardsModel.getCards();
+    this._renderLoadMoreButton();
 
     // Check if cards.length === 0 do not render them and change the title
     if (cards.length === 0) {
       this._mainFilmsListComponent.setNewTitle(`There are no movies in our database`, true);
+      render(container, this._mainFilmsListComponent, RenderPosition.BEFOREEND);
+      return;
     }
     // render main list of films
     render(container, this._mainFilmsListComponent, RenderPosition.BEFOREEND);
 
     if (cards.length > 0) {
-      this._renderLoadMoreButton();
       // render cards
       const newCards = renderCards(this._mainFilmsListComponent.getListInnerElement(), cards.slice(0, this._showingCardsCount), this._onDataChange, this._onViewChange);
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
@@ -112,18 +114,19 @@ export default class PageController {
 
   _updateCards() {
     this._removeCards();
+    this._container.getElement().innerHTML = ``;
     this._showingCardsCount = CARDS_COUNT_ON_START;
     this._sortComponent.setSortTypeToDefault();
     this.render();
   }
 
   _renderLoadMoreButton() {
+    remove(this._moreButtonComponent);
     const cards = this._cardsModel.getCards();
     // Remove moreButton if at the start has less than 5 cards
     if (this._showingCardsCount >= cards.length) {
       return;
     }
-    remove(this._moreButtonComponent);
     // Render LoadMoreButtonComponent
     render(this._mainFilmsListComponent.getElement(), this._moreButtonComponent, RenderPosition.BEFOREEND);
     // Render cards and cards that showing `CARDS_COUNT_LOAD_MORE_BUTTON` cards by click show more button

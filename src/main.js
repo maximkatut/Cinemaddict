@@ -9,7 +9,7 @@ import {RenderPosition, render} from "./utils/render.js";
 import FilterController from "./controllers/filter-controller.js";
 
 // CONSTANTS
-const CARDS_COUNT = 25;
+const CARDS_COUNT = 6;
 
 // Variables
 const cards = generateCards(CARDS_COUNT);
