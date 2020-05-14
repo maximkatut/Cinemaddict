@@ -1,12 +1,10 @@
 import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
+
+momentDurationFormatSetup(moment);
 
 export const formatTime = (minutes) => {
-  const duration = moment.duration(minutes, `m`).as(`milliseconds`);
-  if (duration < 36e5) {
-    return moment.utc(duration).format(`m[m]`);
-  } else {
-    return moment.utc(duration).format(`h[h] mm[m]`);
-  }
+  return moment.duration(minutes, `minutes`).format(`h[h] mm[m]`);
 };
 
 export const formatDate = (date) => {
