@@ -23,3 +23,8 @@ export const FilterType = {
   HISTORY: `History`,
   FAVORITES: `Favorites`,
 };
+
+export const ActiveScreen = {
+  STATS: `Stats`,
+  MOVIES: `Movies`,
+};

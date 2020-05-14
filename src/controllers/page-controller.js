@@ -62,6 +62,7 @@ export default class PageController {
 
   hide() {
     this._container.hide();
+    this._sortComponent.setSortTypeToDefault();
   }
 
   show() {

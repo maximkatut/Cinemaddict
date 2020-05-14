@@ -1,15 +1,51 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
-import Chart from "chart.js";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import moment from "moment";
+// import Chart from "chart.js";
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
+// import moment from "moment";
+import {formatTime} from "../utils/format.js";
 
-const createStatisticsTemplate = () => {
+const getTopGenre = (array) => {
+  let counts = {};
+  let compare = 0;
+  let mostFrequent;
+  for (let i = 0, len = array.length; i < len; i++) {
+    let item = array[i];
+    if (counts[item] === undefined) {
+      counts[item] = 1;
+    } else {
+      counts[item] = counts[item] + 1;
+    }
+    if (counts[item] > compare) {
+      compare = counts[item];
+      mostFrequent = array[i];
+    }
+  }
+  return mostFrequent;
+};
+
+const createStatisticsTemplate = (cards) => {
+  const watchedMovies = cards.filter((card) => {
+    return card.isWatched === true;
+  });
+
+  const totalDuration = watchedMovies.map((card) => {
+    return card.duration;
+  }).reduce((acc, current) => {
+    return acc + current;
+  });
+
+  const allGenres = [];
+  watchedMovies.forEach((card) => {
+    allGenres.push(...card.genre);
+  });
+  const topGenre = getTopGenre(allGenres);
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <span class="statistic__rank-label">${topGenre}er</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -34,15 +70,15 @@ const createStatisticsTemplate = () => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${watchedMovies.length} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${formatTime(totalDuration)}</p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${topGenre}</p>
         </li>
       </ul>
 
@@ -55,12 +91,31 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor() {
+  constructor(cardsModel) {
     super();
-
+    this._cardsModel = cardsModel;
   }
 
   getTemplate() {
-    return createStatisticsTemplate();
+    return createStatisticsTemplate(this._cardsModel.getCardsAll());
+  }
+
+  show() {
+    super.show();
+    this.rerender();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListeners() {}
+
+  _renderCharts() {
+
+  }
+
+  _resetCharts() {
+
   }
 }

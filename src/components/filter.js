@@ -1,4 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
+import {ActiveScreen} from "../const.js";
+
 
 const createNavigationMarkup = (filter, checked) => {
   let {name, count} = filter;
@@ -15,12 +17,9 @@ const createNavigationTemplate = (filters) => {
     return createNavigationMarkup(filter, filter.checked);
   }).join(`\n`);
   return (
-    `<nav class="main-navigation">
-      <div class="main-navigation__items">
-        ${navigationMarkup}
-      </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
+    `<div class="main-navigation__items">
+      ${navigationMarkup}
+    </div>`
   );
 };
 
@@ -50,7 +49,11 @@ export default class Filter extends AbstractComponent {
     });
   }
 
-  setStatClickHandler(handler) {
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
+  setActiveScreenChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      const activeScreen = ActiveScreen.MOVIES;
+      handler(activeScreen);
+    });
   }
 }
