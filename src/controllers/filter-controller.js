@@ -21,7 +21,6 @@ export default class FilterController {
   }
 
   render() {
-    const container = this._container;
     const allCards = this._cardsModel.getCardsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
@@ -41,7 +40,7 @@ export default class FilterController {
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.AFTERBEGIN);
+      render(this._container, this._filterComponent, RenderPosition.AFTERBEGIN);
     }
   }
 
