@@ -18,8 +18,7 @@ export default class MainNavigation extends AbstractComponent {
     this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       evt.target.classList.add(`main-navigation__item--active`);
-      const activeScreen = ActiveScreen.STATS;
-      handler(activeScreen);
+      handler(ActiveScreen.STATS);
     });
   }
 
