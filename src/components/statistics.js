@@ -1,33 +1,14 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {formatTime} from "../utils/format.js";
-import {GENRE_NAMES} from "../const.js";
+import {formatTime, capitalizeString} from "../utils/format.js";
+import {getCardsByFilter, getWatchedMoviesByStatisticsFilter} from "../utils/filter.js";
+import {getRankName} from "../utils/rank-name.js";
+import {GENRE_NAMES, FilterType, StatisticsFilter} from "../const.js";
 
 const BAR_HEIGHT = 50;
 
-const getTopGenre = (array) => {
-  let counts = {};
-  let compare = 0;
-  let mostFrequent;
-  for (let i = 0, len = array.length; i < len; i++) {
-    let item = array[i];
-    if (counts[item] === undefined) {
-      counts[item] = 1;
-    } else {
-      counts[item] = counts[item] + 1;
-    }
-    if (counts[item] > compare) {
-      compare = counts[item];
-      mostFrequent = array[i];
-    }
-  }
-  return mostFrequent;
-};
-
-let dataSetGenres = {};
-
-const renderStatisticsChart = (statisticCtx) => {
+const renderStatisticsChart = (statisticCtx, dataSetGenres) => {
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -90,79 +71,46 @@ const renderStatisticsChart = (statisticCtx) => {
   });
 };
 
-const createStatisticsTemplate = (cards) => {
-  const watchedMovies = cards.filter((card) => {
-    return card.isWatched === true;
-  });
+const createFilterMarkup = (filter, isChecked) => {
+  const formatedFilter = filter.toLowerCase().replace(` `, `-`);
+  const checked = isChecked ? `checked` : ``;
+  return (
+    `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${formatedFilter}" value="${formatedFilter}" ${checked}>
+  <label for="statistic-${formatedFilter}" class="statistic__filters-label">${filter}</label>`
+  );
+};
 
-  const statisticRankMarkup = (topGenre) => {
-    if (topGenre === ``) {
-      return ``;
-    }
-    return (
-      `<p class="statistic__rank">
-        Your rank
-        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${topGenre}er</span>
-      </p>`
-    );
-  };
-
-  const topGenreMarkup = (topGenre) => {
-    if (topGenre === ``) {
-      return ``;
-    }
-    return (
-      `<li class="statistic__text-item">
-        <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${topGenre}</p>
-      </li>`
-    );
-  };
-
-  const allGenres = [];
-  let totalDuration = 0;
-  let topGenre = ``;
-
-  if (watchedMovies.length !== 0) {
-    totalDuration = watchedMovies.map((card) => card.duration).reduce((acc, current) => acc + current);
-    watchedMovies.forEach((card) => allGenres.push(...card.genre));
-    topGenre = getTopGenre(allGenres);
+const createTopGenreMarkup = (topGenre) => {
+  if (topGenre === ``) {
+    return ``;
   }
+  return (
+    `<li class="statistic__text-item">
+      <h4 class="statistic__item-title">Top genre</h4>
+      <p class="statistic__item-text">${topGenre}</p>
+    </li>`
+  );
+};
 
-  dataSetGenres = GENRE_NAMES.map((item) => {
-    let count = 0;
-    allGenres.forEach((genre) => {
-      if (genre === item) {
-        count++;
-      }
-    });
-    return {
-      name: item,
-      count,
-    };
-  }).sort((a, b) => b.count - a.count);
+const createStatisticsTemplate = (watchedMoviesAll, watchedMovies, totalDuration, topGenre, activeFilter) => {
+  const filtersMarkup = Object.values(StatisticsFilter).map((filter) => {
+    const checked = (activeFilter === filter) ? true : false;
+    return createFilterMarkup(filter, checked);
+  }).join(`\n`);
+
+  const topGenreMarkup = createTopGenreMarkup(topGenre);
+  const rankName = getRankName(watchedMoviesAll.length);
 
   return (
     `<section class="statistic">
-      ${statisticRankMarkup(topGenre)}
+      <p class="statistic__rank">
+        Your rank
+        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+        <span class="statistic__rank-label">${rankName}</span>
+      </p>
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-        <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-        <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-        <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-        <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-        <label for="statistic-year" class="statistic__filters-label">Year</label>
+        ${filtersMarkup}
       </form>
 
       <ul class="statistic__text-list">
@@ -174,7 +122,7 @@ const createStatisticsTemplate = (cards) => {
           <h4 class="statistic__item-title">Total duration</h4>
           <p class="statistic__item-text">${formatTime(totalDuration)}</p>
         </li>
-        ${topGenreMarkup(topGenre)}
+        ${topGenreMarkup}
       </ul>
 
       <div class="statistic__chart-wrap">
@@ -189,29 +137,72 @@ export default class Statistics extends AbstractSmartComponent {
   constructor(cardsModel) {
     super();
     this._cardsModel = cardsModel;
+
+    this._watchedMovies = null;
+    this._watchedMoviesByFilter = null;
+    this._totalDuration = null;
+    this._topGenre = null;
+    this._dataSetGenres = null;
+
+    this._filter = null;
+  }
+
+  _updateData() {
+    this._watchedMovies = getCardsByFilter(FilterType.HISTORY, this._cardsModel.getCardsAll());
+    this._watchedMoviesByFilter = getWatchedMoviesByStatisticsFilter(this._filter, this._watchedMovies);
+    this._totalDuration = 0;
+    this._topGenre = ``;
+
+    this._dataSetGenres = GENRE_NAMES.map((genre) => {
+      return {
+        name: genre,
+        count: 0,
+      };
+    });
+
+    if (this._watchedMoviesByFilter.length !== 0) {
+      this._watchedMoviesByFilter.forEach((card) => {
+        this._dataSetGenres.forEach((genre) => {
+          card.genre.forEach((cardGenre) => {
+            if (cardGenre === genre.name) {
+              genre.count++;
+            }
+          });
+        });
+        this._totalDuration += card.duration;
+      });
+      this._dataSetGenres.sort((a, b) => b.count - a.count);
+      this._topGenre = this._dataSetGenres[0].name;
+    }
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._cardsModel.getCardsAll());
+    this._updateData();
+    return createStatisticsTemplate(this._watchedMovies, this._watchedMoviesByFilter, this._totalDuration, this._topGenre, this._filter);
   }
 
   show() {
     super.show();
+    this._filter = StatisticsFilter.ALL_TIME;
     this.rerender();
   }
 
   rerender() {
     super.rerender();
-    this._renderCharts();
+    if (this._watchedMoviesByFilter.length !== 0) {
+      this._renderCharts();
+    }
   }
 
-  recoveryListeners() {}
+  recoveryListeners() {
+    this._setActiveFilter();
+  }
 
   _renderCharts() {
     const statisticsCtx = this.getElement().querySelector(`.statistic__chart`);
     statisticsCtx.height = BAR_HEIGHT * 5;
     this._resetCharts();
-    this._statisticsChart = renderStatisticsChart(statisticsCtx);
+    this._statisticsChart = renderStatisticsChart(statisticsCtx, this._dataSetGenres);
   }
 
   _resetCharts() {
@@ -219,5 +210,15 @@ export default class Statistics extends AbstractSmartComponent {
       this._statisticsChart.destroy();
       this._statisticsChart = null;
     }
+  }
+
+  _setActiveFilter() {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, (evt) => {
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+      this._filter = capitalizeString(evt.target.value.replace(`-`, ` `));
+      this.rerender();
+    });
   }
 }

@@ -38,3 +38,11 @@ export const GENRE_NAMES = [
   `Comedy`,
   `TV Series`,
 ];
+
+export const StatisticsFilter = {
+  ALL_TIME: `All time`,
+  TODAY: `Today`,
+  WEEK: `Week`,
+  MONTH: `Month`,
+  YEAR: `Year`
+};

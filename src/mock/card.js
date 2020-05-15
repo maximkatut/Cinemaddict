@@ -80,6 +80,7 @@ const generateCard = () => {
     isInWatchlist: getRandomBoolean(),
     isWatched: getRandomBoolean(),
     isFavorite: getRandomBoolean(),
+    watchingDate: new Date(`${getRandomIntegerNumber(2019, 2020)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomIntegerNumber(1, 30)}`),
   };
 };
 

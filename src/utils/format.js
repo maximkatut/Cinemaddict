@@ -1,5 +1,5 @@
-import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
+import moment from "moment";
+import momentDurationFormatSetup from "moment-duration-format";
 
 momentDurationFormatSetup(moment);
 
@@ -13,4 +13,8 @@ export const formatDate = (date) => {
 
 export const formatRelativeDate = (date) => {
   return moment(date).fromNow();
+};
+
+export const capitalizeString = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
