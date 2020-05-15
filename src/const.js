@@ -28,3 +28,11 @@ export const ActiveScreen = {
   STATS: `Stats`,
   MOVIES: `Movies`,
 };
+
+export const GENRE_NAMES = [
+  `Sci-Fi`,
+  `Animation`,
+  `Fantasy`,
+  `Comedy`,
+  `TV Series`,
+];
