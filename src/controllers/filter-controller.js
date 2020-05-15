@@ -45,10 +45,6 @@ export default class FilterController {
     }
   }
 
-  getWatchedMoviesCount() {
-    return this._watchedMoviesCount;
-  }
-
   _onFilterChange(filterType) {
     this._cardsModel.setFilter(filterType);
     this._activeFilterType = filterType;

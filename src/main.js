@@ -7,8 +7,9 @@ import MainNavigationComponent from "./components/main-navigation.js";
 import CardsModel from './models/cards.js';
 import {generateCards} from "./mock/card.js";
 import {RenderPosition, render} from "./utils/render.js";
+import {getCardsByFilter} from "./utils/filter.js";
 import FilterController from "./controllers/filter-controller.js";
-import {ActiveScreen} from "./const.js";
+import {ActiveScreen, FilterType} from "./const.js";
 
 // CONSTANTS
 const CARDS_COUNT = 25;
@@ -45,7 +46,7 @@ mainNavigationComponent.setActiveScreenChangeHandler(onScreenChangeHandler);
 // Render navigation menu
 const filterController = new FilterController(mainNavigationComponent.getElement(), cardsModel, onScreenChangeHandler);
 filterController.render();
-const watchedMovies = filterController.getWatchedMoviesCount();
+const watchedMovies = getCardsByFilter(FilterType.HISTORY, cardsModel.getCardsAll());
 
 // Render profile
 render(siteHeaderElement, new ProfileComponent(watchedMovies), RenderPosition.BEFOREEND);
