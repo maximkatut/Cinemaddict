@@ -1,6 +1,7 @@
 import Card from "./models/card.js";
+import Comment from "./models/comment.js";
 
-const API = class {
+export default class API {
   constructor(authorization) {
     this._authorization = authorization;
   }
@@ -13,6 +14,13 @@ const API = class {
       .then((response) => response.json())
       .then(Card.parseCards);
   }
-};
 
-export default API;
+  getComments(CardId) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`https://11.ecmascript.pages.academy/cinemaddict/comments/${CardId}`, {headers})
+    .then((response) => response.json())
+    .then(Comment.parseComments);
+  }
+}

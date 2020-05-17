@@ -13,7 +13,7 @@ import {RenderPosition, render} from "./utils/render.js";
 const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
 
 const api = new API(AUTHORIZATION);
-const cardsModel = new CardsModel();
+const cardsModel = new CardsModel(api);
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -48,7 +48,6 @@ render(siteMainElement, mainNavigationComponent, RenderPosition.BEFOREEND);
 mainNavigationComponent.setActiveScreenChangeHandler(onScreenChangeHandler);
 filterController.render();
 render(siteMainElement, filmsBoardComponent, RenderPosition.BEFOREEND);
-pageController.render();
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 render(siteCountStatisticsElement, filmsCountComponent, RenderPosition.BEFOREEND);

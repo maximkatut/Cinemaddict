@@ -37,7 +37,7 @@ export default class PopupController {
 
   render(card) {
     this._card = card;
-    this._commentsModel = this._card.comments;
+    this._commentsModel = this._card.commentsModel;
     this._comments = this._commentsModel.getComments();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
@@ -46,7 +46,7 @@ export default class PopupController {
     const oldPopupCommentsComponent = this._popupCommentsListComponent;
 
     this._popupControlsComponent = new PopupControlsComponent(this._card);
-    this._popupCommentsListComponent = new PopupCommentsListComponent(this._card.comments);
+    this._popupCommentsListComponent = new PopupCommentsListComponent(this._comments);
     this._popupNewCommentComponent = new PopupNewCommentComponent();
 
     if (oldPopupComponent) {
@@ -111,14 +111,16 @@ export default class PopupController {
     if (newComment === null) {
       const isSuccess = this._commentsModel.deleteComment(id);
       if (isSuccess) {
+        this._card.comments = this._card.comments.filter((comment) => comment !== id);
         this._onDataChange(this._card, Object.assign({}, this._card, {
-          comments: this._commentsModel
+          commentsModel: this._commentsModel
         }));
       }
     } else if (id === null) {
       this._commentsModel.addComment(newComment);
+      this._card.comments.push(newComment.id);
       this._onDataChange(this._card, Object.assign({}, this._card, {
-        comments: this._commentsModel
+        commentsModel: this._commentsModel
       }));
     }
   }
