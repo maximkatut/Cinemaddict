@@ -1,3 +1,4 @@
+import API from "./api.js";
 import PageController from "./controllers/page-controller.js";
 import FilterController from "./controllers/filter-controller.js";
 import ProfileController from "./controllers/profile-controller.js";
@@ -8,14 +9,11 @@ import FilmsCountComponent from "./components/films-count.js";
 import CardsModel from './models/cards.js';
 import {ActiveScreen} from "./const.js";
 import {RenderPosition, render} from "./utils/render.js";
-import {generateCards} from "./mock/card.js";
 
-const CARDS_COUNT = 25;
+const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
 
-const cards = generateCards(CARDS_COUNT);
-
+const api = new API(AUTHORIZATION);
 const cardsModel = new CardsModel();
-cardsModel.setCards(cards);
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -43,7 +41,7 @@ const filterController = new FilterController(mainNavigationComponent.getElement
 const filmsBoardComponent = new FilmsBoardComponent();
 const pageController = new PageController(filmsBoardComponent, cardsModel);
 const statisticsComponent = new StatisticsComponent(cardsModel);
-const filmsCountComponent = new FilmsCountComponent(cards.length);
+const filmsCountComponent = new FilmsCountComponent(cardsModel.getCardsAll().length);
 
 profileController.render();
 render(siteMainElement, mainNavigationComponent, RenderPosition.BEFOREEND);
@@ -54,3 +52,9 @@ pageController.render();
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 render(siteCountStatisticsElement, filmsCountComponent, RenderPosition.BEFOREEND);
+
+api.getCards()
+  .then((cards) => {
+    cardsModel.setCards(cards);
+    pageController.render();
+  });
