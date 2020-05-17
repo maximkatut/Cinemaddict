@@ -41,7 +41,6 @@ const filterController = new FilterController(mainNavigationComponent.getElement
 const filmsBoardComponent = new FilmsBoardComponent();
 const pageController = new PageController(filmsBoardComponent, cardsModel);
 const statisticsComponent = new StatisticsComponent(cardsModel);
-const filmsCountComponent = new FilmsCountComponent(cardsModel.getCardsAll().length);
 
 profileController.render();
 render(siteMainElement, mainNavigationComponent, RenderPosition.BEFOREEND);
@@ -50,10 +49,11 @@ filterController.render();
 render(siteMainElement, filmsBoardComponent, RenderPosition.BEFOREEND);
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
-render(siteCountStatisticsElement, filmsCountComponent, RenderPosition.BEFOREEND);
 
 api.getCards()
   .then((cards) => {
     cardsModel.setCards(cards);
     pageController.render();
+    const filmsCountComponent = new FilmsCountComponent(cardsModel.getCardsAll().length);
+    render(siteCountStatisticsElement, filmsCountComponent, RenderPosition.BEFOREEND);
   });
