@@ -1,20 +1,7 @@
 import AbstractComponent from "./abstract-component.js";
-import {RANK_NAMES} from "../const.js";
-
+import {getRankName} from "../utils/rank-name.js";
 const createProfileMarkup = (count) => {
-  let rank = ``;
-  if (count > 20) {
-    rank = RANK_NAMES[2];
-  } else
-  if (count <= 20 && count > 10) {
-    rank = RANK_NAMES[1];
-  } else
-  if (count <= 10) {
-    rank = RANK_NAMES[0];
-  } else
-  if (count === 0) {
-    rank = ``;
-  }
+  const rank = getRankName(count);
   return `<p class="profile__rating">${rank}</p>`;
 };
 

@@ -1,5 +1,5 @@
 import {generateComments} from "./comment.js";
-import {MONTH_NAMES} from "../const.js";
+import {MONTH_NAMES, GENRE_NAMES} from "../const.js";
 import {getRandomIntegerNumber, getRandomBoolean, getRandomArrayItem, getRandomFloatNumber, getRandomArrayItems} from "../utils/random.js";
 
 const cardNames = [
@@ -38,14 +38,6 @@ const descriptionSentences = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-const genreNames = [
-  `Action`,
-  `Comedy`,
-  `Drama`,
-  `Fantasy`,
-  `Horror`,
-];
-
 const countryNames = [
   `USA`,
   `Russia`,
@@ -81,13 +73,14 @@ const generateCard = () => {
     releaseDate: new Date(`${getRandomIntegerNumber(1920, 2020)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomIntegerNumber(1, 30)}`),
     duration: getRandomIntegerNumber(50, 150),
     country: getRandomArrayItem(countryNames),
-    genre: getRandomArrayItems(genreNames, 1, 3),
+    genre: getRandomArrayItems(GENRE_NAMES, 1, 3),
     description: getRandomArrayItems(descriptionSentences, 1, 5).join(` `),
     ageRating: `${getRandomIntegerNumber(15, 18)}+`,
     comments: generateComments(getRandomIntegerNumber(0, 4)),
     isInWatchlist: getRandomBoolean(),
     isWatched: getRandomBoolean(),
     isFavorite: getRandomBoolean(),
+    watchingDate: new Date(`${getRandomIntegerNumber(2019, 2020)} ${getRandomArrayItem(MONTH_NAMES)} ${getRandomIntegerNumber(1, 30)}`),
   };
 };
 

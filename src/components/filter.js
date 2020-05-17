@@ -1,6 +1,8 @@
 import AbstractComponent from "./abstract-component.js";
+import {ActiveScreen} from "../const.js";
 
-const createNavigationMarkup = (filter, checked) => {
+
+const createFilterMarkup = (filter, checked) => {
   let {name, count} = filter;
   if (name === `All movies`) {
     count = 0;
@@ -10,17 +12,14 @@ const createNavigationMarkup = (filter, checked) => {
   return `<a href="#${name.toLowerCase()}" class="main-navigation__item ${activeClass}">${name} <span class="main-navigation__item-count ${hiddenClass}">${count}</span></a>`;
 };
 
-const createNavigationTemplate = (filters) => {
+const createFiltersTemplate = (filters) => {
   const navigationMarkup = filters.map((filter) => {
-    return createNavigationMarkup(filter, filter.checked);
+    return createFilterMarkup(filter, filter.checked);
   }).join(`\n`);
   return (
-    `<nav class="main-navigation">
-      <div class="main-navigation__items">
-        ${navigationMarkup}
-      </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
+    `<div class="main-navigation__items">
+      ${navigationMarkup}
+    </div>`
   );
 };
 
@@ -32,7 +31,7 @@ export default class Filter extends AbstractComponent {
   }
 
   getTemplate() {
-    return createNavigationTemplate(this._filters);
+    return createFiltersTemplate(this._filters);
   }
 
   setFilterChangeHandler(handler) {
@@ -47,6 +46,13 @@ export default class Filter extends AbstractComponent {
       }
       this._currentFilterType = filterType;
       handler(this._currentFilterType);
+    });
+  }
+
+  setActiveScreenChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      handler(ActiveScreen.MOVIES);
     });
   }
 }

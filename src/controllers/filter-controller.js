@@ -4,13 +4,15 @@ import {render, replace, RenderPosition} from "../utils/render.js";
 import {getCardsByFilter} from "../utils/filter.js";
 
 export default class FilterController {
-  constructor(container, cardsModel) {
+  constructor(container, cardsModel, onScreenChange) {
     this._container = container;
     this._cardsModel = cardsModel;
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
     this._watchedMoviesCount = 0;
+
+    this._onScreenChange = onScreenChange;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -19,7 +21,6 @@ export default class FilterController {
   }
 
   render() {
-    const container = this._container;
     const allCards = this._cardsModel.getCardsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
@@ -34,21 +35,23 @@ export default class FilterController {
     const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setActiveScreenChangeHandler(this._onScreenChange);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.AFTERBEGIN);
+      render(this._container, this._filterComponent, RenderPosition.AFTERBEGIN);
     }
-  }
-
-  getWatchedMoviesCount() {
-    return this._watchedMoviesCount;
   }
 
   _onFilterChange(filterType) {
     this._cardsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+    this.render();
+  }
+
+  removeActiveClass() {
+    this._activeFilterType = ``;
     this.render();
   }
 

@@ -13,13 +13,36 @@ export const MONTH_NAMES = [
   `December`,
 ];
 
-export const RANK_NAMES = [
-  `Novice`, `Fan`, `Movie Buff`
-];
+export const RankName = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie Buff`,
+};
 
 export const FilterType = {
   ALL: `All movies`,
   WATCHLIST: `Watchlist`,
   HISTORY: `History`,
   FAVORITES: `Favorites`,
+};
+
+export const ActiveScreen = {
+  STATS: `Stats`,
+  MOVIES: `Movies`,
+};
+
+export const GENRE_NAMES = [
+  `Sci-Fi`,
+  `Animation`,
+  `Fantasy`,
+  `Comedy`,
+  `TV Series`,
+];
+
+export const StatisticsFilterType = {
+  ALL_TIME: `All time`,
+  TODAY: `Today`,
+  WEEK: `Week`,
+  MONTH: `Month`,
+  YEAR: `Year`
 };
