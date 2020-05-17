@@ -3,7 +3,6 @@ import moment from "moment";
 
 const Time = {
   START_OF_TODAY: moment().startOf(`day`),
-  END_OF_YESTERDAY: moment().subtract(1, `days`).endOf(`day`),
   WEEK_AGO: moment().subtract(7, `days`).startOf(`day`),
   MONTH_AGO: moment().subtract(1, `months`).startOf(`day`),
   YEAR_AGO: moment().subtract(1, `years`).startOf(`day`),
@@ -39,15 +38,15 @@ export const getWatchedMoviesByStatisticsFilter = (filter, cards) => {
       });
     case StatisticsFilterType.WEEK:
       return cards.filter((card) => {
-        return card.watchingDate > Time.WEEK_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
+        return card.watchingDate > Time.WEEK_AGO;
       });
     case StatisticsFilterType.MONTH:
       return cards.filter((card) => {
-        return card.watchingDate > Time.MONTH_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
+        return card.watchingDate > Time.MONTH_AGO;
       });
     case StatisticsFilterType.YEAR:
       return cards.filter((card) => {
-        return card.watchingDate > Time.YEAR_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
+        return card.watchingDate > Time.YEAR_AGO;
       });
   }
   return cards;
