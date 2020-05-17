@@ -4,7 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {formatTime, capitalizeString} from "../utils/format.js";
 import {getCardsByFilter, getWatchedMoviesByStatisticsFilter} from "../utils/filter.js";
 import {getRankName} from "../utils/rank-name.js";
-import {GENRE_NAMES, FilterType, StatisticsFilter} from "../const.js";
+import {GENRE_NAMES, FilterType, StatisticsFilterType} from "../const.js";
 
 const BAR_HEIGHT = 50;
 
@@ -93,7 +93,7 @@ const createTopGenreMarkup = (topGenre) => {
 };
 
 const createStatisticsTemplate = (watchedMoviesAll, watchedMovies, totalDuration, topGenre, activeFilter) => {
-  const filtersMarkup = Object.values(StatisticsFilter).map((filter) => {
+  const filtersMarkup = Object.values(StatisticsFilterType).map((filter) => {
     const checked = (activeFilter === filter) ? true : false;
     return createFilterMarkup(filter, checked);
   }).join(`\n`);
@@ -183,7 +183,7 @@ export default class Statistics extends AbstractSmartComponent {
 
   show() {
     super.show();
-    this._filter = StatisticsFilter.ALL_TIME;
+    this._filter = StatisticsFilterType.ALL_TIME;
     this.rerender();
   }
 
