@@ -39,7 +39,7 @@ export const GENRE_NAMES = [
   `TV Series`,
 ];
 
-export const StatisticsFilter = {
+export const StatisticsFilterType = {
   ALL_TIME: `All time`,
   TODAY: `Today`,
   WEEK: `Week`,

@@ -1,4 +1,4 @@
-import {FilterType, StatisticsFilter} from "../const.js";
+import {FilterType, StatisticsFilterType} from "../const.js";
 import moment from "moment";
 
 const Time = {
@@ -29,26 +29,26 @@ export const getCardsByFilter = (filterType, cards) => {
   return cards;
 };
 
-export const getWatchedMoviesByStatisticsFilter = (filter, watchedMovies) => {
+export const getWatchedMoviesByStatisticsFilter = (filter, cards) => {
   switch (filter) {
-    case StatisticsFilter.ALL_TIME:
-      return watchedMovies;
-    case StatisticsFilter.TODAY:
-      return watchedMovies.filter((card) => {
+    case StatisticsFilterType.ALL_TIME:
+      return cards;
+    case StatisticsFilterType.TODAY:
+      return cards.filter((card) => {
         return card.watchingDate >= Time.START_OF_TODAY;
       });
-    case StatisticsFilter.WEEK:
-      return watchedMovies.filter((card) => {
+    case StatisticsFilterType.WEEK:
+      return cards.filter((card) => {
         return card.watchingDate > Time.WEEK_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
       });
-    case StatisticsFilter.MONTH:
-      return watchedMovies.filter((card) => {
+    case StatisticsFilterType.MONTH:
+      return cards.filter((card) => {
         return card.watchingDate > Time.MONTH_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
       });
-    case StatisticsFilter.YEAR:
-      return watchedMovies.filter((card) => {
+    case StatisticsFilterType.YEAR:
+      return cards.filter((card) => {
         return card.watchingDate > Time.YEAR_AGO && card.watchingDate < Time.END_OF_YESTERDAY;
       });
   }
-  return watchedMovies;
+  return cards;
 };
