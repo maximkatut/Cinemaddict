@@ -34,7 +34,7 @@ const createPopupCommentsTemplate = (options = {}) => {
         <img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">
       </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${encodedCommentText}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" disabled>${encodedCommentText}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -70,6 +70,10 @@ export default class PopupNewComment extends AbstractSmartComponent {
   setChangeEmojiClickHandler(handler) {
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`click`, handler);
     this._changeEmojiHandler = handler;
+  }
+
+  enableInput() {
+    this.getElement().querySelector(`.film-details__comment-input`).disabled = false;
   }
 
   setNewCommentInputChangeHandler(handler) {

@@ -4,6 +4,8 @@ import PopupCommentsListComponent from "../components/popup-comments-list.js";
 import PopupNewCommentComponent from "../components/popup-new-comment.js";
 import CommentController from "../controllers/comment-controller.js";
 import CardModel from "../models/card.js";
+import CommentsModel from "../models/comments.js";
+
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
@@ -15,11 +17,12 @@ const renderComments = (container, comments, onCommentsDataChange) => {
 };
 
 export default class PopupController {
-  constructor(onDataChange, onViewChange) {
+  constructor(onDataChange, onViewChange, api) {
     this._card = {};
     this._comments = [];
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._commentsModel = null;
 
@@ -38,8 +41,7 @@ export default class PopupController {
 
   render(card) {
     this._card = card;
-    this._commentsModel = this._card.commentsModel;
-    this._comments = this._commentsModel.getComments();
+    this._commentsModel = new CommentsModel();
     // Find body element for rendering popup card
     const siteBodyElement = document.querySelector(`body`);
     const oldPopupComponent = this._popupComponent;
@@ -47,7 +49,7 @@ export default class PopupController {
     const oldPopupCommentsComponent = this._popupCommentsListComponent;
 
     this._popupControlsComponent = new PopupControlsComponent(this._card);
-    this._popupCommentsListComponent = new PopupCommentsListComponent(this._comments);
+    this._popupCommentsListComponent = new PopupCommentsListComponent(this._card.comments);
     this._popupNewCommentComponent = new PopupNewCommentComponent();
 
     if (oldPopupComponent) {
@@ -63,7 +65,19 @@ export default class PopupController {
       render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
     }
 
-    renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
+    this._api.getComments(this._card.id)
+      .then((comments) => {
+        this._commentsModel.setComments(comments);
+      })
+      .then(() => {
+        this._popupCommentsListComponent.removePreloadingPlaceholder();
+        this._popupNewCommentComponent.enableInput();
+        this._comments = this._commentsModel.getComments();
+        renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
+      })
+      .catch(() => {
+        this._popupCommentsListComponent.setNoDataTitle();
+      });
 
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
@@ -71,21 +85,18 @@ export default class PopupController {
     this._popupControlsComponent.setWatchlistClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isInWatchlist = !newCard.isInWatchlist;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isWatched = !newCard.isWatched;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isFavorite = !newCard.isFavorite;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
 
@@ -111,20 +122,19 @@ export default class PopupController {
     document.addEventListener(`keydown`, this._onKeyDown);
   }
 
+
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {
       const isSuccess = this._commentsModel.deleteComment(id);
       if (isSuccess) {
-        this._card.comments = this._card.comments.filter((comment) => comment !== id);
         this._onDataChange(this._card, Object.assign({}, this._card, {
-          commentsModel: this._commentsModel
+          comments: this._card.comments.filter((comment) => comment !== id)
         }));
       }
     } else if (id === null) {
       this._commentsModel.addComment(newComment);
-      this._card.comments.push(newComment.id);
       this._onDataChange(this._card, Object.assign({}, this._card, {
-        commentsModel: this._commentsModel
+        comments: this._card.comments.concat(newComment.id)
       }));
     }
   }

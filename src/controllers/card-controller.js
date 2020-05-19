@@ -6,10 +6,11 @@ import CardModel from "../models/card.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 export default class CardController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._card = {};
     this._cardComponent = null;
@@ -60,28 +61,25 @@ export default class CardController {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isInWatchlist = !newCard.isInWatchlist;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
     this._cardControlsComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isWatched = !newCard.isWatched;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
     this._cardControlsComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isFavorite = !newCard.isFavorite;
-      newCard.commentsModel = this._card.commentsModel;
       this._onDataChange(this._card, newCard);
     });
   }
 
   _showPopup() {
     this._onViewChange();
-    this._popupController = new PopupController(this._onDataChange, this._onViewChange);
+    this._popupController = new PopupController(this._onDataChange, this._onViewChange, this._api);
     this._popupController.render(this._card);
   }
 
