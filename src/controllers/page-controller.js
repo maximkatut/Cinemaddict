@@ -37,9 +37,10 @@ const getSortedCards = (cards, sortType, from, to) => {
 };
 
 export default class PageController {
-  constructor(container, cardsModel) {
+  constructor(container, cardsModel, api) {
     this._container = container;
     this._cardsModel = cardsModel;
+    this._api = api;
 
     this._showedCardControllers = [];
 
@@ -155,14 +156,17 @@ export default class PageController {
   }
 
   _onDataChange(oldCard, newCard) {
-    const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
-    if (isSuccess) {
-      this._showedCardControllers.forEach((it) => {
-        if (it._card === oldCard) {
-          it.render(newCard);
-        }
-      });
-    }
+    this._api.updateCard(oldCard.id, newCard)
+    .then(() => {
+      const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
+      if (isSuccess) {
+        this._showedCardControllers.forEach((it) => {
+          if (it._card === oldCard) {
+            it.render(newCard);
+          }
+        });
+      }
+    });
   }
 
   _onViewChange() {

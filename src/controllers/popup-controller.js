@@ -3,6 +3,7 @@ import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsListComponent from "../components/popup-comments-list.js";
 import PopupNewCommentComponent from "../components/popup-new-comment.js";
 import CommentController from "../controllers/comment-controller.js";
+import CardModel from "../models/card.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
@@ -68,21 +69,24 @@ export default class PopupController {
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
 
     this._popupControlsComponent.setWatchlistClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isInWatchlist: !this._card.isInWatchlist
-      }));
+      const newCard = CardModel.clone(this._card);
+      newCard.isInWatchlist = !newCard.isInWatchlist;
+      newCard.commentsModel = this._card.commentsModel;
+      this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isWatched: !this._card.isWatched
-      }));
+      const newCard = CardModel.clone(this._card);
+      newCard.isWatched = !newCard.isWatched;
+      newCard.commentsModel = this._card.commentsModel;
+      this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        isFavorite: !this._card.isFavorite
-      }));
+      const newCard = CardModel.clone(this._card);
+      newCard.isFavorite = !newCard.isFavorite;
+      newCard.commentsModel = this._card.commentsModel;
+      this._onDataChange(this._card, newCard);
     });
 
     this._popupNewCommentComponent.setNewCommentInputChangeHandler((evt) => {

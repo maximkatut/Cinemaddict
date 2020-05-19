@@ -11,8 +11,9 @@ import {ActiveScreen} from "./const.js";
 import {RenderPosition, render} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
-const api = new API(AUTHORIZATION);
+const api = new API(AUTHORIZATION, END_POINT);
 const cardsModel = new CardsModel(api);
 
 const siteHeaderElement = document.querySelector(`.header`);
@@ -39,7 +40,7 @@ const profileController = new ProfileController(siteHeaderElement, cardsModel);
 const mainNavigationComponent = new MainNavigationComponent();
 const filterController = new FilterController(mainNavigationComponent.getElement(), cardsModel, onScreenChangeHandler);
 const filmsBoardComponent = new FilmsBoardComponent();
-const pageController = new PageController(filmsBoardComponent, cardsModel);
+const pageController = new PageController(filmsBoardComponent, cardsModel, api);
 const statisticsComponent = new StatisticsComponent(cardsModel);
 
 profileController.render();
