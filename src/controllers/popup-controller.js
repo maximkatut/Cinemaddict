@@ -15,11 +15,12 @@ const renderComments = (container, comments, onCommentsDataChange) => {
 };
 
 export default class PopupController {
-  constructor(onDataChange, onViewChange) {
+  constructor(onDataChange, onViewChange, api) {
     this._card = {};
     this._comments = [];
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._commentsModel = null;
 
@@ -121,11 +122,14 @@ export default class PopupController {
         }));
       }
     } else if (id === null) {
-      this._commentsModel.addComment(newComment);
-      this._card.comments.push(newComment.id);
-      this._onDataChange(this._card, Object.assign({}, this._card, {
-        commentsModel: this._commentsModel
-      }));
+      this._api.createComment(newComment, this._card.id)
+        .then(() => {
+          this._commentsModel.addComment(newComment);
+          this._card.comments.push(newComment.id);
+          this._onDataChange(this._card, Object.assign({}, this._card, {
+            commentsModel: this._commentsModel
+          }));
+        });
     }
   }
 

@@ -6,10 +6,11 @@ import CardModel from "../models/card.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 export default class CardController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._card = {};
     this._cardComponent = null;
@@ -81,7 +82,7 @@ export default class CardController {
 
   _showPopup() {
     this._onViewChange();
-    this._popupController = new PopupController(this._onDataChange, this._onViewChange);
+    this._popupController = new PopupController(this._onDataChange, this._onViewChange, this._api);
     this._popupController.render(this._card);
   }
 
