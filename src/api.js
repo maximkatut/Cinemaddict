@@ -1,6 +1,13 @@
 import Card from "./models/card.js";
 import Comment from "./models/comment.js";
 
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -10,42 +17,41 @@ const checkStatus = (response) => {
 };
 
 export default class API {
-  constructor(authorization, url) {
+  constructor(authorization, endPoint) {
     this._authorization = authorization;
-    this._url = url;
+    this._endPoint = endPoint;
   }
 
   getCards() {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._url}/movies`, {headers})
-      .then(checkStatus)
+    return this._load({url: `movies`})
       .then((response) => response.json())
       .then(Card.parseCards);
   }
 
   getComments(CardId) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._url}/comments/${CardId}`, {headers})
-    .then(checkStatus)
-    .then((response) => response.json())
-    .then(Comment.parseComments);
+    return this._load({url: `comments/${CardId}`})
+      .then((response) => response.json())
+      .then(Comment.parseComments);
   }
 
   updateCard(id, data) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-    headers.append(`Content-Type`, `application/json`);
-
-    return fetch(`${this._url}/movies/${id}`, {
-      method: `PUT`,
+    return this._load({
+      url: `movies/${id}`,
+      method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
-      headers,
-    }).then(checkStatus)
+      headers: new Headers({"Content-Type": `application/json`})
+    })
       .then((response) => response.json())
       .then(Card.parseCard);
+  }
+
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
   }
 }
