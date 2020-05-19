@@ -42,4 +42,10 @@ export default class PopupControls extends AbstractComponent {
     this.getElement().querySelector(`.film-details__control-label--favorite`)
     .addEventListener(`click`, handler);
   }
+
+  disableControlButtons() {
+    this.getElement().querySelectorAll(`.film-details__control-input`).forEach((button) => {
+      button.disabled = true;
+    });
+  }
 }

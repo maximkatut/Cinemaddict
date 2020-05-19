@@ -61,18 +61,21 @@ export default class CardController {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isInWatchlist = !newCard.isInWatchlist;
+      this._cardControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
     this._cardControlsComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isWatched = !newCard.isWatched;
+      this._cardControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
     this._cardControlsComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
       const newCard = CardModel.clone(this._card);
       newCard.isFavorite = !newCard.isFavorite;
+      this._cardControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
   }

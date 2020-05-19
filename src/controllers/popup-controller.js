@@ -85,18 +85,21 @@ export default class PopupController {
     this._popupControlsComponent.setWatchlistClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isInWatchlist = !newCard.isInWatchlist;
+      this._popupControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isWatched = !newCard.isWatched;
+      this._popupControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
       const newCard = CardModel.clone(this._card);
       newCard.isFavorite = !newCard.isFavorite;
+      this._popupControlsComponent.disableControlButtons();
       this._onDataChange(this._card, newCard);
     });
 
