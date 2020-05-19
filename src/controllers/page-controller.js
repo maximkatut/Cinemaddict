@@ -176,4 +176,8 @@ export default class PageController {
   _onFilterChange() {
     this._updateCards();
   }
+
+  setLoadingTitle() {
+    this._mainFilmsListComponent.setNewTitle(`Loading...`, true);
+  }
 }
