@@ -14,7 +14,7 @@ const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
 const api = new API(AUTHORIZATION, END_POINT);
-const cardsModel = new CardsModel(api);
+const cardsModel = new CardsModel();
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -54,7 +54,11 @@ statisticsComponent.hide();
 api.getCards()
   .then((cards) => {
     cardsModel.setCards(cards);
+    filmsBoardComponent.deleteLoadingTitle();
     pageController.render();
     const filmsCountComponent = new FilmsCountComponent(cardsModel.getCardsAll().length);
     render(siteCountStatisticsElement, filmsCountComponent, RenderPosition.BEFOREEND);
+  })
+  .catch(() => {
+    filmsBoardComponent.setNoDataTitle();
   });
