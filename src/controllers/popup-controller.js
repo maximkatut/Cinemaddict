@@ -1,18 +1,31 @@
 import PopupComponent from "../components/popup.js";
 import PopupControlsComponent from "../components/popup-controls.js";
 import PopupCommentsListComponent from "../components/popup-comments-list.js";
+import PopupCommentsListComponentCount from "../components/popup-comments-list-count.js";
 import PopupNewCommentComponent from "../components/popup-new-comment.js";
 import CommentController from "../controllers/comment-controller.js";
 import CardModel from "../models/card.js";
 import CommentsModel from "../models/comments.js";
-
+import CommentModel from "../models/comment.js";
+import {checkControlsOnChange} from "../utils/controls.js";
 
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
 const renderComments = (container, comments, onCommentsDataChange) => {
-  return comments.forEach((comment) => {
+  return comments.map((comment) => {
     const commentController = new CommentController(container, onCommentsDataChange);
     commentController.render(comment);
+    return commentController;
+  });
+};
+
+const parseNewCommentData = (newComment) => {
+  return new CommentModel({
+    "id": newComment.id,
+    "author": newComment.author,
+    "comment": newComment.content,
+    "date": newComment.date,
+    "emotion": newComment.emoji
   });
 };
 
@@ -24,60 +37,69 @@ export default class PopupController {
     this._onViewChange = onViewChange;
     this._api = api;
 
-    this._commentsModel = null;
+    this._commentsModel = new CommentsModel();
 
     this._popupComponent = null;
     this._popupControlsComponent = null;
     this._popupCommentsListComponent = null;
+    this._popupCommentsListComponentCount = null;
     this._popupNewCommentComponent = null;
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
 
+    this._showedCommentControllers = null;
     this._selectedEmoji = ``;
     this._newCommentText = ``;
   }
 
   render(card) {
+    const oldCard = this._card;
     this._card = card;
-    this._commentsModel = new CommentsModel();
-    // Find body element for rendering popup card
+
     const siteBodyElement = document.querySelector(`body`);
     const oldPopupComponent = this._popupComponent;
-    const oldPopupControlsComponent = this._popupControlsComponent;
-    const oldPopupCommentsComponent = this._popupCommentsListComponent;
 
-    this._popupControlsComponent = new PopupControlsComponent(this._card);
-    this._popupCommentsListComponent = new PopupCommentsListComponent(this._card.comments);
-    this._popupNewCommentComponent = new PopupNewCommentComponent();
 
     if (oldPopupComponent) {
-      replace(this._popupControlsComponent, oldPopupControlsComponent);
-      replace(this._popupCommentsListComponent, oldPopupCommentsComponent);
-      render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
+      if (checkControlsOnChange(oldCard, this._card)) {
+        this._popupControlsComponent.rerender(this._card);
+        return;
+      } else {
+        const oldPopupNewCommentComponent = this._popupNewCommentComponent;
+        this._popupNewCommentComponent = new PopupNewCommentComponent();
+        replace(this._popupNewCommentComponent, oldPopupNewCommentComponent);
+      }
     } else {
       this._onViewChange();
       this._popupComponent = new PopupComponent(this._card);
+      this._popupControlsComponent = new PopupControlsComponent(this._card);
+      this._popupCommentsListComponent = new PopupCommentsListComponent();
+      this._popupCommentsListComponentCount = new PopupCommentsListComponentCount(this._card.comments);
+      this._popupNewCommentComponent = new PopupNewCommentComponent();
+
       render(siteBodyElement, this._popupComponent, RenderPosition.BEFOREEND);
       render(this._popupComponent.getPopupControlsContainer(), this._popupControlsComponent, RenderPosition.BEFOREEND);
       render(this._popupComponent.getPopupCommentsContainer(), this._popupCommentsListComponent, RenderPosition.BEFOREEND);
+      render(this._popupCommentsListComponent.getElement(), this._popupCommentsListComponentCount, RenderPosition.AFTERBEGIN);
       render(this._popupCommentsListComponent.getElement(), this._popupNewCommentComponent, RenderPosition.BEFOREEND);
-    }
 
-    this._api.getComments(this._card.id)
+      this._popupCommentsListComponent.preloadData();
+
+      this._api.getComments(this._card.id)
       .then((comments) => {
         this._commentsModel.setComments(comments);
       })
       .then(() => {
-        this._popupCommentsListComponent.removePreloadingPlaceholder();
-        this._popupNewCommentComponent.enableInput();
+        this._popupCommentsListComponent.removePreload();
         this._comments = this._commentsModel.getComments();
-        renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
+        this._showedCommentControllers = renderComments(this._popupCommentsListComponent.getCommentsList(), this._comments, this._onCommentsDataChange);
       })
       .catch(() => {
         this._popupCommentsListComponent.setNoDataTitle();
       });
+    }
 
     // set click event for popup close button and Esc key
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
@@ -128,19 +150,52 @@ export default class PopupController {
 
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {
-      const isSuccess = this._commentsModel.deleteComment(id);
-      if (isSuccess) {
-        this._onDataChange(this._card, Object.assign({}, this._card, {
-          comments: this._card.comments.filter((comment) => comment !== id)
-        }));
-      }
-    } else if (id === null) {
-      this._api.createComment(newComment, this._card.id)
+      // Delete a comment
+      const commentController = this._showedCommentControllers.find((it) => it._comment.id === id);
+      commentController.setDeleteButtonData({
+        buttonName: `Deleting...`,
+        isDisabled: true,
+        isShake: false
+      });
+      this._api.deleteComment(id)
         .then(() => {
-          this._commentsModel.addComment(newComment);
-          this._onDataChange(this._card, Object.assign({}, this._card, {
-            comments: this._card.comments.concat(newComment.id)
-          }));
+          const isSuccess = this._commentsModel.deleteComment(id);
+          if (isSuccess) {
+            commentController.destroy();
+            const newCard = CardModel.clone(this._card);
+            newCard.comments = this._card.comments.filter((comment) => comment !== id);
+            this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
+            this._onDataChange(this._card, newCard);
+            this._showedCommentControllers.pop(commentController);
+          }
+        })
+        .catch(() => {
+          commentController.setDeleteButtonData({
+            buttonName: `Delete`,
+            isDisabled: false,
+            isShake: true
+          });
+        });
+
+    } else if (id === null) {
+      // Add new comment
+      this._popupNewCommentComponent.setInputStatus(true);
+      const newCommentParsed = parseNewCommentData(newComment);
+      this._api.addComment(newCommentParsed, this._card.id)
+        .then((comments) => {
+          this._commentsModel.setComments(comments);
+          const newData = this._commentsModel.getComments()[this._commentsModel.getComments().length - 1];
+          const newCard = CardModel.clone(this._card);
+          newCard.comments = this._card.comments.concat(newData.id);
+          this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
+          this._onDataChange(this._card, newCard);
+          const commentController = new CommentController(this._popupCommentsListComponent.getCommentsList(), this._onCommentsDataChange);
+          commentController.render(newData);
+          this._showedCommentControllers.push(commentController);
+        })
+        .catch(() => {
+          this._popupNewCommentComponent.setInputStatus(false);
+          this._popupComponent.shake();
         });
     }
   }
