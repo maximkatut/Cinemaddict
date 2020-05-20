@@ -3,6 +3,7 @@ import CardControlsComponent from "../components/card-controls.js";
 import PopupController from "../controllers/popup-controller.js";
 import CardModel from "../models/card.js";
 
+import {checkControlsOnChange} from "../utils/controls.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 export default class CardController {
@@ -28,16 +29,7 @@ export default class CardController {
       if (this._popupController) {
         this._popupController.render(this._card);
       }
-      let isCardControlsChanged = false;
-      const controlsKeys = [`isFavorite`, `isInWatchlist`, `isWatched`];
-      Object.keys(card).forEach((key) => {
-        if (oldCard[key] !== this._card[key]) {
-          if (controlsKeys.includes(key)) {
-            isCardControlsChanged = true;
-          }
-        }
-      });
-      if (isCardControlsChanged) {
+      if (checkControlsOnChange(oldCard, this._card)) {
         this._cardControlsComponent.rerender(this._card);
         return;
       }

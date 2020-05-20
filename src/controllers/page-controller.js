@@ -3,7 +3,7 @@ import FilmsListComponent from "../components/films-list.js";
 import MoreButtonComponent from "../components/more-button.js";
 import CardController from "./card-controller.js";
 
-import {selectMostCommentedCards, selectTopCards} from "../utils/cardsSelector.js";
+import {selectMostCommentedCards, selectTopCards} from "../utils/cards-selector.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 const CARDS_COUNT_ON_START = 5;
