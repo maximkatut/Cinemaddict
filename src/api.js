@@ -28,12 +28,6 @@ export default class API {
       .then(Card.parseCards);
   }
 
-  getComments(CardId) {
-    return this._load({url: `comments/${CardId}`})
-      .then((response) => response.json())
-      .then(Comment.parseComments);
-  }
-
   updateCard(id, data) {
     return this._load({
       url: `movies/${id}`,
@@ -45,7 +39,13 @@ export default class API {
       .then(Card.parseCard);
   }
 
-  createComment(comment, cardId) {
+  getComments(CardId) {
+    return this._load({url: `comments/${CardId}`})
+      .then((response) => response.json())
+      .then(Comment.parseComments);
+  }
+
+  addComment(comment, cardId) {
     return this._load({
       url: `comments/${cardId}`,
       method: Method.POST,
@@ -53,7 +53,15 @@ export default class API {
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(Comment.parseComment);
+      .then((response) => response.comments)
+      .then(Comment.parseComments);
+  }
+
+  deleteComment(id) {
+    return this._load({
+      url: `comments/${id}`,
+      method: Method.DELETE,
+    });
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
