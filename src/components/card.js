@@ -17,7 +17,7 @@ const createFilmCardTemplate = (card) => {
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
-      <a class="film-card__comments">${comments.getComments().length} comments</a>
+      <a class="film-card__comments">${comments.length} comments</a>
     </article>`
   );
 };
@@ -26,7 +26,6 @@ export default class Card extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    this._comments = card.comments.getComments();
     this._openPopupHandler = null;
   }
 

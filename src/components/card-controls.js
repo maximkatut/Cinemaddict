@@ -30,14 +30,12 @@ export default class CardControls extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
     .addEventListener(`click`, handler);
     this._watchlistClickHandler = handler;
-
   }
 
   setWatchedClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
     .addEventListener(`click`, handler);
     this._watchedClickHandler = handler;
-
   }
 
   setFavoriteClickHandler(handler) {
@@ -57,4 +55,9 @@ export default class CardControls extends AbstractSmartComponent {
     super.rerender();
   }
 
+  disableControlButtons() {
+    this.getElement().querySelectorAll(`.button`).forEach((button) => {
+      button.disabled = true;
+    });
+  }
 }

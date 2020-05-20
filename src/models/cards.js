@@ -1,8 +1,7 @@
 import {getCardsByFilter} from "../utils/filter.js";
-import CommentsModel from "./comments.js";
-
 export default class Cards {
-  constructor() {
+  constructor(api) {
+    this._api = api;
     this._cards = [];
     this._filterType = ``;
 
@@ -20,11 +19,6 @@ export default class Cards {
 
   setCards(cards) {
     this._cards = Array.from(cards);
-    this._cards.forEach((card) => {
-      const commentsModel = new CommentsModel();
-      commentsModel.setComments(card.comments);
-      card.comments = commentsModel;
-    });
     this._callHandlers(this._dataChangeHandlers);
   }
 
