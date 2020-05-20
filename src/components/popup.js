@@ -8,11 +8,9 @@ const createPopupTemplate = (card) => {
   const createPopupGenreMarkup = (it) => {
     return `<span class="film-details__genre">${it}</span>`;
   };
-
-  const genresMarkup = genre.map((it) => {
+  let genresMarkup = genre.map((it) => {
     return createPopupGenreMarkup(it);
   }).join(`\n`);
-
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -64,11 +62,11 @@ const createPopupTemplate = (card) => {
                   <td class="film-details__term">Country</td>
                   <td class="film-details__cell">${country}</td>
                 </tr>
-                <tr class="film-details__row">
-                  <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
-                  <td class="film-details__cell">
-                  ${genresMarkup}
-                </tr>
+                ${genre.length === 0 ? `` : `<tr class="film-details__row">
+                                              <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
+                                              <td class="film-details__cell">
+                                              ${genresMarkup}
+                                            </tr>`}
               </table>
 
               <p class="film-details__film-description">
