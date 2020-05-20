@@ -8,6 +8,8 @@ export const EmojiNames = {
   ANGRY: `angry`,
 };
 
+const INPUT_COLOR_TIEOUT = 1200;
+
 const createCommentsEmojiMarkup = (emoji, isChecked) => {
   const checked = isChecked ? `checked` : ``;
   return (
@@ -34,7 +36,7 @@ const createPopupCommentsTemplate = (options = {}) => {
         <img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}">
       </div>
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" disabled>${encodedCommentText}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${encodedCommentText}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -72,8 +74,17 @@ export default class PopupNewComment extends AbstractSmartComponent {
     this._changeEmojiHandler = handler;
   }
 
-  enableInput() {
-    this.getElement().querySelector(`.film-details__comment-input`).disabled = false;
+  setInputStatus(boolean) {
+    const input = this.getElement().querySelector(`.film-details__comment-input`);
+    input.disabled = boolean;
+    if (boolean) {
+      input.style.backgroundColor = `rgb(190, 190, 190)`;
+    } else {
+      input.style.backgroundColor = `rgb(216, 118, 120)`;
+      setTimeout(() => {
+        input.style.backgroundColor = `rgb(256, 256, 256)`;
+      }, INPUT_COLOR_TIEOUT);
+    }
   }
 
   setNewCommentInputChangeHandler(handler) {

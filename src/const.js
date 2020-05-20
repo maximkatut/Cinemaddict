@@ -50,3 +50,5 @@ export const StatisticsFilterType = {
   MONTH: `Month`,
   YEAR: `Year`
 };
+
+export const SHAKE_ANIMATION_TIMEOUT = 600;

@@ -1,5 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 import {formatRelativeDate} from '../utils/format.js';
+import {SHAKE_ANIMATION_TIMEOUT} from '../const.js';
 
 const createCommentTemplate = (comment) => {
   const {content, author, date, emoji} = comment;
@@ -33,5 +34,17 @@ export default class PopupComment extends AbstractComponent {
 
   setDeleteButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, handler);
+  }
+
+  setButtonData({buttonName, isDisabled, isShake}) {
+    const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
+    deleteButton.innerText = buttonName;
+    if (isShake) {
+      this.getElement().classList.add(`shake`);
+      setTimeout(() => {
+        this.getElement().classList.remove(`shake`);
+      }, SHAKE_ANIMATION_TIMEOUT);
+    }
+    deleteButton.disabled = isDisabled;
   }
 }
