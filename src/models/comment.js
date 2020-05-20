@@ -7,6 +7,16 @@ export default class Comment {
     this.emoji = data[`emotion`];
   }
 
+  toRAW() {
+    return {
+      "id": this.id,
+      "author": this.author,
+      "comment": this.content,
+      "date": this.date,
+      "emotion": this.emoji
+    };
+  }
+
   static parseComment(data) {
     return new Comment(data);
   }
