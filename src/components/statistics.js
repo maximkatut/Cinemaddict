@@ -200,7 +200,7 @@ export default class Statistics extends AbstractSmartComponent {
 
   _renderCharts() {
     const statisticsCtx = this.getElement().querySelector(`.statistic__chart`);
-    statisticsCtx.height = BAR_HEIGHT * 5;
+    statisticsCtx.height = BAR_HEIGHT * GENRE_NAMES.length;
     this._resetCharts();
     this._statisticsChart = renderStatisticsChart(statisticsCtx, this._dataSetGenres);
   }
