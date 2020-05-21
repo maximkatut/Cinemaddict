@@ -105,24 +105,15 @@ export default class PopupController {
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
 
     this._popupControlsComponent.setWatchlistClickHandler(() => {
-      const newCard = CardModel.clone(this._card);
-      newCard.isInWatchlist = !newCard.isInWatchlist;
-      this._popupControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changePopupControlsData(`isInWatchlist`);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
-      const newCard = CardModel.clone(this._card);
-      newCard.isWatched = !newCard.isWatched;
-      this._popupControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changePopupControlsData(`isWatched`);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
-      const newCard = CardModel.clone(this._card);
-      newCard.isFavorite = !newCard.isFavorite;
-      this._popupControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changePopupControlsData(`isFavorite`);
     });
 
     this._popupNewCommentComponent.setNewCommentInputChangeHandler((evt) => {
@@ -147,6 +138,13 @@ export default class PopupController {
     document.addEventListener(`keydown`, this._onKeyDown);
   }
 
+  _changePopupControlsData(changedData) {
+    const newCard = CardModel.clone(this._card);
+    newCard[changedData] = !newCard[changedData];
+    this._popupControlsComponent.setControlButtonsDisabledStatus(true);
+    this._onDataChange(this._card, newCard);
+    this._popupControlsComponent.setControlButtonsDisabledStatus(false);
+  }
 
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {

@@ -51,25 +51,24 @@ export default class CardController {
   _addEventListenersToCardControls() {
     this._cardControlsComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
-      const newCard = CardModel.clone(this._card);
-      newCard.isInWatchlist = !newCard.isInWatchlist;
-      this._cardControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changeCardControlsData(`isInWatchlist`);
     });
     this._cardControlsComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
-      const newCard = CardModel.clone(this._card);
-      newCard.isWatched = !newCard.isWatched;
-      this._cardControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changeCardControlsData(`isWatched`);
     });
     this._cardControlsComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
-      const newCard = CardModel.clone(this._card);
-      newCard.isFavorite = !newCard.isFavorite;
-      this._cardControlsComponent.disableControlButtons();
-      this._onDataChange(this._card, newCard);
+      this._changeCardControlsData(`isFavorite`);
     });
+  }
+
+  _changeCardControlsData(changedData) {
+    const newCard = CardModel.clone(this._card);
+    newCard[changedData] = !newCard[changedData];
+    this._cardControlsComponent.setControlButtonsDisabledStatus(true);
+    this._onDataChange(this._card, newCard);
+    this._cardControlsComponent.setControlButtonsDisabledStatus(false);
   }
 
   _showPopup() {
