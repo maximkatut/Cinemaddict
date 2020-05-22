@@ -164,7 +164,7 @@ export default class PopupController {
             newCard.comments = this._card.comments.filter((comment) => comment !== id);
             this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
             this._onDataChange(this._card, newCard);
-            this._showedCommentControllers.pop(commentController);
+            this._showedCommentControllers = this._showedCommentControllers.filter((it) => commentController !== it);
           }
         })
         .catch(() => {
