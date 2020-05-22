@@ -1,4 +1,4 @@
-import API from "./api.js";
+import API from "./api/index.js";
 import PageController from "./controllers/page-controller.js";
 import FilterController from "./controllers/filter-controller.js";
 import ProfileController from "./controllers/profile-controller.js";
