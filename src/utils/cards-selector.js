@@ -1,4 +1,4 @@
-import {getTwoRandomItems} from "../utils/random.js";
+import {getTwoRandomItems} from "./random.js";
 
 export const selectMostCommentedCards = (cards) => {
   if (cards.every((card) => card.comments.length === 0) || cards.length === 0) {

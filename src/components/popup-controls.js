@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createPopupTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
@@ -19,11 +19,27 @@ const createPopupTemplate = (card) => {
   );
 };
 
-export default class PopupControls extends AbstractComponent {
+export default class PopupControls extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
+
+    this._watchlistClickHandler = null;
+    this._watchedClickHandler = null;
+    this._favoriteClickHandler = null;
   }
+
+  recoveryListeners() {
+    this.setWatchlistClickHandler(this._watchlistClickHandler);
+    this.setWatchedClickHandler(this._watchedClickHandler);
+    this.setFavoriteClickHandler(this._favoriteClickHandler);
+  }
+
+  rerender(card) {
+    this._card = card;
+    super.rerender();
+  }
+
   getTemplate() {
     return createPopupTemplate(this._card);
   }
@@ -31,21 +47,24 @@ export default class PopupControls extends AbstractComponent {
   setWatchlistClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--watchlist`)
     .addEventListener(`click`, handler);
+    this._watchlistClickHandler = handler;
   }
 
   setWatchedClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--watched`)
     .addEventListener(`click`, handler);
+    this._watchedClickHandler = handler;
   }
 
   setFavoriteClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--favorite`)
     .addEventListener(`click`, handler);
+    this._favoriteClickHandler = handler;
   }
 
-  disableControlButtons() {
+  setControlButtonsDisabledStatus(isDisabled) {
     this.getElement().querySelectorAll(`.film-details__control-input`).forEach((button) => {
-      button.disabled = true;
+      button.disabled = isDisabled;
     });
   }
 }

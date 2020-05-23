@@ -34,9 +34,13 @@ export const ActiveScreen = {
 export const GENRE_NAMES = [
   `Sci-Fi`,
   `Animation`,
-  `Fantasy`,
+  `Family`,
+  `Horror`,
   `Comedy`,
-  `TV Series`,
+  `Action`,
+  `Adventure`,
+  `Drama`,
+  `Thriller`,
 ];
 
 export const StatisticsFilterType = {
@@ -46,3 +50,5 @@ export const StatisticsFilterType = {
   MONTH: `Month`,
   YEAR: `Year`
 };
+
+export const SHAKE_ANIMATION_TIMEOUT = 600;

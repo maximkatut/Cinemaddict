@@ -3,7 +3,7 @@ import FilmsListComponent from "../components/films-list.js";
 import MoreButtonComponent from "../components/more-button.js";
 import CardController from "./card-controller.js";
 
-import {selectMostCommentedCards, selectTopCards} from "../utils/cardsSelector.js";
+import {selectMostCommentedCards, selectTopCards} from "../utils/cards-selector.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 const CARDS_COUNT_ON_START = 5;
@@ -155,18 +155,26 @@ export default class PageController {
     this._renderLoadMoreButton();
   }
 
-  _onDataChange(oldCard, newCard) {
-    this._api.updateCard(oldCard.id, newCard)
-    .then(() => {
+  _onDataChange(oldCard, newCard, onlyLocalUpdate = false) {
+    const updateModel = () => {
       const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
       if (isSuccess) {
         this._showedCardControllers.forEach((it) => {
-          if (it._card === oldCard) {
+          if (it.getCard() === oldCard) {
             it.render(newCard);
           }
         });
       }
-    });
+    };
+
+    if (onlyLocalUpdate) {
+      updateModel();
+      return Promise.resolve();
+    }
+    return this._api.updateCard(oldCard.id, newCard)
+      .then(() => {
+        updateModel();
+      });
   }
 
   _onViewChange() {

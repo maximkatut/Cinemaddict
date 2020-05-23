@@ -1,3 +1,4 @@
+import moment from "moment";
 export default class Comments {
   constructor() {
     this._comments = [];
@@ -8,7 +9,9 @@ export default class Comments {
   }
 
   setComments(comments) {
-    this._comments = Array.from(comments);
+    this._comments = Array.from(comments.sort((a, b) => {
+      return moment(a.date) - moment(b.date);
+    }));
   }
 
   deleteComment(id) {

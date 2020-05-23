@@ -1,11 +1,10 @@
 import AbstractComponent from "./abstract-component.js";
 
-const createPopupCommentsListTemplate = (comments) => {
+const createPopupCommentsListTemplate = () => {
   return (
     `<section class="film-details__comments-wrap">
-      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
       <ul class="film-details__comments-list">
-        <li class="film-details__comment placeholder">
+        <li class="film-details__comment preloader">
           <span class="film-details__comment-emoji">
             <img src="./images/emoji/circle.png" width="55" height="55" alt="circle-preloader">
           </span>
@@ -18,18 +17,18 @@ const createPopupCommentsListTemplate = (comments) => {
   );
 };
 
-export default class PopupComments extends AbstractComponent {
-  constructor(comments) {
+export default class PopupCommentsList extends AbstractComponent {
+  constructor() {
     super();
-    this._comments = comments;
+
   }
 
   getTemplate() {
-    return createPopupCommentsListTemplate(this._comments);
+    return createPopupCommentsListTemplate();
   }
 
-  removePreloadingPlaceholder() {
-    this.getElement().querySelector(`.placeholder`).remove();
+  removePreload() {
+    this.getElement().querySelector(`.preloader`).remove();
   }
 
   setNoDataTitle() {
@@ -38,5 +37,9 @@ export default class PopupComments extends AbstractComponent {
 
   getCommentsList() {
     return this.getElement().querySelector(`.film-details__comments-list`);
+  }
+
+  preloadData() {
+    this.getElement().querySelector(`.preloader img`).classList.add(`spin`);
   }
 }
