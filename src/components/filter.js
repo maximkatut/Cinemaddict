@@ -3,7 +3,8 @@ import {ActiveScreen} from "../const.js";
 
 
 const createFilterMarkup = (filter, checked) => {
-  let {name, count} = filter;
+  let {count} = filter;
+  const {name} = filter;
   if (name === `All movies`) {
     count = 0;
   }

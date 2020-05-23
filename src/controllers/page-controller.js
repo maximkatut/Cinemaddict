@@ -155,18 +155,26 @@ export default class PageController {
     this._renderLoadMoreButton();
   }
 
-  _onDataChange(oldCard, newCard) {
-    this._api.updateCard(oldCard.id, newCard)
-    .then(() => {
+  _onDataChange(oldCard, newCard, onlyLocalUpdate = false) {
+    const updateModel = () => {
       const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
       if (isSuccess) {
         this._showedCardControllers.forEach((it) => {
-          if (it._card === oldCard) {
+          if (it.getCard() === oldCard) {
             it.render(newCard);
           }
         });
       }
-    });
+    };
+
+    if (onlyLocalUpdate) {
+      updateModel();
+      return Promise.resolve();
+    }
+    return this._api.updateCard(oldCard.id, newCard)
+      .then(() => {
+        updateModel();
+      });
   }
 
   _onViewChange() {

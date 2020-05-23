@@ -62,9 +62,9 @@ export default class PopupControls extends AbstractSmartComponent {
     this._favoriteClickHandler = handler;
   }
 
-  setControlButtonsDisabledStatus(boolean) {
+  setControlButtonsDisabledStatus(isDisabled) {
     this.getElement().querySelectorAll(`.film-details__control-input`).forEach((button) => {
-      button.disabled = boolean;
+      button.disabled = isDisabled;
     });
   }
 }
