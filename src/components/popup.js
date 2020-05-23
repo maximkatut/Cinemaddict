@@ -8,7 +8,7 @@ const createPopupTemplate = (card) => {
   const createPopupGenreMarkup = (it) => {
     return `<span class="film-details__genre">${it}</span>`;
   };
-  let genresMarkup = genre.map((it) => {
+  const genresMarkup = genre.map((it) => {
     return createPopupGenreMarkup(it);
   }).join(`\n`);
   return (
