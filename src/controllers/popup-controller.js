@@ -142,14 +142,16 @@ export default class PopupController {
     const newCard = CardModel.clone(this._card);
     newCard[changedData] = !newCard[changedData];
     this._popupControlsComponent.setControlButtonsDisabledStatus(true);
-    this._onDataChange(this._card, newCard);
-    this._popupControlsComponent.setControlButtonsDisabledStatus(false);
+    this._onDataChange(this._card, newCard)
+      .then(() => {
+        this._popupControlsComponent.setControlButtonsDisabledStatus(false);
+      });
   }
 
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {
       // Delete a comment
-      const commentController = this._showedCommentControllers.find((it) => it._comment.id === id);
+      const commentController = this._showedCommentControllers.find((it) => it.getCommentId() === id);
       commentController.setDeleteButtonData({
         buttonName: `Deleting...`,
         isDisabled: true,
@@ -163,7 +165,7 @@ export default class PopupController {
             const newCard = CardModel.clone(this._card);
             newCard.comments = this._card.comments.filter((comment) => comment !== id);
             this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
-            this._onDataChange(this._card, newCard);
+            this._onDataChange(this._card, newCard, true);
             this._showedCommentControllers = this._showedCommentControllers.filter((it) => commentController !== it);
           }
         })
@@ -186,14 +188,14 @@ export default class PopupController {
           const newCard = CardModel.clone(this._card);
           newCard.comments = this._card.comments.concat(newData.id);
           this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
-          this._onDataChange(this._card, newCard);
+          this._onDataChange(this._card, newCard, true);
           const commentController = new CommentController(this._popupCommentsListComponent.getCommentsList(), this._onCommentsDataChange);
           commentController.render(newData);
           this._showedCommentControllers.push(commentController);
         })
         .catch(() => {
           this._popupNewCommentComponent.setInputStatus(false);
-          this._popupComponent.shake();
+          this._popupNewCommentComponent.shake();
         });
     }
   }

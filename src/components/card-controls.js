@@ -55,9 +55,9 @@ export default class CardControls extends AbstractSmartComponent {
     super.rerender();
   }
 
-  setControlButtonsDisabledStatus(boolean) {
+  setControlButtonsDisabledStatus(isDisabled) {
     this.getElement().querySelectorAll(`.button`).forEach((button) => {
-      button.disabled = boolean;
+      button.disabled = isDisabled;
     });
   }
 }

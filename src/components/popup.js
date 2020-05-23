@@ -1,6 +1,5 @@
 import {formatDate, formatTime} from '../utils/format.js';
 import AbstractComponent from "./abstract-component.js";
-import {SHAKE_ANIMATION_TIMEOUT} from '../const.js';
 
 const createPopupTemplate = (card) => {
   const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
@@ -102,12 +101,5 @@ export default class Popup extends AbstractComponent {
 
   setClosePopupClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
-  }
-
-  shake() {
-    this.getElement().classList.add(`shake`);
-    setTimeout(() => {
-      this.getElement().classList.remove(`shake`);
-    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

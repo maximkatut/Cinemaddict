@@ -25,6 +25,10 @@ export default class CommentController {
     this._commentComponent.setButtonData(data);
   }
 
+  getCommentId() {
+    return this._comment.id;
+  }
+
   destroy() {
     remove(this._commentComponent);
   }

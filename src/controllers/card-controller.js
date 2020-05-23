@@ -67,8 +67,10 @@ export default class CardController {
     const newCard = CardModel.clone(this._card);
     newCard[changedData] = !newCard[changedData];
     this._cardControlsComponent.setControlButtonsDisabledStatus(true);
-    this._onDataChange(this._card, newCard);
-    this._cardControlsComponent.setControlButtonsDisabledStatus(false);
+    this._onDataChange(this._card, newCard)
+      .then(() => {
+        this._cardControlsComponent.setControlButtonsDisabledStatus(false);
+      });
   }
 
   _showPopup() {
@@ -80,6 +82,10 @@ export default class CardController {
   destroy() {
     remove(this._cardComponent);
     this.setDefaultView();
+  }
+
+  getCard() {
+    return this._card;
   }
 
   setDefaultView() {
