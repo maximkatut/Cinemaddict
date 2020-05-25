@@ -75,16 +75,24 @@ export default class PopupNewComment extends AbstractSmartComponent {
     this._changeEmojiHandler = handler;
   }
 
-  setInputStatus(isDisabled) {
+  removeChangeEmojiClickHandler() {
+    this.getElement().querySelector(`.film-details__emoji-list`).removeEventListener(`click`, this._changeEmojiHandler);
+  }
+
+  setInputStatus(isDisabled, isError) {
     const input = this.getElement().querySelector(`.film-details__comment-input`);
     input.disabled = isDisabled;
     if (isDisabled) {
       input.style.backgroundColor = `rgb(190, 190, 190)`;
     } else {
-      input.style.backgroundColor = `rgb(216, 118, 120)`;
-      setTimeout(() => {
+      if (isError) {
+        input.style.backgroundColor = `rgb(216, 118, 120)`;
+        setTimeout(() => {
+          input.style.backgroundColor = `rgb(256, 256, 256)`;
+        }, INPUT_COLOR_TIEOUT);
+      } else {
         input.style.backgroundColor = `rgb(256, 256, 256)`;
-      }, INPUT_COLOR_TIEOUT);
+      }
     }
   }
 
