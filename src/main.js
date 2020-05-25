@@ -80,3 +80,12 @@ window.addEventListener(`online`, () => {
 window.addEventListener(`offline`, () => {
   document.title += ` [offline]`;
 });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+
+    }).catch(() => {
+
+    });
+});
