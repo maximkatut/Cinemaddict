@@ -69,3 +69,14 @@ apiWithProvider.getCards()
   .catch(() => {
     filmsBoardComponent.setNoDataTitle();
   });
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  if (apiWithProvider.getSyncStatus()) {
+    apiWithProvider.sync();
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

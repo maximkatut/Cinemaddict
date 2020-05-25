@@ -39,8 +39,8 @@ export default class API {
       .then(Card.parseCard);
   }
 
-  getComments(CardId) {
-    return this._load({url: `comments/${CardId}`})
+  getComments(cardId) {
+    return this._load({url: `comments/${cardId}`})
       .then((response) => response.json())
       .then(Comment.parseComments);
   }
@@ -52,9 +52,7 @@ export default class API {
       body: JSON.stringify(comment.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then((response) => response.json())
-      .then((response) => response.comments)
-      .then(Comment.parseComments);
+      .then((response) => response.json());
   }
 
   deleteComment(id) {
@@ -62,6 +60,16 @@ export default class API {
       url: `comments/${id}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

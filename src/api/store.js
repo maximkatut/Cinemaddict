@@ -2,42 +2,81 @@ export default class Store {
   constructor(storage, key) {
     this._storage = storage;
     this._storeKey = key;
+    this._storeCommentsKey = `${key}-comments`;
   }
 
   getCards() {
     try {
-      return JSON.parse(this._storage.getCard(this._storeKey)) || {};
+      return JSON.parse(this._storage.getItem(this._storeKey)) || {};
     } catch (err) {
       return {};
     }
   }
 
-  setCard(key, value) {
-    const store = this.getCards();
+  setCards(cards) {
+    this._storage.setItem(
+        this._storeKey,
+        JSON.stringify(cards)
+    );
+  }
 
-    this._storage.setCard(
+  setCard(cardId, card) {
+    const store = this.getCards();
+    this._storage.setItem(
         this._storeKey,
         JSON.stringify(
             Object.assign({}, store, {
-              [key]: value
+              [cardId]: card
             })
         )
     );
   }
 
-  // getComments() {
-  //   try {
-  //     return JSON.parse(this._storage.getItem(this._storeKey)) || {};
-  //   } catch (err) {
-  //     return {};
-  //   }
-  // }
+  getComments(cardId) {
+    try {
+      const comments = JSON.parse(this._storage.getItem(this._storeCommentsKey));
+      return comments[cardId] || {};
+    } catch (err) {
+      return {};
+    }
+  }
 
-  // setComment() {
+  getCommentsAll() {
+    try {
+      return JSON.parse(this._storage.getItem(this._storeCommentsKey)) || {};
+    } catch (err) {
+      return {};
+    }
+  }
 
-  // }
+  setComments(cardId, comments) {
+    const store = this.getCommentsAll();
+    this._storage.setItem(
+        this._storeCommentsKey,
+        JSON.stringify(
+            Object.assign({}, store, {
+              [cardId]: comments
+            })
+        )
+    );
+  }
 
-  // removeComment(key) {
+  removeComment(commentId) {
+    const storeComments = this.getCommentsAll();
+    const newStoreComments = Object.values(storeComments).map((comments) => {
+      const newComments = comments.filter((comment) => comment.id !== commentId);
+      return newComments;
+    });
+    this._storage.setItem(
+        this._storeCommentsKey,
+        JSON.stringify(Object.assign({}, newStoreComments))
+    );
 
-  // }
+    const storeCards = this.getCards();
+    const newStoreCards = Object.values(storeCards).map((card) => {
+      card.comments = card.comments.filter((comment) => comment !== commentId);
+      return card;
+    });
+    this.setCards(newStoreCards);
+  }
 }
