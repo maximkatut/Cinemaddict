@@ -10,9 +10,10 @@ const createStoreStructure = (items) => {
 };
 
 export default class Provider {
-  constructor(api, store) {
+  constructor(api, cardsStore, commentsStore) {
     this._api = api;
-    this._store = store;
+    this._cardsStore = cardsStore;
+    this._commentsStore = commentsStore;
 
     this._isSync = true;
   }
@@ -30,12 +31,12 @@ export default class Provider {
       return this._api.getCards()
         .then((cards) => {
           const localCards = createStoreStructure(cards.map((card) => card.toRAW()));
-          this._store.setCards(localCards);
+          this._cardsStore.setItems(localCards);
           return cards;
         });
     }
-    const storeCards = Object.values(this._store.getCards());
 
+    const storeCards = Object.values(this._cardsStore.getItems());
     return Promise.resolve(Card.parseCards(storeCards));
   }
 
@@ -43,13 +44,14 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.updateCard(id, card)
       .then((newCard) => {
-        this._store.setCard(newCard.id, newCard.toRAW());
+        this._cardsStore.setItem(newCard.id, newCard.toRAW());
         return newCard;
       });
     }
 
+    this._isSync = false;
     const localCard = Card.clone(Object.assign(card, {id}));
-    this._store.setCard(id, localCard.toRAW());
+    this._cardsStore.setItem(id, localCard.toRAW());
     return Promise.resolve(localCard);
   }
 
@@ -57,53 +59,73 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.getComments(cardId)
         .then((comments) => {
-          const localComments = comments.map((localComment) => localComment.toRAW());
-          this._store.setComments(cardId, localComments);
+          const localComments = createStoreStructure(comments.map((localComment) => localComment.toRAW()));
+          this._commentsStore.setItem(cardId, localComments);
           return comments;
         });
     }
 
-    const storeComments = Object.values(this._store.getComments(cardId));
-    return Promise.resolve(Comment.parseComments(storeComments));
+    if (!this._commentsStore.getItems()[cardId]) {
+      return Promise.resolve();
+    } else {
+      const storeComments = Object.values(this._commentsStore.getItems()[cardId]);
+      return Promise.resolve(Comment.parseComments(storeComments));
+    }
   }
 
   addComment(comment, cardId) {
     if (this._isOnline()) {
       return this._api.addComment(comment, cardId)
         .then((response) => {
-          this._store.setCard(cardId, response.movie);
+          this._cardsStore.setItem(cardId, response.movie);
           return Comment.parseComments(response.comments);
         })
         .then((comments) => {
-          const localComments = comments.map((localComment) => localComment.toRAW());
-          this._store.setComments(cardId, localComments);
+          const localComments = createStoreStructure(comments.map((localComment) => localComment.toRAW()));
+          this._commentsStore.setItem(cardId, localComments);
           return comments;
         });
     }
 
-    return Promise.resolve();
+    return Promise.reject(new Error(`Can't remove or add comments when offline`));
   }
 
   deleteComment(id) {
     if (this._isOnline()) {
       return this._api.deleteComment(id)
         .then(() => {
-          this._store.removeComment(id);
+          const storeComments = Object.values(this._commentsStore.getItems());
+          const storeCards = Object.values(this._cardsStore.getItems());
+
+          const newStoreComments = storeComments.map((comments) => {
+            const newComments = Object.values(comments).filter((comment) => comment.id !== id);
+            return newComments;
+          });
+
+          const newStoreCards = storeCards.map((card) => {
+            card.comments = card.comments.filter((comment) => comment !== id);
+            return card;
+          });
+
+          this._commentsStore.setItems(newStoreComments);
+          this._cardsStore.setItems(newStoreCards);
         });
     }
 
-    return Promise.resolve();
+    return Promise.reject(new Error(`Can't remove or add comments when offline`));
   }
 
   sync() {
     if (this._isOnline()) {
-      const storeCards = Object.values(this._store.getCards());
+      const storeCards = Object.values(this._cardsStore.getItems());
 
       return this._api.sync(storeCards)
         .then((response) => {
-          this._store.setCards(response.updated);
+          this._cardsStore.setItems(response.updated);
+          this._isSync = true;
         });
     }
+
     return Promise.reject(new Error(`Sync data failed`));
   }
 }

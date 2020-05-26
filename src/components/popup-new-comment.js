@@ -9,7 +9,7 @@ export const EmojiNames = {
   ANGRY: `angry`,
 };
 
-const INPUT_COLOR_TIEOUT = 1200;
+const INPUT_COLOR_TIMEOUT = 1200;
 
 const createCommentsEmojiMarkup = (emoji, isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -75,24 +75,16 @@ export default class PopupNewComment extends AbstractSmartComponent {
     this._changeEmojiHandler = handler;
   }
 
-  removeChangeEmojiClickHandler() {
-    this.getElement().querySelector(`.film-details__emoji-list`).removeEventListener(`click`, this._changeEmojiHandler);
-  }
-
-  setInputStatus(isDisabled, isError) {
+  setInputStatus(isDisabled) {
     const input = this.getElement().querySelector(`.film-details__comment-input`);
     input.disabled = isDisabled;
     if (isDisabled) {
       input.style.backgroundColor = `rgb(190, 190, 190)`;
     } else {
-      if (isError) {
-        input.style.backgroundColor = `rgb(216, 118, 120)`;
-        setTimeout(() => {
-          input.style.backgroundColor = `rgb(256, 256, 256)`;
-        }, INPUT_COLOR_TIEOUT);
-      } else {
+      input.style.backgroundColor = `rgb(216, 118, 120)`;
+      setTimeout(() => {
         input.style.backgroundColor = `rgb(256, 256, 256)`;
-      }
+      }, INPUT_COLOR_TIMEOUT);
     }
   }
 

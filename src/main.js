@@ -14,13 +14,16 @@ import {RenderPosition, render} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
-const STORE_PREFIX = `cinemaaddict-localstorage`;
+const CARDS_STORE_PREFIX = `cinemaaddict-cards`;
+const COMMENTS_STORE_PREFIX = `cinemaaddict-comments`;
 const STORE_VER = `v1`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const CARDS_STORE_NAME = `${CARDS_STORE_PREFIX}-${STORE_VER}`;
+const COMMENTS_STORE_NAME = `${COMMENTS_STORE_PREFIX}-${STORE_VER}`;
 
 const api = new API(AUTHORIZATION, END_POINT);
-const store = new Store(window.localStorage, STORE_NAME);
-const apiWithProvider = new Provider(api, store);
+const cardsStore = new Store(CARDS_STORE_NAME, window.localStorage);
+const commentsStore = new Store(COMMENTS_STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, cardsStore, commentsStore);
 const cardsModel = new CardsModel();
 
 const siteHeaderElement = document.querySelector(`.header`);
@@ -72,7 +75,7 @@ apiWithProvider.getCards()
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
-  if (apiWithProvider.getSyncStatus()) {
+  if (!apiWithProvider.getSyncStatus()) {
     apiWithProvider.sync();
   }
 });
@@ -83,9 +86,7 @@ window.addEventListener(`offline`, () => {
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`)
-    .then(() => {
-
-    }).catch(() => {
-
+    .catch((error) => {
+      throw error;
     });
 });

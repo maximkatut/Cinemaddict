@@ -48,12 +48,11 @@ export default class PopupController {
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
     this._onCommentsDataChange = this._onCommentsDataChange.bind(this);
-    this._onOnlineStatus = this._onOnlineStatus.bind(this);
-    this._onOfflineStatus = this._onOfflineStatus.bind(this);
 
     this._showedCommentControllers = null;
     this._selectedEmoji = ``;
     this._newCommentText = ``;
+    this._isOnline = window.navigator.onLine;
   }
 
   render(card) {
@@ -138,8 +137,6 @@ export default class PopupController {
     });
 
     document.addEventListener(`keydown`, this._onKeyDown);
-    window.addEventListener(`online`, this._onOnlineStatus);
-    window.addEventListener(`offline`, this._onOfflineStatus);
   }
 
   _changePopupControlsData(changedData) {
@@ -183,7 +180,7 @@ export default class PopupController {
 
     } else if (id === null) {
       // Add new comment
-      this._popupNewCommentComponent.setInputStatus(true, false);
+      this._popupNewCommentComponent.setInputStatus(true);
       const newCommentParsed = parseNewCommentData(newComment);
       this._api.addComment(newCommentParsed, this._card.id)
         .then((comments) => {
@@ -198,7 +195,7 @@ export default class PopupController {
           this._showedCommentControllers.push(commentController);
         })
         .catch(() => {
-          this._popupNewCommentComponent.setInputStatus(false, true);
+          this._popupNewCommentComponent.setInputStatus(false);
           this._popupNewCommentComponent.shake();
         });
     }
@@ -216,26 +213,6 @@ export default class PopupController {
       remove(this._popupComponent);
       document.removeEventListener(`keydown`, this._onKeyDown);
     }
-  }
-
-  _onOnlineStatus() {
-    this._popupNewCommentComponent.setInputStatus(false, false);
-    this._showedCommentControllers.forEach((controller) => controller.setDeleteButtonData({
-      buttonName: `Delete`,
-      isDisabled: false,
-      isShake: false
-    }));
-    this._popupNewCommentComponent.rerender();
-  }
-
-  _onOfflineStatus() {
-    this._popupNewCommentComponent.setInputStatus(true, false);
-    this._showedCommentControllers.forEach((controller) => controller.setDeleteButtonData({
-      buttonName: `Delete[offline]`,
-      isDisabled: true,
-      isShake: false
-    }));
-    this._popupNewCommentComponent.removeChangeEmojiClickHandler();
   }
 
   remove() {
