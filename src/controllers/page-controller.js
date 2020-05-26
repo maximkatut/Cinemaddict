@@ -90,7 +90,7 @@ export default class PageController {
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
     }
     // Render sort menu
-    render(container.parentNode, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
 
     // if topRatedCards or mostCommentedCards === 0 => do not render them
     // Render top rated films
