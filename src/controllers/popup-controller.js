@@ -8,7 +8,9 @@ import CardModel from "../models/card.js";
 import CommentsModel from "../models/comments.js";
 import CommentModel from "../models/comment.js";
 import {checkControlsOnChange} from "../utils/controls.js";
+import {ControlKeys} from "../const.js";
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
+import moment from "moment";
 
 const renderComments = (container, comments, onCommentsDataChange) => {
   return comments.map((comment) => {
@@ -105,15 +107,15 @@ export default class PopupController {
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
 
     this._popupControlsComponent.setWatchlistClickHandler(() => {
-      this._changePopupControlsData(`isInWatchlist`);
+      this._changePopupControlsData(ControlKeys.IS_IN_WATCHLIST);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
-      this._changePopupControlsData(`isWatched`);
+      this._changePopupControlsData(ControlKeys.IS_WATCHED);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
-      this._changePopupControlsData(`isFavorite`);
+      this._changePopupControlsData(ControlKeys.IS_FAVORITE);
     });
 
     this._popupNewCommentComponent.setNewCommentInputChangeHandler((evt) => {
@@ -140,6 +142,9 @@ export default class PopupController {
 
   _changePopupControlsData(changedData) {
     const newCard = CardModel.clone(this._card);
+    if (changedData === ControlKeys.IS_WATCHED && newCard.isWatched === false) {
+      newCard.watchingDate = moment();
+    }
     newCard[changedData] = !newCard[changedData];
     this._popupControlsComponent.setControlButtonsDisabledStatus(true);
     this._onDataChange(this._card, newCard)

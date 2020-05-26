@@ -2,7 +2,8 @@ import CardComponent from "../components/card.js";
 import CardControlsComponent from "../components/card-controls.js";
 import PopupController from "../controllers/popup-controller.js";
 import CardModel from "../models/card.js";
-
+import {ControlKeys} from "../const.js";
+import moment from "moment";
 import {checkControlsOnChange} from "../utils/controls.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
@@ -51,20 +52,23 @@ export default class CardController {
   _addEventListenersToCardControls() {
     this._cardControlsComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
-      this._changeCardControlsData(`isInWatchlist`);
+      this._changeCardControlsData(ControlKeys.IS_IN_WATCHLIST);
     });
     this._cardControlsComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
-      this._changeCardControlsData(`isWatched`);
+      this._changeCardControlsData(ControlKeys.IS_WATCHED);
     });
     this._cardControlsComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
-      this._changeCardControlsData(`isFavorite`);
+      this._changeCardControlsData(ControlKeys.IS_FAVORITE);
     });
   }
 
   _changeCardControlsData(changedData) {
     const newCard = CardModel.clone(this._card);
+    if (changedData === ControlKeys.IS_WATCHED && newCard.isWatched === false) {
+      newCard.watchingDate = moment();
+    }
     newCard[changedData] = !newCard[changedData];
     this._cardControlsComponent.setControlButtonsDisabledStatus(true);
     this._onDataChange(this._card, newCard)
