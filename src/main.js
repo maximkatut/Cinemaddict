@@ -28,8 +28,7 @@ const cardsModel = new CardsModel();
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
-const siteFooterElement = document.querySelector(`.footer`);
-const siteCountStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
+const siteCountStatisticsElement = document.querySelector(`.footer__statistics`);
 
 const onScreenChangeHandler = (activeScreen) => {
   switch (activeScreen) {
