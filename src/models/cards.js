@@ -22,14 +22,14 @@ export default class Cards {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  updateCard(id, card) {
-    const index = this._cards.findIndex((it) => it.id === id);
+  updateCard(id, newCard) {
+    const index = this._cards.findIndex((oldCard) => oldCard.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._cards = [].concat(this._cards.slice(0, index), card, this._cards.slice(index + 1));
+    this._cards = [].concat(this._cards.slice(0, index), newCard, this._cards.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
     return true;

@@ -10,7 +10,6 @@ export default class FilterController {
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
-    this._watchedMoviesCount = 0;
 
     this._onScreenChange = onScreenChange;
 
@@ -29,8 +28,6 @@ export default class FilterController {
         checked: filterType === this._activeFilterType,
       };
     });
-
-    this._watchedMoviesCount = filters[2].count;
 
     const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);

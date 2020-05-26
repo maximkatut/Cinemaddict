@@ -24,12 +24,12 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 const createPopupCommentsTemplate = (options = {}) => {
   const {selectedEmoji, newCommentText} = options;
   const encodedCommentText = encode(newCommentText);
-  const emojisMarkup = Object.values(EmojiNames).map((it) => {
+  const emojisMarkup = Object.values(EmojiNames).map((emojiName) => {
     let isChecked = false;
-    if (it === selectedEmoji) {
+    if (emojiName === selectedEmoji) {
       isChecked = true;
     }
-    return createCommentsEmojiMarkup(it, isChecked);
+    return createCommentsEmojiMarkup(emojiName, isChecked);
   }).join(`\n`);
   return (
     `<div class="film-details__new-comment">

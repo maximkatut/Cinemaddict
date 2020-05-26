@@ -8,8 +8,11 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const STATUS_MIN = 200;
+const STATUS_MAX = 300;
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= STATUS_MIN && response.status < STATUS_MAX) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -55,18 +58,18 @@ export default class API {
       .then((response) => response.json());
   }
 
-  deleteComment(id) {
+  deleteComment(commentId) {
     return this._load({
-      url: `comments/${id}`,
+      url: `comments/${commentId}`,
       method: Method.DELETE,
     });
   }
 
-  sync(data) {
+  sync(storeCards) {
     return this._load({
       url: `movies/sync`,
       method: Method.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(storeCards),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json());
@@ -77,8 +80,8 @@ export default class API {
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
-      .catch((err) => {
-        throw err;
+      .catch((error) => {
+        throw error;
       });
   }
 }

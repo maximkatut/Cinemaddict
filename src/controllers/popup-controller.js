@@ -8,7 +8,6 @@ import CardModel from "../models/card.js";
 import CommentsModel from "../models/comments.js";
 import CommentModel from "../models/comment.js";
 import {checkControlsOnChange} from "../utils/controls.js";
-
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
 
 const renderComments = (container, comments, onCommentsDataChange) => {
@@ -152,7 +151,7 @@ export default class PopupController {
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {
       // Delete a comment
-      const commentController = this._showedCommentControllers.find((it) => it.getCommentId() === id);
+      const commentController = this._showedCommentControllers.find((controller) => controller.getCommentId() === id);
       commentController.setDeleteButtonData({
         buttonName: `Deleting...`,
         isDisabled: true,
@@ -167,7 +166,7 @@ export default class PopupController {
             newCard.comments = this._card.comments.filter((comment) => comment !== id);
             this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
             this._onDataChange(this._card, newCard, true);
-            this._showedCommentControllers = this._showedCommentControllers.filter((it) => commentController !== it);
+            this._showedCommentControllers = this._showedCommentControllers.filter((controller) => commentController !== controller);
           }
         })
         .catch(() => {

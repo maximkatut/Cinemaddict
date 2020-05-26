@@ -159,9 +159,9 @@ export default class PageController {
     const updateModel = () => {
       const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
       if (isSuccess) {
-        this._showedCardControllers.forEach((it) => {
-          if (it.getCard() === oldCard) {
-            it.render(newCard);
+        this._showedCardControllers.forEach((controller) => {
+          if (controller.getCard() === oldCard) {
+            controller.render(newCard);
           }
         });
       }
@@ -178,7 +178,7 @@ export default class PageController {
   }
 
   _onViewChange() {
-    this._showedCardControllers.forEach((it) => it.setDefaultView());
+    this._showedCardControllers.forEach((controller) => controller.setDefaultView());
   }
 
   _onFilterChange() {

@@ -2,7 +2,7 @@ import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createFilmCardControlButtonsTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
-  const checkIsActive = (statement) => statement ? `film-card__controls-item--active` : ``;
+  const checkIsActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
   return (
     `<form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${checkIsActive(isInWatchlist)}">Add to watchlist</button>
