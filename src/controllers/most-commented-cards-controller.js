@@ -2,7 +2,7 @@ import FilmsListComponent from "../components/films-list.js";
 import CardController from "./card-controller.js";
 
 import {selectMostCommentedCards} from "../utils/cards-selector.js";
-import {RenderPosition, render, replace} from "../utils/render.js";
+import {RenderPosition, render} from "../utils/render.js";
 
 const renderCards = (filmsListElement, cards, onDataChange, onViewChange, api) => {
   return cards.map((card) => {
@@ -35,12 +35,14 @@ export default class MostCommentedCardsController {
     const mostCommentedCards = selectMostCommentedCards(cards);
     if (mostCommentedCards.length > 0) {
       if (oldComponent) {
-        replace(this._mostCommentedFilmsListComponent, oldComponent);
+        this._showedCardControllers.forEach((controller, index) => {
+          controller.render(mostCommentedCards[index]);
+        });
       } else {
         render(this._container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
+        const newCards = renderCards(this._mostCommentedFilmsListComponent.getListInnerElement(), mostCommentedCards, this._onDataChange, this._onViewChange, this._api);
+        this._showedCardControllers = this._showedCardControllers.concat(newCards);
       }
-      const newCards = renderCards(this._mostCommentedFilmsListComponent.getListInnerElement(), mostCommentedCards, this._onDataChange, this._onViewChange, this._api);
-      this._showedCardControllers = this._showedCardControllers.concat(newCards);
     }
   }
 
