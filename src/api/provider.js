@@ -94,21 +94,16 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.deleteComment(commentId)
         .then(() => {
-          const storeComments = Object.values(this._commentsStore.getItems());
-          const storeCards = Object.values(this._cardsStore.getItems());
+          const storeComments = this._commentsStore.getItems();
+          const storeCards = this._cardsStore.getItems();
 
-          const newStoreComments = storeComments.map((comments) => {
-            const newComments = Object.values(comments).filter((comment) => comment.id !== commentId);
-            return newComments;
-          });
+          const cardId = Object.keys(storeCards).find((_cardId) => storeCards[_cardId].comments.includes(commentId));
 
-          const newStoreCards = storeCards.map((card) => {
-            card.comments = card.comments.filter((comment) => comment !== commentId);
-            return card;
-          });
+          delete storeComments[cardId][commentId];
+          storeCards[cardId].comments = storeCards[cardId].comments.filter((_commentId) => _commentId !== commentId);
 
-          this._commentsStore.setItems(newStoreComments);
-          this._cardsStore.setItems(newStoreCards);
+          this._commentsStore.setItems(storeComments);
+          this._cardsStore.setItems(storeCards);
         });
     }
 
