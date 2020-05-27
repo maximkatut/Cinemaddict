@@ -52,3 +52,9 @@ export const StatisticsFilterType = {
 };
 
 export const SHAKE_ANIMATION_TIMEOUT = 600;
+
+export const ControlKeys = {
+  IS_FAVORITE: `isFavorite`,
+  IS_IN_WATCHLIST: `isInWatchlist`,
+  IS_WATCHED: `isWatched`,
+};

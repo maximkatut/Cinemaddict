@@ -7,6 +7,7 @@ export default class Cards {
 
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
+    this._commentsChangeHandlers = [];
   }
 
   getCards() {
@@ -22,16 +23,27 @@ export default class Cards {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  updateCard(id, card) {
-    const index = this._cards.findIndex((it) => it.id === id);
+  updateCard(id, newCard) {
+    const index = this._cards.findIndex((oldCard) => oldCard.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._cards = [].concat(this._cards.slice(0, index), card, this._cards.slice(index + 1));
+    let isCommentsChanged = false;
+
+    if (this._cards[index].comments.length !== newCard.comments.length) {
+      isCommentsChanged = true;
+    }
+
+    this._cards = [].concat(this._cards.slice(0, index), newCard, this._cards.slice(index + 1));
+
+    if (isCommentsChanged) {
+      this._callHandlers(this._commentsChangeHandlers);
+    }
 
     this._callHandlers(this._dataChangeHandlers);
+
     return true;
   }
 
@@ -45,6 +57,10 @@ export default class Cards {
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+
+  setCommentsDataChangeHandler(handler) {
+    this._commentsChangeHandlers.push(handler);
   }
 
   setFilter(filterType) {

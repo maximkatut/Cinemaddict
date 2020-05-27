@@ -8,8 +8,9 @@ import CardModel from "../models/card.js";
 import CommentsModel from "../models/comments.js";
 import CommentModel from "../models/comment.js";
 import {checkControlsOnChange} from "../utils/controls.js";
-
+import {ControlKeys} from "../const.js";
 import {RenderPosition, render, remove, replace} from "../utils/render.js";
+import moment from "moment";
 
 const renderComments = (container, comments, onCommentsDataChange) => {
   return comments.map((comment) => {
@@ -52,6 +53,7 @@ export default class PopupController {
     this._showedCommentControllers = null;
     this._selectedEmoji = ``;
     this._newCommentText = ``;
+    this._isOnline = window.navigator.onLine;
   }
 
   render(card) {
@@ -105,15 +107,15 @@ export default class PopupController {
     this._popupComponent.setClosePopupClickHandler(this._onCloseButtonClick);
 
     this._popupControlsComponent.setWatchlistClickHandler(() => {
-      this._changePopupControlsData(`isInWatchlist`);
+      this._changePopupControlsData(ControlKeys.IS_IN_WATCHLIST);
     });
 
     this._popupControlsComponent.setWatchedClickHandler(() => {
-      this._changePopupControlsData(`isWatched`);
+      this._changePopupControlsData(ControlKeys.IS_WATCHED);
     });
 
     this._popupControlsComponent.setFavoriteClickHandler(() => {
-      this._changePopupControlsData(`isFavorite`);
+      this._changePopupControlsData(ControlKeys.IS_FAVORITE);
     });
 
     this._popupNewCommentComponent.setNewCommentInputChangeHandler((evt) => {
@@ -140,6 +142,9 @@ export default class PopupController {
 
   _changePopupControlsData(changedData) {
     const newCard = CardModel.clone(this._card);
+    if (changedData === ControlKeys.IS_WATCHED && newCard.isWatched === false) {
+      newCard.watchingDate = moment();
+    }
     newCard[changedData] = !newCard[changedData];
     this._popupControlsComponent.setControlButtonsDisabledStatus(true);
     this._onDataChange(this._card, newCard)
@@ -151,7 +156,7 @@ export default class PopupController {
   _onCommentsDataChange(id, newComment) {
     if (newComment === null) {
       // Delete a comment
-      const commentController = this._showedCommentControllers.find((it) => it.getCommentId() === id);
+      const commentController = this._showedCommentControllers.find((controller) => controller.getCommentId() === id);
       commentController.setDeleteButtonData({
         buttonName: `Deleting...`,
         isDisabled: true,
@@ -166,7 +171,7 @@ export default class PopupController {
             newCard.comments = this._card.comments.filter((comment) => comment !== id);
             this._popupCommentsListComponentCount.rerender(this._commentsModel.getComments());
             this._onDataChange(this._card, newCard, true);
-            this._showedCommentControllers = this._showedCommentControllers.filter((it) => commentController !== it);
+            this._showedCommentControllers = this._showedCommentControllers.filter((controller) => commentController !== controller);
           }
         })
         .catch(() => {

@@ -2,14 +2,14 @@ import {formatDate, formatTime} from '../utils/format.js';
 import AbstractComponent from "./abstract-component.js";
 
 const createPopupTemplate = (card) => {
-  const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genre, poster, country, description} = card;
+  const {name, originalName, rating, director, writers, actors, releaseDate, ageRating, duration, genres, poster, country, description} = card;
   const formatedReleaseDate = formatDate(releaseDate);
   const formatedDuration = formatTime(duration);
   const createPopupGenreMarkup = (it) => {
     return `<span class="film-details__genre">${it}</span>`;
   };
-  const genresMarkup = genre.map((it) => {
-    return createPopupGenreMarkup(it);
+  const genresMarkup = genres.map((genre) => {
+    return createPopupGenreMarkup(genre);
   }).join(`\n`);
   return (
     `<section class="film-details">
@@ -62,8 +62,8 @@ const createPopupTemplate = (card) => {
                   <td class="film-details__term">Country</td>
                   <td class="film-details__cell">${country}</td>
                 </tr>
-                ${genre.length === 0 ? `` : `<tr class="film-details__row">
-                                              <td class="film-details__term">${genre.length > 1 ? `Genres` : `Genre`}</td>
+                ${genres.length === 0 ? `` : `<tr class="film-details__row">
+                                              <td class="film-details__term">${genres.length > 1 ? `Genres` : `Genre`}</td>
                                               <td class="film-details__cell">
                                               ${genresMarkup}
                                             </tr>`}

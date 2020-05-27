@@ -2,8 +2,8 @@ import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createPopupTemplate = (card) => {
   const {isInWatchlist, isWatched, isFavorite} = card;
-  const checkIsActive = (boolean) => {
-    return boolean ? `checked` : ``;
+  const checkIsActive = (isActive) => {
+    return isActive ? `checked` : ``;
   };
   return (
     `<section class="film-details__controls">

@@ -2,8 +2,9 @@ import SortComponent, {SortType} from "../components/sort.js";
 import FilmsListComponent from "../components/films-list.js";
 import MoreButtonComponent from "../components/more-button.js";
 import CardController from "./card-controller.js";
+import MostCommentedCardsController from "./most-commented-cards-controller.js";
 
-import {selectMostCommentedCards, selectTopCards} from "../utils/cards-selector.js";
+import {selectTopCards} from "../utils/cards-selector.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 
 const CARDS_COUNT_ON_START = 5;
@@ -47,7 +48,6 @@ export default class PageController {
     this._sortComponent = new SortComponent();
     this._mainFilmsListComponent = new FilmsListComponent(`All movies. Upcoming`, false, false);
     this._topFilmsListComponent = new FilmsListComponent(`Top rated`, true, true);
-    this._mostCommentedFilmsListComponent = new FilmsListComponent(`Most commented`, true, true);
     this._moreButtonComponent = new MoreButtonComponent();
 
     this._showingCardsCount = CARDS_COUNT_ON_START;
@@ -90,7 +90,7 @@ export default class PageController {
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
     }
     // Render sort menu
-    render(container.parentNode, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
 
     // if topRatedCards or mostCommentedCards === 0 => do not render them
     // Render top rated films
@@ -101,12 +101,10 @@ export default class PageController {
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
     }
     // Render most commented films
-    const mostCommentedCards = selectMostCommentedCards(cards);
-    if (mostCommentedCards.length > 0) {
-      render(container, this._mostCommentedFilmsListComponent, RenderPosition.BEFOREEND);
-      const newCards = renderCards(this._mostCommentedFilmsListComponent.getListInnerElement(), mostCommentedCards, this._onDataChange, this._onViewChange, this._api);
-      this._showedCardControllers = this._showedCardControllers.concat(newCards);
-    }
+    this._mostCommentedCardsController = new MostCommentedCardsController(container, this._cardsModel, this._onDataChange, this._onViewChange, this._api);
+    this._mostCommentedCardsController.render();
+    const showedMostCommentedCardControllers = this._mostCommentedCardsController.getShowedCardControllers();
+    this._showedCardControllers = this._showedCardControllers.concat(showedMostCommentedCardControllers);
   }
 
   _removeCards() {
@@ -159,9 +157,9 @@ export default class PageController {
     const updateModel = () => {
       const isSuccess = this._cardsModel.updateCard(oldCard.id, newCard);
       if (isSuccess) {
-        this._showedCardControllers.forEach((it) => {
-          if (it.getCard() === oldCard) {
-            it.render(newCard);
+        this._showedCardControllers.forEach((controller) => {
+          if (controller.getCard() === oldCard) {
+            controller.render(newCard);
           }
         });
       }
@@ -178,7 +176,7 @@ export default class PageController {
   }
 
   _onViewChange() {
-    this._showedCardControllers.forEach((it) => it.setDefaultView());
+    this._showedCardControllers.forEach((controller) => controller.setDefaultView());
   }
 
   _onFilterChange() {

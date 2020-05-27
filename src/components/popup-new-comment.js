@@ -9,7 +9,7 @@ export const EmojiNames = {
   ANGRY: `angry`,
 };
 
-const INPUT_COLOR_TIEOUT = 1200;
+const INPUT_COLOR_TIMEOUT = 1200;
 
 const createCommentsEmojiMarkup = (emoji, isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -24,12 +24,12 @@ const createCommentsEmojiMarkup = (emoji, isChecked) => {
 const createPopupCommentsTemplate = (options = {}) => {
   const {selectedEmoji, newCommentText} = options;
   const encodedCommentText = encode(newCommentText);
-  const emojisMarkup = Object.values(EmojiNames).map((it) => {
+  const emojisMarkup = Object.values(EmojiNames).map((emojiName) => {
     let isChecked = false;
-    if (it === selectedEmoji) {
+    if (emojiName === selectedEmoji) {
       isChecked = true;
     }
-    return createCommentsEmojiMarkup(it, isChecked);
+    return createCommentsEmojiMarkup(emojiName, isChecked);
   }).join(`\n`);
   return (
     `<div class="film-details__new-comment">
@@ -84,7 +84,7 @@ export default class PopupNewComment extends AbstractSmartComponent {
       input.style.backgroundColor = `rgb(216, 118, 120)`;
       setTimeout(() => {
         input.style.backgroundColor = `rgb(256, 256, 256)`;
-      }, INPUT_COLOR_TIEOUT);
+      }, INPUT_COLOR_TIMEOUT);
     }
   }
 

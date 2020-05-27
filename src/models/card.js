@@ -11,7 +11,7 @@ export default class Card {
     this.releaseDate = data[`film_info`][`release`][`date`] ? new Date(data[`film_info`][`release`][`date`]) : null;
     this.duration = data[`film_info`][`runtime`];
     this.country = data[`film_info`][`release`][`release_country`];
-    this.genre = data[`film_info`][`genre`];
+    this.genres = data[`film_info`][`genre`];
     this.description = data[`film_info`][`description`] || ``;
     this.ageRating = data[`film_info`][`age_rating`];
     this.isInWatchlist = Boolean(data[`user_details`][`watchlist`]);
@@ -39,7 +39,7 @@ export default class Card {
           "release_country": this.country
         },
         "runtime": this.duration,
-        "genre": this.genre,
+        "genre": this.genres,
         "description": this.description
       },
       "user_details": {

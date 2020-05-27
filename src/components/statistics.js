@@ -163,7 +163,7 @@ export default class Statistics extends AbstractSmartComponent {
     if (this._watchedMoviesByFilter.length !== 0) {
       this._watchedMoviesByFilter.forEach((card) => {
         this._dataSetGenres.forEach((genre) => {
-          card.genre.forEach((cardGenre) => {
+          card.genres.forEach((cardGenre) => {
             if (cardGenre === genre.name) {
               genre.count++;
             }
@@ -171,7 +171,7 @@ export default class Statistics extends AbstractSmartComponent {
         });
         this._totalDuration += card.duration;
       });
-      this._dataSetGenres.sort((a, b) => b.count - a.count);
+      this._dataSetGenres.sort((leftGenre, rightGenre) => rightGenre.count - leftGenre.count);
       this._topGenre = this._dataSetGenres[0].name;
     }
   }

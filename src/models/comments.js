@@ -9,13 +9,13 @@ export default class Comments {
   }
 
   setComments(comments) {
-    this._comments = Array.from(comments.sort((a, b) => {
-      return moment(a.date) - moment(b.date);
+    this._comments = Array.from(comments.sort((leftComment, rightComment) => {
+      return moment(leftComment.date) - moment(rightComment.date);
     }));
   }
 
   deleteComment(id) {
-    const index = this._comments.findIndex((it) => it.id === id);
+    const index = this._comments.findIndex((comment) => comment.id === id);
     if (index === -1) {
       return false;
     }
