@@ -13,7 +13,7 @@ import {ActiveScreen} from "./const.js";
 import {RenderPosition, render} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic uigsdfjhg2835*BFk`;
-const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
 const CARDS_STORE_PREFIX = `cinemaaddict-cards`;
 const COMMENTS_STORE_PREFIX = `cinemaaddict-comments`;
 const STORE_VER = `v1`;
